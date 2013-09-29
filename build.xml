@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="Helios">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.7"/>
+    <property name="source" value="1.7"/>
+	
+	<property name="TOMEE_HOME" value="/opt/tomcat/apache-tomee-plus-1.5.2"/>
+	<property name="TOMEE_LIB" value="${TOMEE_HOME}/lib"/>
+	<property name="HELIOS_HOME" value="/opt/tomcat/Helios"/>
+	<property name="HELIOS_APP_DIR" value="${TOMEE_HOME}/webapps/Framework"/>
+	<property name="JAVA_SHARE_DIR" value="/usr/share/java"/>
+
+	
+    <path id="Helios.classpath">
+		<pathelement location="${HELIOS_HOME}/bin"/>
+        <pathelement location="${JAVA_SHARE_DIR}"/>
+    	<pathelement location="${JAVA_SHARE_DIR}/ant.jar"/>
+    	<pathelement location="${JAVA_SHARE_DIR}/ant-launcher.jar"/>
+    	<pathelement location="${JAVA_SHARE_DIR}/commons-launcher.jar"/>
+        <pathelement location="${JAVA_SHARE_DIR}/log4j.jar"/>
+        <pathelement location="${JAVA_SHARE_DIR}/commons-logging.jar"/>
+        <pathelement location="${JAVA_SHARE_DIR}/commons-lang.jar"/>
+		<pathelement location="${JAVA_SHARE_DIR}/java3d"/>
+		<pathelement location="${JAVA_SHARE_DIR}/java3d/j3dcore.jar"/>
+		<pathelement location="${JAVA_SHARE_DIR}/java3d/j3dutils.jar"/>
+		<pathelement location="${JAVA_SHARE_DIR}/java3d/vecmath.jar"/>
+        <pathelement location="${HELIOS_HOME}/lib/jackcess-1.2.1.jar"/>
+        <pathelement location="${HELIOS_HOME}/lib/jxl.jar"/>
+    	<pathelement location="${HELIOS_HOME}/lib/jdom-2.0.5.jar"/>
+		<pathelement location="${HELIOS_HOME}/lib/drej.jar"/>
+		<pathelement location="${HELIOS_HOME}/lib/gson-2.2.4.jar"/>
+		<pathelement location="${JAVA_SHARE_DIR}/junit.jar"/>
+		<pathelement location="${HELIOS_HOME}/lib/jtds-1.2.5.jar"/>
+		<pathelement location="${HELIOS_HOME}/lib/mail.jar"/>
+    	<pathelement location="${HELIOS_HOME}/lib/OpenForecast-0.5.0.jar"/>
+		<pathelement location="${TOMEE_HOME}/webapps/PrivateLabel/WEB-INF/lib/PrivateLabelReporting/PrivateLabelReporting.jar"/>
+    	<pathelement location="${TOMEE_HOME}/webapps/Hughes/WEB-INF/lib/HughesReporting.jar"/>
+    </path>
+	<path id="Helios.junit.classpath">
+		<pathelement location="${HELIOS_HOME}/bin"/>
+        <pathelement location="${JAVA_SHARE_DIR}"/>
+    	<pathelement location="${JAVA_SHARE_DIR}/ant.jar"/>
+    	<pathelement location="${JAVA_SHARE_DIR}/ant-launcher.jar"/>
+    	<pathelement location="${JAVA_SHARE_DIR}/commons-launcher.jar"/>
+        <pathelement location="${JAVA_SHARE_DIR}/log4j.jar"/>
+        <pathelement location="${JAVA_SHARE_DIR}/commons-logging.jar"/>
+        <pathelement location="${JAVA_SHARE_DIR}/commons-lang.jar"/>
+		<pathelement location="${JAVA_SHARE_DIR}/java3d"/>
+		<pathelement location="${JAVA_SHARE_DIR}/java3d/j3dcore.jar"/>
+		<pathelement location="${JAVA_SHARE_DIR}/java3d/j3dutils.jar"/>
+		<pathelement location="${JAVA_SHARE_DIR}/java3d/vecmath.jar"/>
+        <pathelement location="${HELIOS_HOME}/lib/jackcess-1.2.1.jar"/>
+        <pathelement location="${HELIOS_HOME}/lib/jxl.jar"/>
+    	<pathelement location="${HELIOS_HOME}/lib/jdom-2.0.5.jar"/>
+		<pathelement location="${HELIOS_HOME}/lib/drej.jar"/>
+		<pathelement location="${HELIOS_HOME}/lib/gson-2.2.4.jar"/>
+		<pathelement location="${JAVA_SHARE_DIR}/junit.jar"/>
+		<pathelement location="${HELIOS_HOME}/lib/jtds-1.2.5.jar"/>
+		<pathelement location="${HELIOS_HOME}/lib/mail.jar"/>
+    	<pathelement location="${HELIOS_HOME}/lib/OpenForecast-0.5.0.jar"/>
+		<pathelement location="${TOMEE_HOME}/webapps/PrivateLabel/WEB-INF/lib/PrivateLabelReporting/PrivateLabelReporting.jar"/>
+    	<pathelement location="${TOMEE_HOME}/webapps/Hughes/WEB-INF/lib/HughesReporting.jar"/>
+	</path>
+	<pathconvert property="mf.classpath" pathsep=" ">
+   	 	<path refid="Helios.classpath" />
+  	</pathconvert>
+	<pathconvert property="junit.classpath" pathsep=" ">
+   	 	<path refid="Helios.junit.classpath" />
+  	</pathconvert>
+	
+    <echo message="Tomee Home: ${TOMEE_HOME}"/>
+    <echo message="Tomee Lib: ${TOMEE_LIB}"/>
+    <echo message="Helios Home: ${HELIOS_HOME}"/>
+    <echo message="Helios App Dir: ${HELIOS_APP_DIR}"/>
+    <echo message="Java Share Dir: ${JAVA_SHARE_DIR}"/>
+   	<echo message="Target Version: ${target}"/>
+    <echo message="Source Version: ${source}"/>
+
+    <target name="init">
+        <mkdir dir="${HELIOS_HOME}/bin"/>
+        <copy includeemptydirs="false" todir="${HELIOS_HOME}/bin">
+            <fileset dir="${HELIOS_HOME}/src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+	
+    <target name="clean">
+        <delete dir="${HELIOS_HOME}/bin" verbose="on"/>
+		<mkdir dir="${HELIOS_HOME}/bin"/>
+    	<delete file="${HELIOS_HOME}/Helios.jar" verbose="true"/>
+    	
+    </target>
+    <target depends="build-project,jar" name="build">
+		<exec executable="/bin/date" />
+	</target>
+	
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="${HELIOS_HOME}/bin" source="${source}" target="${target}" verbose="on">
+            <src path="${HELIOS_HOME}/src"/>
+            <classpath refid="Helios.junit.classpath"/>
+        </javac>
+    </target>
+	
+	<target name="testsuite" depends="build-project">
+		<java classname="test.HeliosTestSuite" failonerror="true" fork="yes">
+			<classpath refid="Helios.junit.classpath"/>
+		</java>
+	</target>
+	
+	<target name="jar" depends="build-project" >
+		<jar description="Jar for Tomcat Deployment" destfile="${HELIOS_HOME}/Helios.jar" basedir="${HELIOS_HOME}/bin" includes="**/*.class">
+    	<manifest>
+    		<attribute name="Awesome" value="true"/>
+			<attribute name="Class-Path" value="${mf.classpath}"/>
+		</manifest>
+  		</jar>
+  </target>
+	
+  	<target name="test" depends="build-project">
+		<junit failureProperty="test.failure">
+      		<classpath refid="Helios.junit.classpath" />
+			
+			<!--two formatters, one for ant output, the other for the test files-->
+			<formatter type="plain" usefile="false" />
+			<formatter type="plain" usefile="true" extension="" />
+			
+			<!-- framework constants -->
+			<test name="test.ConstantsTest" todir="${HELIOS_HOME}/test"/>
+			
+			<!-- date parsing and validation -->
+			<test name="test.DateParserTest" todir="${HELIOS_HOME}/test"/>
+			
+			<!--statistics -->
+			<test name="test.statistics.BasicStatisticsTest" todir="${HELIOS_HOME}/test"/>
+			
+			<!-- team buckets -->
+			
+			<!-- user buckets -->
+			
+    	</junit>
+
+		<copy includeemptydirs="true" todir="${HELIOS_APP_DIR}/test">
+        	<fileset dir="${HELIOS_HOME}/test">
+        	</fileset>
+        </copy>
+    	<fail message="test failed" if="test.failure" />
+  </target>
+	
+ 	<target name="analysis" depends="build-project">
+ 		<exec executable="${HELIOS_HOME}/scripts/generateAnalyses.pl" failonerror ="true" 
+		error="${HELIOS_APP_DIR}/analysis/output" />
+	</target>
+	
+	<target name="valgrind">
+		
+		<!-- valgrindy stuff -->
+		
+	</target>
+  <target name="javadoc" depends="build-project">
+        <javadoc access="private" author="true" destdir="${HELIOS_APP_DIR}/doc/" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" 
+			packagenames="*" 
+			source="${source}" sourcepath="${HELIOS_HOME}/src" splitindex="true" use="true" version="true" useexternalfile="true" >
+			
+			<classpath refid="Helios.junit.classpath"/>
+			
+			<link href="http://download.oracle.com/javase/7/docs/api/"/>
+			<link href="http://jackcess.sourceforge.net/apidocs/"/>
+			<link href="http://jxl.sourceforge.net/javadoc/"/>
+		</javadoc>
+  </target>
+	
+  <target name="forcedeploy" depends="build-project,jar,ui">
+		
+  		<mkdir dir="${HELIOS_APP_DIR}"/>
+
+		<copy file="${HELIOS_HOME}/Helios.jar" todir="${TOMEE_LIB}" verbose="on" />
+		<copy file="${HELIOS_HOME}/lib/jxl.jar" todir="${TOMEE_LIB}" verbose="on" />
+		<copy file="${HELIOS_HOME}/lib/jackcess-1.2.1.jar" todir="${TOMEE_LIB}" verbose="on" />
+		<copy file="${HELIOS_HOME}/lib/jtds-1.2.5.jar" todir="${TOMEE_LIB}" verbose="on" />
+  		<copy file="${HELIOS_HOME}/lib/jdom-2.0.5.jar" todir="${TOMEE_LIB}" verbose="on"/>
+  		<copy file="${HELIOS_HOME}/lib/gson-2.2.4.jar" todir="${TOMEE_LIB}" verbose="on"/>
+  		<copy file="${JAVA_SHARE_DIR}/log4j.jar" todir="${TOMEE_LIB}" verbose="on" />
+  		<copy file="${HELIOS_HOME}/scripts/setenv.sh" todir="${TOMEE_HOME}/bin/" verbose="on" />
+		<exec executable="${HELIOS_HOME}/scripts/tomcatRestart.pl" failonerror ="true"/>
+		<exec executable="/bin/date" />
+  		
+  </target>
+	
+  <target name ="deploy" depends="forcedeploy,test,analysis">
+  	
+	</target>
+	
+	  <target name ="ui" depends="build-project,javadoc">
+		<mkdir dir="${HELIOS_APP_DIR}/ui"/>
+		<mkdir dir="${HELIOS_APP_DIR}/ui/images"/>
+
+		<copy file="${HELIOS_HOME}/ui/index.jsp" todir="${HELIOS_APP_DIR}/" verbose="on" />
+		<copy file="${HELIOS_HOME}/ui/testResults.jsp" todir="${HELIOS_APP_DIR}/" verbose="on" />
+		<copy file="${HELIOS_HOME}/ui/faq.jsp" todir="${HELIOS_APP_DIR}/" verbose="on" />
+		<copy file="${HELIOS_HOME}/ui/doc.jsp" todir="${HELIOS_APP_DIR}/" verbose="on" />
+	  	<copy file="${HELIOS_HOME}/ui/objectives.jsp" todir="${HELIOS_APP_DIR}/" verbose="on" />
+		<copy file="${HELIOS_HOME}/ui/statistics.jsp" todir="${HELIOS_APP_DIR}/" verbose="on" />
+		
+		<copy file="${HELIOS_HOME}/ui/footer.jsp" todir="${HELIOS_APP_DIR}/ui" verbose="on" />
+		<copy file="${HELIOS_HOME}/ui/menu.jsp" todir="${HELIOS_APP_DIR}/ui" verbose="on" />
+		<copy file="${HELIOS_HOME}/ui/header.jsp" todir="${HELIOS_APP_DIR}/ui" verbose="on" />
+		<copy file="${HELIOS_HOME}/ui/browserAssist.jsp" todir="${HELIOS_APP_DIR}/ui" verbose="on" />
+	  	
+	  	<copy file="${HELIOS_HOME}/ui/images/favicon.ico" todir="${TOMEE_HOME}/ROOT/favicon.ico" verbose="on" />
+
+		<copy includeemptydirs="false" todir="${HELIOS_APP_DIR}/ui/images" verbose="on">
+			<fileset dir="${HELIOS_HOME}/ui/images">
+            </fileset>
+		</copy>
+	  	
+	  	
+		<copy includeemptydirs="true" todir="${HELIOS_APP_DIR}/test/">
+        	<fileset dir="${HELIOS_HOME}/test">
+        	</fileset>
+       </copy>
+	  </target>
+	
+	
+</project>
