@@ -8,8 +8,8 @@ use strict;
 #while this is a helios cronjob, it's up to the implementer (privatelabel, etc) to schedule it in their crontab
 
 my $envPrefix = 'env JAVA_HOME=/usr/lib/jvm/java/';
-my $startUpScript = '/opt/tomcat/apache-tomee-plus-1.5.2/bin/startup.sh';
-my $shutdownScript = '/opt/tomcat/apache-tomee-plus-1.5.2/bin/shutdown.sh';
+my $startUpScript = '/opt/tomcat/apache-tomee-plus/bin/startup.sh';
+my $shutdownScript = '/opt/tomcat/apache-tomee-plus/bin/shutdown.sh';
 my $thisScriptName = 'tomcatWatchdog.pl';
 my $tomcatPSCmd = 'ps -ef | grep tomcat | grep java | grep -v grep | grep catalina';
 
