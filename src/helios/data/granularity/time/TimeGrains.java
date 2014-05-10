@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedHashMap;
 
-public class TimeGrains 
+public abstract class TimeGrains 
 {
 	public static final LinkedHashMap<String, String> avaliableTimeGrains = new LinkedHashMap<String, String>()
 	{
@@ -34,7 +34,7 @@ public class TimeGrains
 	public final static int DAILY_GRANULARITY = 3;
 	public final static int HOURLY_GRANULARITY = 4;
 	
-	public TimeGrains()
+	private TimeGrains()
 	{}
 
 	/**
