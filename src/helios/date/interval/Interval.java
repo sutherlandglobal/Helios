@@ -6,8 +6,8 @@ public class Interval
 	private String startDate;
 	private String endDate;
 	
-	public Interval(String intervalName, String startDate, String endDate) {
-		super();
+	public Interval(String intervalName, String startDate, String endDate) 
+	{
 		this.intervalName = intervalName;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -47,14 +47,6 @@ public class Interval
 
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
-	}
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
 	}
 
 }
