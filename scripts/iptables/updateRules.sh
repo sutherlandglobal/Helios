@@ -23,6 +23,30 @@ COMMIT
 :RH-Firewall-1-INPUT - [0:0]
 -A INPUT -j RH-Firewall-1-INPUT 
 -A FORWARD -j RH-Firewall-1-INPUT 
+
+#drop rules go first
+#internal monitoring looking for client software
+-A RH-Firewall-1-INPUT -s 10.50.2.148 -j DROP
+-A RH-Firewall-1-INPUT -s 10.50.3.90 -j DROP
+-A RH-Firewall-1-INPUT -s 10.86.72.26 -j DROP
+
+#external malice
+-A RH-Firewall-1-INPUT -s 93.127.2.254 -j DROP
+-A RH-Firewall-1-INPUT -s 113.196.182.93 -j DROP
+-A RH-Firewall-1-INPUT -s 1.165.198.23 -j DROP
+-A RH-Firewall-1-INPUT -s 120.117.105.201 -j DROP
+-A RH-Firewall-1-INPUT -s 123.151.149.222 -j DROP
+-A RH-Firewall-1-INPUT -s 144.122.98.125 -j DROP
+-A RH-Firewall-1-INPUT -s 189.215.201.26 -j DROP
+-A RH-Firewall-1-INPUT -s 189.235.49.228 -j DROP
+-A RH-Firewall-1-INPUT -s 198.50.136.26 -j DROP
+-A RH-Firewall-1-INPUT -s 220.229.248.82 -j DROP
+-A RH-Firewall-1-INPUT -s 59.115.67.110 -j DROP
+-A RH-Firewall-1-INPUT -s 80.160.116.236 -j DROP
+-A RH-Firewall-1-INPUT -s 82.221.105.223 -j DROP
+-A RH-Firewall-1-INPUT -s 88.206.104.131 -j DROP
+
+#ports and https forwarding
 -A RH-Firewall-1-INPUT -i lo -j ACCEPT 
 -A RH-Firewall-1-INPUT -p icmp -m icmp --icmp-type any -j ACCEPT 
 -A RH-Firewall-1-INPUT -p esp -j ACCEPT 
@@ -32,9 +56,15 @@ COMMIT
 -A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT 
 -A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 443 -j ACCEPT 
 -A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT 
--A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 8080 -j ACCEPT 
--A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 8443 -j ACCEPT 
+
+#don't need the tomcat ports since we expect httpd to handle proxying through 443
+#-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 8080 -j ACCEPT 
+#-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 8443 -j ACCEPT 
+
+
+
 -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited 
+
 COMMIT
 # Completed on Sat Nov 30 02:55:18 2013
 END
