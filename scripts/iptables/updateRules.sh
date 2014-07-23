@@ -26,7 +26,9 @@ COMMIT
 
 #drop rules go first
 #internal monitoring looking for client software
--A RH-Firewall-1-INPUT -s 10.50.2.148 -j DROP
+#netmon
+#-A RH-Firewall-1-INPUT -s 10.50.2.148 -j DROP
+
 -A RH-Firewall-1-INPUT -s 10.50.3.90 -j DROP
 -A RH-Firewall-1-INPUT -s 10.86.72.26 -j DROP
 
