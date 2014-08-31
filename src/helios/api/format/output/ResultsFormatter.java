@@ -14,12 +14,6 @@ import java.util.ArrayList;
  */
 public abstract class ResultsFormatter 
 {
-	public static final int CSV = 0;
-	public static final int HTML = 1;
-	public static final int XML = 2;
-	public static final int JSON = 3;
-	public static final int JFreeChart = 6;
-	
 	protected ResultsFormatter() 
 	{}
 
