@@ -1,0 +1,21 @@
+#set( $fullPackageName = $SITE_CLASS_PREFIX + ".site")
+
+package $fullPackageName;
+
+public final class SiteConfig 
+{
+	private SiteConfig(){}
+	
+	public final static String HELIOS_SITE_NAME = "$HELIOS_SITE_NAME";
+	public final static String HELIOS_READABLE_SITE_NAME = "$HELIOS_READABLE_SITE_NAME";
+	public final static String REPORT_CLASS_PREFIX = "$REPORT_CLASS_PREFIX";
+	public final static String API_CLASS_PREFIX = "$API_CLASS_PREFIX";
+	
+	public final static String PLATFORM_DIR = "$PLATFORM_DIR";
+
+	public final static String REPORT_LOGGER_HANDLE = "$REPORT_LOGGER_HANDLE";
+	public final static String API_LOGGER_HANDLE = "$API_LOGGER_HANDLE";
+	
+	public final static String SITE_JAR = "$SITE_JAR";
+
+}
