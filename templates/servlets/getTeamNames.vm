@@ -57,7 +57,11 @@ public class GetTeamNames extends HttpServlet
 			//simple message for the user
 			try 
 			{
-				out = response.getWriter();
+				if(out == null)
+				{
+					out = response.getWriter();
+				}
+				
 				out.println("Error: " + t.getMessage());
 			} 
 			catch (IOException e) 
