@@ -22,4 +22,7 @@ public interface ReportFrontEnds
 	
 	public final static int JFREECHART = 6;
 	public final static String JFCHART_NAME = "JFreeChart";
+	
+	public final static int EXCEL = 7;
+	public final static String EXCEL_NAME = "Excel";
 }

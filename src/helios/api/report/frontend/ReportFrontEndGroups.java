@@ -10,6 +10,7 @@ public interface ReportFrontEndGroups
 		{
 			put(ReportFrontEnds.CSV_NAME,"" +ReportFrontEnds.CSV);
 			put(ReportFrontEnds.HTML_NAME,"" +ReportFrontEnds.HTML);
+			put(ReportFrontEnds.EXCEL_NAME,"" +ReportFrontEnds.EXCEL);
 			put(ReportFrontEnds.XML_NAME,"" +ReportFrontEnds.XML);
 			put(ReportFrontEnds.JSON_NAME,"" +ReportFrontEnds.JSON);
 		}
@@ -21,6 +22,7 @@ public interface ReportFrontEndGroups
 		{
 			put(ReportFrontEnds.CSV_NAME,"" +ReportFrontEnds.CSV);
 			put(ReportFrontEnds.HTML_NAME,"" +ReportFrontEnds.HTML);
+			put(ReportFrontEnds.EXCEL_NAME,"" +ReportFrontEnds.EXCEL);
 			put(ReportFrontEnds.XML_NAME,"" +ReportFrontEnds.XML);
 			put(ReportFrontEnds.JSON_NAME,"" +ReportFrontEnds.JSON);
 			put(ReportFrontEnds.JFCHART_NAME,"" +ReportFrontEnds.JFREECHART);
