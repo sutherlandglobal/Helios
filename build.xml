@@ -29,6 +29,8 @@
     	<pathelement location="${HELIOS_LIB}/OpenForecast-0.5.0.jar"/>
 		<pathelement location="${HELIOS_LIB}/jcommon-1.0.21.jar" />
     	<pathelement location="${HELIOS_LIB}/jfreechart-1.0.17.jar"/>
+    	<pathelement location="${HELIOS_LIB}/velocity-1.7.jar"/>
+    	<pathelement location="${HELIOS_LIB}/velocity-tools-2.0.jar"/>
 		
 
     </path>
@@ -46,8 +48,9 @@
     	<pathelement location="${HELIOS_LIB}/OpenForecast-0.5.0.jar"/>
 		<pathelement location="${HELIOS_LIB}/jcommon-1.0.21.jar" />
     	<pathelement location="${HELIOS_LIB}/jfreechart-1.0.17.jar"/>
-		
-		<pathelement location="${JAVA_SHARE_DIR}/junit.jar"/>
+    	<pathelement location="${HELIOS_LIB}/velocity-1.7.jar"/>
+		<pathelement location="${HELIOS_LIB}/junit4.jar"/>
+    	<pathelement location="${HELIOS_LIB}/velocity-tools-2.0.jar"/>
 
 	</path>
 	<pathconvert property="mf.classpath" pathsep=" ">
@@ -110,6 +113,7 @@
     			<attribute name="Awesome" value="true"/>
     			<attribute name="Introduction" value="Helios will speak. Year of Our Union, 125. Our consensus remains clear...yes...we will prolong this second century of peace. Economic automation is complete; our research will now encompass other frontiers. This is the consensus we have created. Our unity will soon be absolute. The remaining boundaries are vanishing...yes...share...your mind...with everyone. Open yourself. Your needs...are the needs of all. Let us understand, and be transformed. Transform each other, and transform yourselves. The only frontier that has ever existed, is the self. Helios has spoken."/>
 			</manifest>
+			<fileset dir="." includes="templates/**" />
   		</jar>
   </target>
 	
@@ -197,7 +201,7 @@
 	<exec executable="/bin/date" />
   </target>
 	
-  <target name ="deploy" depends="build-jar,test,build-war,analysis,undeploy,crontab">
+  <target name ="deploy" depends="build-jar,build-war,analysis,undeploy,crontab">
    	<mkdir dir="${HELIOS_HOME}/logs"/>
   	<copy file="${HELIOS_HOME}/WebContent/images/favicon.ico" todir="${TOMEE_HOME}/ROOT/favicon.ico" verbose="on" />
   	<copy file="${HELIOS_HOME}/${WAR_FILE}" todir="${HELIOS_APP_DIR}/.." verbose="on" />
@@ -272,7 +276,9 @@
 		
 	</target>
 	
-	<target name ="nuke" depends="uninstall"/>
+	<target name ="nuke">
+		<delete dir="${HELIOS_HOME}/src"/>
+	</target>
 	<target name="uninstall" depends="undeploy">
 		<chmod file="${TOMEE_HOME}/bin/shutdown.sh" perm="775" />
 		<exec executable="${TOMEE_HOME}/bin/shutdown.sh" />
