@@ -20,11 +20,13 @@ public class CSVFormatter extends ResultsFormatter
 	protected boolean enquote = false;
 
 	protected String delim;
-	protected final static String DEFAULT_DELIM = ","; 
+	protected final static String DEFAULT_DELIM = ",";
+	protected boolean enableHeaders;
 	
 	public CSVFormatter() 
 	{
 		super();
+		enableHeaders(true);
 		setEnquote(false);
 		setDelim(DEFAULT_DELIM);
 	}
@@ -41,6 +43,38 @@ public class CSVFormatter extends ResultsFormatter
 		return retval;
 	}
 	
+	@Override
+	public ArrayList<String> formatResults(ArrayList<String> schema, ArrayList<String[]> results) 
+	{
+		ArrayList<String> retval = new ArrayList<String>();
+		
+		if(enableHeaders)
+		{
+			StringBuilder headerString = new StringBuilder();
+			for(String attribute : schema)
+			{
+				if(enquote)
+				{
+					headerString.append("\"");
+					headerString.append(attribute);
+					headerString.append("\"");
+				}
+				else
+				{
+					headerString.append(attribute);
+				}
+				
+				headerString.append(delim);
+			}
+			
+			retval.add(headerString.toString());
+		}
+		
+		retval.addAll(formatResults(results));
+		
+		return retval;
+	}
+	
 	public String formatLine(String[] rowFields)
 	{
 		StringBuilder formattedLine = new StringBuilder();
@@ -49,8 +83,7 @@ public class CSVFormatter extends ResultsFormatter
 		{
 			if(enquote)
 			{
-				col = "\"" + col;
-				col += "\"";
+				col = "\"" + col + "\"";
 			}
 			
 			formattedLine.append(col);
@@ -66,6 +99,11 @@ public class CSVFormatter extends ResultsFormatter
 		this.enquote = enquote;
 	}
 	
+	public void enableHeaders(boolean enableHeaders)
+	{
+		this.enableHeaders = enableHeaders;
+	}
+	
 	public void setDelim(String delim)
 	{
 		this.delim = delim;
@@ -76,10 +114,5 @@ public class CSVFormatter extends ResultsFormatter
 		return delim;
 	}
 
-	@Override
-	public ArrayList<String> formatResults(ArrayList<String> schema, ArrayList<String[]> results) 
-	{
-		//no schema for csv
-		return formatResults(new ArrayList<String>(), results);
-	}
+
 }
