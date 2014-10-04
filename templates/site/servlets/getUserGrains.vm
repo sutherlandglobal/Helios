@@ -2,7 +2,7 @@
 
 package $fullPackageName;
 
-import helios.data.granularity.user.UserGrains;
+import com.sutherland.helios.data.granularity.user.UserGrains;
 
 import java.io.IOException;
 import java.io.PrintWriter;

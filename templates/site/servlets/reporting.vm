@@ -2,22 +2,22 @@
 
 package $fullPackageName;
 
-import helios.api.format.output.CSVFormatter;
-import helios.api.format.output.HTMLFormatter;
-import helios.api.format.output.JSONFormatter;
-import helios.api.format.output.XMLFormatter;
-import helios.api.report.ReportProcessor;
-import helios.api.report.frontend.ReportFrontEnds;
-import helios.charting.BarChartFactory;
-import helios.charting.StackedBarChartFactory;
-import helios.charting.TimeLineChartFactory;
-import helios.exceptions.ExceptionFormatter;
-import helios.logging.LogIDFactory;
-import helios.report.ReportTypes;
-import helios.report.parameters.ParameterInfo;
-import helios.report.parameters.ReportParameters;
-import helios.report.parameters.parameter.Parameter;
-import helios.report.parameters.sanitize.StringSanitizer;
+import com.sutherland.helios.api.format.output.CSVFormatter;
+import com.sutherland.helios.api.format.output.HTMLFormatter;
+import com.sutherland.helios.api.format.output.JSONFormatter;
+import com.sutherland.helios.api.format.output.XMLFormatter;
+import com.sutherland.helios.api.report.ReportProcessor;
+import com.sutherland.helios.api.report.frontend.ReportFrontEnds;
+import com.sutherland.helios.charting.BarChartFactory;
+import com.sutherland.helios.charting.StackedBarChartFactory;
+import com.sutherland.helios.charting.TimeLineChartFactory;
+import com.sutherland.helios.exceptions.ExceptionFormatter;
+import com.sutherland.helios.logging.LogIDFactory;
+import com.sutherland.helios.report.ReportTypes;
+import com.sutherland.helios.report.parameters.ParameterInfo;
+import com.sutherland.helios.report.parameters.ReportParameters;
+import com.sutherland.helios.report.parameters.parameter.Parameter;
+import com.sutherland.helios.report.parameters.sanitize.StringSanitizer;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -96,6 +96,7 @@ public class Reporting extends HttpServlet
 		rp.addSupportedParameter(ParameterInfo.NUM_DRIVERS_PARAM);
 		rp.addSupportedParameter(ParameterInfo.REPORT_TYPE_PARAM);
 		rp.addSupportedParameter(ParameterInfo.SOURCE_PARAM);
+		rp.addSupportedParameter(ParameterInfo.DATE_FORMAT_PARAM);
 
 		ArrayList<String> apiParamNames = new ArrayList<String>();
 		apiParamNames.add("reportName");

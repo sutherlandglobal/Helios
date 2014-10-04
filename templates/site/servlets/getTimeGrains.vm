@@ -2,7 +2,7 @@
 
 package $fullPackageName;
 
-import helios.data.granularity.time.TimeGrains;
+import com.sutherland.helios.data.granularity.time.TimeGrains;
 
 import java.io.IOException;
 import java.io.PrintWriter;

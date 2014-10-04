@@ -2,8 +2,8 @@
 
 package $fullPackageName;
 
-import helios.api.report.ReportProcessor;
-import helios.report.parameters.ParameterInfo;
+import com.sutherland.helios.api.report.ReportProcessor;
+import com.sutherland.helios.report.parameters.ParameterInfo;
 
 import java.io.IOException;
 import java.io.PrintWriter;
