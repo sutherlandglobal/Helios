@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="build" name="Helios">
+<project basedir="." default="build-jar" name="Helios">
     <property environment="env"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
 	
 	<property name="TOMEE_HOME" value="/opt/tomcat/apache-tomee-plus"/>
+	<property name="HTTPD_HOME" value="/opt/tomcat/httpd"/>
 	<property name="TOMEE_LIB" value="${TOMEE_HOME}/lib"/>
 	<property name="HELIOS_HOME" value="/opt/tomcat/Helios"/>
-	<property name="HELIOS_LIB" value="${HELIOS_HOME}/WEB-INF/lib/"/>
+	<property name="HELIOS_LIB" value="${HELIOS_HOME}/lib"/>
 	<property name="HELIOS_APP_DIR" value="${TOMEE_HOME}/webapps/Framework"/>
-	<property name="JAVA_SHARE_DIR" value="/usr/share/java"/>
 	<property name="WAR_FILE" value="Framework.war"/>
 	<property name="JAR_FILE" value="Helios.jar"/>
 
@@ -18,7 +18,6 @@
     <path id="Helios.classpath">
 		<!--<pathelement location="${HELIOS_LIB}/conf/log4j.properties"/>-->
 		<pathelement location="${HELIOS_HOME}/bin"/>
-		<pathelement location="${HELIOS_HOME}/WEB-INF/classes"/>
         <pathelement location="${HELIOS_LIB}/jackcess-1.2.1.jar"/>
         <pathelement location="${HELIOS_LIB}/jxl.jar"/>
     	<pathelement location="${HELIOS_LIB}/jdom-2.0.5.jar"/>
@@ -37,7 +36,6 @@
 	<path id="Helios.junit.classpath">
 		<!--<pathelement location="${HELIOS_LIB}/conf/log4j.properties"/>-->
 		<pathelement location="${HELIOS_HOME}/bin"/>
-		<pathelement location="${HELIOS_HOME}/WEB-INF/classes"/>
         <pathelement location="${HELIOS_LIB}/jackcess-1.2.1.jar"/>
         <pathelement location="${HELIOS_LIB}/jxl.jar"/>
     	<pathelement location="${HELIOS_LIB}/jdom-2.0.5.jar"/>
@@ -65,7 +63,6 @@
     <echo message="Helios Home: ${HELIOS_HOME}"/>
     <echo message="Helios App Dir: ${HELIOS_APP_DIR}"/>
 	<echo message="Helios Lib Dir: ${HELIOS_LIB}"/>
-    <echo message="Java Share Dir: ${JAVA_SHARE_DIR}"/>
    	<echo message="Target Version: ${target}"/>
     <echo message="Source Version: ${source}"/>
 
@@ -100,7 +97,7 @@
 	
 	<target name="crontab">
 		<exec executable="/usr/bin/crontab" failonerror="true">
-			<arg value="${HELIOS_LIB}/conf/crontab"/>
+			<arg value="${HELIOS_HOME}/conf/crontab"/>
 		</exec>
 		<echo message="Crontab updated, don't forget to uncomment your cronjobs." />
 	</target>
@@ -114,6 +111,10 @@
     			<attribute name="Introduction" value="Helios will speak. Year of Our Union, 125. Our consensus remains clear...yes...we will prolong this second century of peace. Economic automation is complete; our research will now encompass other frontiers. This is the consensus we have created. Our unity will soon be absolute. The remaining boundaries are vanishing...yes...share...your mind...with everyone. Open yourself. Your needs...are the needs of all. Let us understand, and be transformed. Transform each other, and transform yourselves. The only frontier that has ever existed, is the self. Helios has spoken."/>
 			</manifest>
 			<fileset dir="." includes="templates/**" />
+			<fileset dir="." includes="resources/**" >
+				<!-- exclude helios ui resources that sites will not use-->
+				<exclude name="*resources/local/*"/>
+			</fileset> 
   		</jar>
   </target>
 	
@@ -133,34 +134,34 @@
 			<formatter type="plain" usefile="false" />
 			<formatter type="plain" usefile="true" extension="" />
 		
-			<test name="helios.data.test.DatumTest" todir="${HELIOS_HOME}/test"/>	
-			<test name="helios.data.test.AggregationTest" todir="${HELIOS_HOME}/test"/>	
-			<test name="helios.date.parsing.test.DateParserTest" todir="${HELIOS_HOME}/test"/>	
-			<!--<test name="helios.date.interval.test.IntervalsTest" todir="${HELIOS_HOME}/test"/>-->
-			<test name="helios.data.granularity.time.test.TimeGrainsTest" todir="${HELIOS_HOME}/test"/>
-			<test name="helios.data.granularity.user.test.UserGrainsTest" todir="${HELIOS_HOME}/test"/>
-			<test name="helios.report.parameters.sanitize.test.StringSanitizerTest" todir="${HELIOS_HOME}/test"/>		
-			<test name="helios.report.parameters.test.ParameterInfoTest" todir="${HELIOS_HOME}/test"/>
-			<test name="helios.report.parameters.parameter.test.ParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="helios.report.parameters.parameter.test.AgentNamesParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="helios.report.parameters.parameter.test.EndDateParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="helios.report.parameters.parameter.test.NumDriversParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="helios.report.parameters.parameter.test.ReportClassNameParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="helios.report.parameters.parameter.test.ReportTypeParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="helios.report.parameters.parameter.test.SourceParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="helios.report.parameters.parameter.test.StartDateParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="helios.report.parameters.parameter.test.TeamNamesParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="helios.report.parameters.parameter.test.TimeGrainParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="helios.report.parameters.parameter.test.UserGrainParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="helios.report.parameters.test.ReportParametersTest" todir="${HELIOS_HOME}/test"/>
+			<test name="com.sutherland.helios.data.test.DatumTest" todir="${HELIOS_HOME}/test"/>	
+			<test name="com.sutherland.helios.data.test.AggregationTest" todir="${HELIOS_HOME}/test"/>	
+			<test name="com.sutherland.helios.date.parsing.test.DateParserTest" todir="${HELIOS_HOME}/test"/>	
+			<test name="com.sutherland.helios.date.formatting.test.DateFormatterTest" todir="${HELIOS_HOME}/test"/>	
+			<!--<test name="com.sutherland.helios.date.interval.test.IntervalsTest" todir="${HELIOS_HOME}/test"/>-->
+			<test name="com.sutherland.helios.data.granularity.user.test.UserGrainsTest" todir="${HELIOS_HOME}/test"/>
+			<test name="com.sutherland.helios.report.parameters.sanitize.test.StringSanitizerTest" todir="${HELIOS_HOME}/test"/>		
+			<test name="com.sutherland.helios.report.parameters.test.ParameterInfoTest" todir="${HELIOS_HOME}/test"/>
+			<test name="com.sutherland.helios.report.parameters.parameter.test.ParameterTest" todir="${HELIOS_HOME}/test"/>
+			<test name="com.sutherland.helios.report.parameters.parameter.test.AgentNamesParameterTest" todir="${HELIOS_HOME}/test"/>
+			<test name="com.sutherland.helios.report.parameters.parameter.test.EndDateParameterTest" todir="${HELIOS_HOME}/test"/>
+			<test name="com.sutherland.helios.report.parameters.parameter.test.NumDriversParameterTest" todir="${HELIOS_HOME}/test"/>
+			<test name="com.sutherland.helios.report.parameters.parameter.test.ReportClassNameParameterTest" todir="${HELIOS_HOME}/test"/>
+			<test name="com.sutherland.helios.report.parameters.parameter.test.ReportTypeParameterTest" todir="${HELIOS_HOME}/test"/>
+			<test name="com.sutherland.helios.report.parameters.parameter.test.SourceParameterTest" todir="${HELIOS_HOME}/test"/>
+			<test name="com.sutherland.helios.report.parameters.parameter.test.StartDateParameterTest" todir="${HELIOS_HOME}/test"/>
+			<test name="com.sutherland.helios.report.parameters.parameter.test.TeamNamesParameterTest" todir="${HELIOS_HOME}/test"/>
+			<test name="com.sutherland.helios.report.parameters.parameter.test.TimeGrainParameterTest" todir="${HELIOS_HOME}/test"/>
+			<test name="com.sutherland.helios.report.parameters.parameter.test.UserGrainParameterTest" todir="${HELIOS_HOME}/test"/>
+			<test name="com.sutherland.helios.report.parameters.test.ReportParametersTest" todir="${HELIOS_HOME}/test"/>
 			
 			<!--
-			<test name="helios.roster.test.MockRosterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="helios.report.test.MockReportTest" todir="${HELIOS_HOME}/test"/>
+			<test name="com.sutherland.helios.roster.test.MockRosterTest" todir="${HELIOS_HOME}/test"/>
+			<test name="com.sutherland.helios.report.test.MockReportTest" todir="${HELIOS_HOME}/test"/>
 			-->
 			
-			<test name="helios.api.report.test.ReportEntityTest" todir="${HELIOS_HOME}/test"/>
-			<!--<test name="helios.api.report.test.ReportProcessorTest" todir="${HELIOS_HOME}/test"/>-->
+			<test name="com.sutherland.helios.api.report.test.ReportEntityTest" todir="${HELIOS_HOME}/test"/>
+			<!--<test name="com.sutherland.helios.api.report.test.ReportProcessorTest" todir="${HELIOS_HOME}/test"/>-->
     	</junit>
 
     	<fail message="test failed" if="test.failure" />
@@ -191,50 +192,35 @@
 			<link href="http://jxl.sourceforge.net/javadoc/"/>
         	<link href="http://www.jfree.org/jfreechart/api/javadoc/"/>
         	<link href="http://logging.apache.org/log4j/2.x/log4j-api/apidocs/"/>
+        	<link href="http://velocity.apache.org/engine/releases/velocity-1.7/apidocs/"/>
+        	<link href="http://velocity.apache.org/tools/devel/javadoc/"/>
 		</javadoc>
   </target>
 	
-  <target name="forcedeploy" depends="build-jar,build-war,undeploy,crontab">
+  <target name ="deploy" depends="build-jar,build-war,undeploy,crontab">
    	<mkdir dir="${HELIOS_HOME}/logs"/>
-  	<copy file="${HELIOS_HOME}/WebContent/images/favicon.ico" todir="${TOMEE_HOME}/ROOT/favicon.ico" verbose="on" />
+  	<copy file="${HELIOS_HOME}/resources/images/favicon.ico" todir="${TOMEE_HOME}/ROOT/favicon.ico" verbose="on" />
   	<copy file="${HELIOS_HOME}/${WAR_FILE}" todir="${HELIOS_APP_DIR}/.." verbose="on" />
-	<exec executable="/bin/date" />
-  </target>
-	
-  <target name ="deploy" depends="build-jar,build-war,analysis,undeploy,crontab">
-   	<mkdir dir="${HELIOS_HOME}/logs"/>
-  	<copy file="${HELIOS_HOME}/WebContent/images/favicon.ico" todir="${TOMEE_HOME}/ROOT/favicon.ico" verbose="on" />
-  	<copy file="${HELIOS_HOME}/${WAR_FILE}" todir="${HELIOS_APP_DIR}/.." verbose="on" />
+  	
+  	<sleep seconds="5"/>
+  		
 	<exec executable="/bin/date" />
 </target>
 
 	<target name ="build-war" depends="build,javadoc">
 		
-		<mkdir dir="${HELIOS_HOME}/WEB-INF/classes"/>
-		<mkdir dir="${HELIOS_HOME}/WEB-INF/classes/helios"/>
-		<mkdir dir="${HELIOS_HOME}/WEB-INF/classes/helios/constants"/>
-		
-        <copy includeemptydirs="false" todir="${HELIOS_HOME}/WEB-INF/classes/helios/constants" verbose ="on">
-            <fileset dir="${HELIOS_HOME}/bin/helios/constants">
-                <exclude name="**/package-info.java"/>
-            	<exclude name="**/test/**"/>
-            </fileset>
-        </copy>
-		
-		<war destfile="${WAR_FILE}" webxml="${HELIOS_HOME}/WEB-INF/WEB.xml" >
-	   		<fileset dir="${HELIOS_HOME}/META-INF">
-	      		<include name="**/*.*"/>
-	   		</fileset>
+		<war destfile="${WAR_FILE}"  needxmlfile="false">
 			
-	   		<fileset dir="${HELIOS_HOME}/WebContent">
-	      		<include name="**/*.*"/>
-	   		</fileset>
-			
+	   		<fileset dir="${HELIOS_HOME}/resources/" includes="images/**"/>
+	   		<fileset dir="${HELIOS_HOME}/resources/jsp"/>
+			<fileset dir="${HELIOS_HOME}/resources/local/jsp"/>
+			<fileset dir="${HELIOS_HOME}/resources/local/" includes="css/**"/>
+			<fileset dir="${HELIOS_HOME}/resources/" includes="js/**"/>
 			<fileset dir="${HELIOS_HOME}" includes="doc/**"/>
 			<fileset dir="${HELIOS_HOME}" includes="test/**"/>
 		   	
-		   	<lib dir="${HELIOS_HOME}/WEB-INF/lib"></lib>
-		  	<classes dir="${HELIOS_HOME}/WEB-INF/classes"/>
+		   	<!--<lib dir="${HELIOS_HOME}/lib"></lib>-->
+		  	<!--<classes dir="${HELIOS_HOME}/WEB-INF/classes"/>-->
 		</war>
 		
 		<!-- test and doc dirs are no longer needed in helios_home-->
@@ -245,28 +231,31 @@
 	<target name="undeploy">
 		<delete file="${HELIOS_APP_DIR}.war"/>
 		<delete dir="${HELIOS_APP_DIR}"/>
+		
+	  	<sleep seconds="5"/>
 	</target>
 
 	<target name="install">
+
+		<chmod file="${HELIOS_HOME}/scripts/deployStructure.pl" perm="775" />
+
 		<!-- extract tomee -->
-		<!--<unzip src="${HELIOS_HOME}/platform/apache-tomee-1.6.0-plus.zip" dest="${TOMEE_HOME}/.." />-->
-		
-		<chmod file="${HELIOS_HOME}/scripts/deployPlatform.pl" perm="775" />
-		<exec executable="${HELIOS_HOME}/scripts/deployPlatform.pl" failonerror="true" >
-			<arg value="${HELIOS_HOME}/platform/apache-tomee-1.6.0-plus.zip"/>
+		<exec executable="${HELIOS_HOME}/scripts/deployStructure.pl" failonerror="true" >
+			<arg value="${HELIOS_HOME}/platform/tomee/apache-tomee-1.6.0-plus.zip"/>
 			<arg value="${TOMEE_HOME}"/>
 		</exec>
 		
 		<!-- load sql driver for auth-->
-		<copy file="${HELIOS_LIB}/jtds-1.2.5.jar" todir="${TOMEE_LIB}" verbose="on" overwrite="true"/>
+		<copy file="${HELIOS_HOME}/lib/jtds-1.2.5.jar" todir="${TOMEE_LIB}" verbose="on" overwrite="true"/>
 
 		<!-- tomcat config -->
-		<copy file="${HELIOS_HOME}/platform/server.xml" todir="${TOMEE_HOME}/conf/" verbose="on" overwrite="true"/>
-		<copy file="${HELIOS_HOME}/platform/tomcat-users.xml" todir="${TOMEE_HOME}/conf/" verbose="on" overwrite="true"/>
-		<copy file="${HELIOS_HOME}/scripts/setenv.sh" todir="${TOMEE_HOME}/bin/" verbose="on" overwrite="true"/>
+		<copy file="${HELIOS_HOME}/platform/tomee/server.xml" todir="${TOMEE_HOME}/conf/" verbose="on" overwrite="true"/>
+		<copy file="${HELIOS_HOME}/platform/tomee/tomcat-users.xml" todir="${TOMEE_HOME}/conf/" verbose="on" overwrite="true"/>
+		<copy file="${HELIOS_HOME}/platform/tomee/setenv.sh" todir="${TOMEE_HOME}/bin/" verbose="on" overwrite="true"/>
 		
 		<!-- remove docs webapp -->
 		<delete dir ="${HELIOS_APP_DIR}/../docs"/>
+		<delete dir ="${HELIOS_APP_DIR}/../examples"/>
 		
 		<!-- start tomcat -->
 		<chmod file="${TOMEE_HOME}/bin/startup.sh" perm="775" />
@@ -274,9 +263,11 @@
 		<chmod file="${TOMEE_HOME}/bin/catalina.sh" perm="775" />
 		<exec executable="${TOMEE_HOME}/bin/startup.sh" />
 		
+		<!-- start httpd -->
+		
 	</target>
 	
-	<target name ="nuke">
+	<target name ="nuke" depends="clean">
 		<delete dir="${HELIOS_HOME}/src"/>
 	</target>
 	<target name="uninstall" depends="undeploy">
@@ -288,4 +279,8 @@
 	</target>
 	
 	<target name="reinstall" depends="uninstall,install"/>
+	
+	<target name="properties">
+    	<echoproperties />
+	</target>
 </project>
