@@ -27,6 +27,10 @@ $.tablesorter.addParser({
 	        		{
 	        			hour = hour + 12;
 	        		}
+	        		else if(fields[2] == "AM" && hour == 12)
+	        		{
+	        			hour = "00";
+	        		}
 	        		else
 	        		{
 	        			if(hour < 10)
