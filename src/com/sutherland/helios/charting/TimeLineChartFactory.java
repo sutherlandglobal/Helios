@@ -22,6 +22,8 @@ import org.jfree.data.time.Year;
 import org.jfree.ui.RectangleInsets;
 
 import com.sutherland.helios.data.granularity.time.TimeGrains;
+import com.sutherland.helios.date.formatting.DateFormatter;
+import com.sutherland.helios.report.parameters.ReportParameters;
 
 public class TimeLineChartFactory 
 {
@@ -38,79 +40,211 @@ public class TimeLineChartFactory
 		this.seriesName = seriesName;
 	}
 
-	public JFreeChart buildChart(ArrayList<String[]> data, int timeGranularity)
+	public JFreeChart buildChart(ArrayList<String[]> data, ReportParameters parameters)
 	{
+		//expect dates to be in first column for now
+		
 		TimeSeriesCollection dataset = new TimeSeriesCollection();
 		
 		TimeSeries timeSeries = new TimeSeries(seriesName);
 		
-		String dateFormat = "";
-		RegularTimePeriod dateGrain = null;
+		int timeGranularity = Integer.parseInt(parameters.getTimeGrain());
+		int dateFormat = Integer.parseInt(parameters.getDateFormat());
 		
-		switch(timeGranularity)
-		{
-		case TimeGrains.FISCAL_YEARLY_GRANULARITY:
-		case TimeGrains.YEARLY_GRANULARITY:
-			dateFormat = "yyyy";
-			break;
-		case TimeGrains.MONTHLY_GRANULARITY:
-		case TimeGrains.QUARTERLY_GRANULARITY:
-		case TimeGrains.FISCAL_QUARTERLY_GRANULARITY:
-			dateFormat = "yyyy-MM";
-			break;
-		case TimeGrains.WEEKLY_GRANULARITY:
-			dateFormat = "yyyy-MM-ww";
-			break;
-		case TimeGrains.DAILY_GRANULARITY:
-			dateFormat = "yyyy-MM-dd";
-			break;
-		case TimeGrains.HOURLY_GRANULARITY:
-			dateFormat = "yyyy-MM-dd HH";
-			break;
-		default:
-			dateFormat = "yyyy-MM";
-			break;
-		}
+		String dateDescriptor = "";
+		RegularTimePeriod dateGrain = null;
 
-		String[] dateFields, timeFields;
-		for(String[] row : data)
+		if(dateFormat == DateFormatter.SQL_FORMAT)
 		{
-			if(row[0].contains(" "))
-			{
-				dateFields = row[0].substring(0, row[0].lastIndexOf(' ')).split("\\-");
-			}
-			else
-			{
-				dateFields = row[0].split("\\-");
-			}
-			
 			switch(timeGranularity)
 			{
 			case TimeGrains.FISCAL_YEARLY_GRANULARITY:
 			case TimeGrains.YEARLY_GRANULARITY:
-				dateGrain = new Year(Integer.parseInt(row[0]));
+				dateDescriptor = "yyyy";
+				break;
+			case TimeGrains.WEEKLY_GRANULARITY:
+				dateDescriptor = "yyyy-MM-ww";
+				break;
+			case TimeGrains.DAILY_GRANULARITY:
+				dateDescriptor = "yyyy-MM-dd";
+				break;
+			case TimeGrains.HOURLY_GRANULARITY:
+				dateDescriptor = "yyyy-MM-dd HH:mm:ss";
+				break;
+			case TimeGrains.MONTHLY_GRANULARITY:
+			case TimeGrains.QUARTERLY_GRANULARITY:
+			case TimeGrains.FISCAL_QUARTERLY_GRANULARITY:
+			default:
+				dateDescriptor = "yyyy-MM";
+				break;
+			}
+		}
+		else if(dateFormat == DateFormatter.EXCEL_FORMAT)
+		{
+			switch(timeGranularity)
+			{
+			case TimeGrains.FISCAL_YEARLY_GRANULARITY:
+			case TimeGrains.YEARLY_GRANULARITY:
+				dateDescriptor = "yyyy";
+				break;
+			case TimeGrains.WEEKLY_GRANULARITY:
+				dateDescriptor = "ww/MM/yyyy";
+				break;
+			case TimeGrains.DAILY_GRANULARITY:
+				dateDescriptor = "MM/dd/yyyy";
+				break;
+			case TimeGrains.HOURLY_GRANULARITY:
+				dateDescriptor = "MM/dd/yyyy hh:mm:ss a";
+				break;
+			case TimeGrains.MONTHLY_GRANULARITY:
+			case TimeGrains.QUARTERLY_GRANULARITY:
+			case TimeGrains.FISCAL_QUARTERLY_GRANULARITY:
+			default:
+				dateDescriptor = "MM/yyyy";
+				break;
+			}
+		}
+		
+		String year, quarter, month, week, day, hour, period;
+		String[] dateFields, timeFields;
+		for(String[] row : data)
+		{
+			//assume row[0] has the date
+			//input date can be in any format, convert it to a form regular time period can understand
+			
+			String inputDate = row[0];
+
+			switch(timeGranularity)
+			{
+			case TimeGrains.FISCAL_YEARLY_GRANULARITY:
+			case TimeGrains.YEARLY_GRANULARITY:
+				
+//				if(dateFormat == DateFormatter.EXCEL_FORMAT)
+//				{
+//					year = inputDate.split("\\/")[2];
+//				}
+//				else //if(dateFormat == DateFormatter.SQL_FORMAT)
+//				{
+//					year = inputDate.split("\\-")[0];
+//				}
+				year = inputDate;
+				
+				dateGrain = new Year(Integer.parseInt(year));
 				break;
 			case TimeGrains.QUARTERLY_GRANULARITY:
 			case TimeGrains.FISCAL_QUARTERLY_GRANULARITY:
-				dateGrain = new Quarter(Integer.parseInt(dateFields[1]), Integer.parseInt(dateFields[0]));
-				break;
-			case TimeGrains.MONTHLY_GRANULARITY:
-				dateGrain = new Month(Integer.parseInt(dateFields[1]), Integer.parseInt(dateFields[0]));
+				
+				if(dateFormat == DateFormatter.EXCEL_FORMAT)
+				{
+					dateFields = inputDate.split("\\/");
+					year = dateFields[1];
+					quarter = dateFields[0];
+				}
+				else //if(dateFormat == DateFormatter.SQL_FORMAT)
+				{
+					dateFields = inputDate.split("\\-");
+					year = dateFields[0];
+					quarter = dateFields[1];
+				}
+				
+				dateGrain = new Quarter(Integer.parseInt(quarter), Integer.parseInt(year));
 				break;
 			case TimeGrains.WEEKLY_GRANULARITY:
-				dateGrain = new Week(Integer.parseInt(dateFields[2]), Integer.parseInt(dateFields[0]));
+				
+				if(dateFormat == DateFormatter.EXCEL_FORMAT)
+				{
+					dateFields = inputDate.split("\\/");
+					year = dateFields[2];
+					week = dateFields[1];
+				}
+				else //if(dateFormat == DateFormatter.SQL_FORMAT)
+				{
+					dateFields = inputDate.split("\\-");
+					year = dateFields[0];
+					week = dateFields[2];
+				}
+				
+				dateGrain = new Week(Integer.parseInt(week), Integer.parseInt(year));
 				break;
 			case TimeGrains.DAILY_GRANULARITY:
-				dateGrain = new Day(Integer.parseInt(dateFields[2]), Integer.parseInt(dateFields[1]), Integer.parseInt(dateFields[0]));
+				
+				if(dateFormat == DateFormatter.EXCEL_FORMAT)
+				{
+					dateFields = inputDate.split("\\/");
+					year = dateFields[2];
+					day = dateFields[1];
+					month = dateFields[0];
+				}
+				else //if(dateFormat == DateFormatter.SQL_FORMAT)
+				{
+					dateFields = inputDate.split("\\-");
+					year = dateFields[0];
+					month = dateFields[1];
+					day = dateFields[2];
+				}
+				
+				dateGrain = new Day(Integer.parseInt(day), Integer.parseInt(month), Integer.parseInt(year));
 				break;
 			case TimeGrains.HOURLY_GRANULARITY:
+				//MM/DD/YYYY hh:MM:SS AP
 				
-				timeFields = row[0].substring(row[0].lastIndexOf(' ')).split("\\:");
+				if(dateFormat == DateFormatter.EXCEL_FORMAT)
+				{
+					timeFields = inputDate.split(" ")[1].split("\\:");
+					
+					dateFields = inputDate.substring(0, inputDate.indexOf(" ")).split("\\/");
+					year = dateFields[2];
+					day = dateFields[1];
+					month = dateFields[0];
+					
+					//convert to 24 hour value, simple date format will retrieve the 12-hour value
+					hour = timeFields[0];
+					period = inputDate.substring(inputDate.lastIndexOf(' ') +1 );
+					
+
+					
+	        		if(period.equals("PM") && !hour.equals("12"))
+	        		{
+	        			hour = "" + (Integer.parseInt(hour) + 12);
+	        		}
+	        		else if(hour.equals("AM") && hour.equals("12"))
+	        		{
+	        			hour = "0";
+	        		}
+	        		
+				}
+				else //if(dateFormat == DateFormatter.SQL_FORMAT)
+				{
+					timeFields = inputDate.substring(inputDate.lastIndexOf(' ') +1 ).split("\\:");
+					
+					dateFields = inputDate.substring(0, inputDate.indexOf(" ")).split("\\-");
+					year = dateFields[0];
+					month = dateFields[1];
+					day = dateFields[2];
+					hour = timeFields[0];
+					
+					
+				}
 				
-				dateGrain = new Hour(Integer.parseInt(timeFields[0]), Integer.parseInt(dateFields[2]), Integer.parseInt(dateFields[1]), Integer.parseInt(dateFields[0]));
+				dateGrain = new Hour(Integer.parseInt(hour), Integer.parseInt(day), Integer.parseInt(month), Integer.parseInt(year));
 				break;
+			case TimeGrains.MONTHLY_GRANULARITY:
 			default:
-				dateGrain = new Month(Integer.parseInt(dateFields[1]), Integer.parseInt(dateFields[0]));
+				
+				if(dateFormat == DateFormatter.EXCEL_FORMAT)
+				{
+					dateFields = inputDate.split("\\/");
+					year = dateFields[1];
+					month = dateFields[0];
+				}
+				else //if(dateFormat == DateFormatter.SQL_FORMAT)
+				{
+					dateFields = inputDate.split("\\-");
+					year = dateFields[0];
+					month = dateFields[1];
+				}
+				
+				dateGrain = new Month(Integer.parseInt(month), Integer.parseInt(year));
 				break;
 			}
 
@@ -145,7 +279,7 @@ public class TimeLineChartFactory
 		}
 
 		DateAxis axis = (DateAxis) plot.getDomainAxis();
-		axis.setDateFormatOverride(new SimpleDateFormat(dateFormat));
+		axis.setDateFormatOverride(new SimpleDateFormat(dateDescriptor));
 
 		return chart;
 	}
