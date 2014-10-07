@@ -19,6 +19,7 @@
 
 <script type="text/javascript" src="<%=request.getContextPath( )%>/js/jquery-1.10.2.min.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath( )%>/js/jquery.csv-0.71.min.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath( )%>/js/webRequest.js"></script>
 
 <%
 	GregorianCalendar now = new GregorianCalendar();
@@ -193,16 +194,6 @@ String lastYearEndParam = dateIntervals.getTimeInterval(Intervals.LAST_YEAR_INTE
 
 
 <script type="text/javascript">
-
-function httpGet(url)
-{
-    var xmlHttp = null;
-
-    xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", url, false );
-    xmlHttp.send( null );
-    return xmlHttp.responseText;
-}
 
 function loadMetricList()
 {
@@ -516,12 +507,34 @@ $("#metricSelectList").change(function()
 		$("#autoRefreshRow").hide();
 		
 		$("#showHeadersCheckBox").attr('checked', true);
-		$("#showHeadersRow").show();
+		$("#showHeadersRow").hide();
 		
 		var selectedReportType = $("#reportTypesSelectList option:selected").text() || [];
 		
 		loadReportParameters(thisReport,selectedReportType);
 
+		
+		var reportFrontEnd = $("#reportFrontEndsSelectList").val();
+		
+		if(reportFrontEnd == <%=ReportFrontEnds.HTML%>)
+		{
+			$("#autoRefreshRow").show();
+		}
+		else
+		{
+			$("#autoRefreshCheckBox").attr('checked', false);
+			$("#autoRefreshRow").hide();
+		}
+		
+		if(reportFrontEnd == <%=ReportFrontEnds.CSV%> || reportFrontEnd == <%=ReportFrontEnds.EXCEL%>)
+		{
+			$("#showHeadersRow").show();
+		}
+		else
+		{
+			$("#showHeadersCheckBox").attr('checked', false);
+			$("#showHeadersRow").hide();
+		}
 	}
 	else
 	{
@@ -576,7 +589,15 @@ $("#reportFrontEndsSelectList").change(function()
 		$("#autoRefreshRow").hide();
 	}
 	
-	
+	if(reportFrontEnd == <%=ReportFrontEnds.CSV%> || reportFrontEnd == <%=ReportFrontEnds.EXCEL%>)
+	{
+		$("#showHeadersRow").show();
+	}
+	else
+	{
+		$("#showHeadersCheckBox").attr('checked', false);
+		$("#showHeadersRow").hide();
+	}
 });
 
 //loadDateIntervals();
