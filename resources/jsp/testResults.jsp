@@ -36,11 +36,13 @@ HashMap<String,Double> statsHash = new HashMap<String,Double>();
 
 File dir = new File(testDir);
 
+/*
 out.println(dir.getAbsolutePath());
 out.println(request.getContextPath());
 out.println(request.getServerName());
 out.println(request.getRequestURL());
 out.println(getServletContext().getRealPath(request.getServerName() + request.getContextPath()));
+*/
 
 if(dir.exists())
 {
