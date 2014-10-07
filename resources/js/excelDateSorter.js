@@ -31,12 +31,9 @@ $.tablesorter.addParser({
 	        		{
 	        			hour = "00";
 	        		}
-	        		else
+	        		else if(hour < 10)
 	        		{
-	        			if(hour < 10)
-	        			{
-	        				hour = "0" + hour;
-	        			}
+	        			hour = "0" + hour;
 	        		}
 	        		
 	        		normalized = dateFields[2] + dateFields[0] + dateFields[1] + hour + timeFields[1] + timeFields[2];
