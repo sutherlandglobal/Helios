@@ -225,7 +225,7 @@ public class Reporting extends HttpServlet
 					{
 						TimeLineChartFactory chartFactory = new TimeLineChartFactory(reportName, schema.get(0), schema.get(1), reportName);
 
-						chart = chartFactory.buildChart(results, Integer.parseInt(rp.getTimeGrain()));
+						chart = chartFactory.buildChart(results, rp);
 					}
 					else
 					{
@@ -341,14 +341,14 @@ public class Reporting extends HttpServlet
 			{
 				//simple message for the user
 				//get error message from reportprocessor
+				logger.log(Level.ERROR, ExceptionFormatter.asString(t));
+				
 				String errorMessage = reportProcessor.getErrorMessage();
 				
 				if(errorMessage == null || errorMessage.equals(""))
 				{
 					out.println("Error: " + t.getMessage());
 				}
-				
-				logger.log(Level.ERROR, ExceptionFormatter.asString(t));
 			} 
 			catch (IOException e) 
 			{
