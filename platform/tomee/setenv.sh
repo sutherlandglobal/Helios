@@ -85,6 +85,8 @@ if [ -r "$CATALINA_BASE/bin/appenv.sh" ]; then
 . "$CATALINA_BASE/bin/appenv.sh"
 fi
  
+export JAVA_HOME=/opt/tomcat/jdk
+ 
 echo "Using CATALINA_OPTS:"
 for arg in $CATALINA_OPTS
 do
