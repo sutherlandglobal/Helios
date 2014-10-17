@@ -59,7 +59,6 @@ public class Intervals
 	private LinkedHashMap<String, Interval> avaliableTimeIntervals;
 	
 	GregorianCalendar nowDate;
-	private String nowDateString;
 
 	public Intervals()
 	{
@@ -71,85 +70,89 @@ public class Intervals
 		this(DateParser.toSQLDateFormat(nowDate));
 	}
 	
-	public Intervals(String nowDate)
+	public Intervals(String dateString)
 	{
-		this.nowDate = DateParser.convertSQLDateToGregorian(nowDate);
-		nowDateString = DateParser.toSQLDateFormat(this.nowDate);
-				
+		nowDate = DateParser.convertSQLDateToGregorian(dateString);
 		
-		//there appears to be no easy way to copy construct gc's
+		//there appears to be no easy way to copy construct gregcals's
 
 		//current day's interval
-		// current y-m-d 00:00:00 --> now
-		GregorianCalendar todayStart = new GregorianCalendar();
+		// current y-m-d 00:00:00 --> nowdate
+		GregorianCalendar todayStart = (GregorianCalendar) nowDate.clone();
 		todayStart.set(Calendar.HOUR_OF_DAY, 0);
 		todayStart.set(Calendar.MINUTE, 0);
 		todayStart.set(Calendar.SECOND, 0);
 		
 		//yesterday's interval
-		//today minus 1 day, at 00:00:00 --> today minus 1 day at 23:59:59
-		GregorianCalendar yesterdayStart = new GregorianCalendar();
+		//today minus 1 day, at 00:00:00 --> today at 00:00:00
+		GregorianCalendar yesterdayStart =  (GregorianCalendar) nowDate.clone();
 		yesterdayStart.set(Calendar.HOUR_OF_DAY, 0);
 		yesterdayStart.set(Calendar.MINUTE, 0);
 		yesterdayStart.set(Calendar.SECOND, 0);
 		yesterdayStart.add(Calendar.DAY_OF_MONTH, -1);
 		
-		GregorianCalendar yesterdayEnd = new GregorianCalendar();
-		yesterdayEnd.set(Calendar.HOUR_OF_DAY, 23);
-		yesterdayEnd.set(Calendar.MINUTE, 59);
-		yesterdayEnd.set(Calendar.SECOND, 59);
-		yesterdayEnd.add(Calendar.DAY_OF_MONTH, -1);
+		GregorianCalendar yesterdayEnd = (GregorianCalendar) yesterdayStart.clone();
+		yesterdayEnd.set(Calendar.HOUR_OF_DAY, 0);
+		yesterdayEnd.set(Calendar.MINUTE, 0);
+		yesterdayEnd.set(Calendar.SECOND, 0);
+		yesterdayEnd.add(Calendar.DAY_OF_MONTH, 1);
 		
 		//weeks decreed to run mon-sun
 		//this week's interval
-		GregorianCalendar thisWeekStart = new GregorianCalendar();
+		GregorianCalendar thisWeekStart = (GregorianCalendar) nowDate.clone();
 		thisWeekStart.set(Calendar.HOUR_OF_DAY, 0);
 		thisWeekStart.set(Calendar.MINUTE, 0);
 		thisWeekStart.set(Calendar.SECOND, 0);
-		thisWeekStart.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		while(thisWeekStart.get(Calendar.DAY_OF_WEEK)  != Calendar.MONDAY)
+		{
+			thisWeekStart.add(Calendar.DAY_OF_YEAR, -1);			
+		}
 		
 		//last week's interval
-		GregorianCalendar lastWeekStart = new GregorianCalendar();
+		GregorianCalendar lastWeekStart =(GregorianCalendar) nowDate.clone();
 		lastWeekStart.set(Calendar.HOUR_OF_DAY, 0);
 		lastWeekStart.set(Calendar.MINUTE, 0);
 		lastWeekStart.set(Calendar.SECOND, 0);
 		lastWeekStart.add(Calendar.WEEK_OF_MONTH, -1);
-		lastWeekStart.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		while(lastWeekStart.get(Calendar.DAY_OF_WEEK)  != Calendar.MONDAY)
+		{
+			lastWeekStart.add(Calendar.DAY_OF_YEAR, -1);			
+		}
 
-		GregorianCalendar lastWeekEnd = new GregorianCalendar();
-		lastWeekEnd.set(Calendar.HOUR_OF_DAY, 23);
-		lastWeekEnd.set(Calendar.MINUTE, 59);
-		lastWeekEnd.set(Calendar.SECOND, 59);
+		GregorianCalendar lastWeekEnd = (GregorianCalendar) lastWeekStart.clone();
+		lastWeekEnd.set(Calendar.HOUR_OF_DAY, 0);
+		lastWeekEnd.set(Calendar.MINUTE, 0);
+		lastWeekEnd.set(Calendar.SECOND, 0);
 		lastWeekEnd.add(Calendar.WEEK_OF_MONTH, -1);
 		lastWeekEnd.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 		lastWeekEnd.add(Calendar.DAY_OF_WEEK, 6);
 		
 		//current month's interval
-		GregorianCalendar thisMonthStart = new GregorianCalendar();
+		GregorianCalendar thisMonthStart = (GregorianCalendar) nowDate.clone();
 		thisMonthStart.set(Calendar.DAY_OF_MONTH, 1);
 		thisMonthStart.set(Calendar.HOUR_OF_DAY, 0);
 		thisMonthStart.set(Calendar.MINUTE, 0);
 		thisMonthStart.set(Calendar.SECOND, 0);
 		
 		//last month's interval
-		GregorianCalendar lastMonthStart = new GregorianCalendar();
+		GregorianCalendar lastMonthStart = (GregorianCalendar) thisMonthStart.clone();
 		lastMonthStart.add(Calendar.MONTH, -1);
 		lastMonthStart.set(Calendar.DAY_OF_MONTH, 1);
 		lastMonthStart.set(Calendar.HOUR_OF_DAY, 0);
 		lastMonthStart.set(Calendar.MINUTE, 0);
 		lastMonthStart.set(Calendar.SECOND, 0);
 		
-		GregorianCalendar lastMonthEnd = new GregorianCalendar();
+		GregorianCalendar lastMonthEnd = (GregorianCalendar) thisMonthStart.clone();
 		lastMonthEnd.set(Calendar.DAY_OF_MONTH, 1);
 		lastMonthEnd.add(Calendar.DAY_OF_MONTH, -1);
-		lastMonthEnd.set(Calendar.HOUR_OF_DAY, 23);
-		lastMonthEnd.set(Calendar.MINUTE, 59);
-		lastMonthEnd.set(Calendar.SECOND, 59);
+		lastMonthEnd.set(Calendar.HOUR_OF_DAY, 0);
+		lastMonthEnd.set(Calendar.MINUTE, 0);
+		lastMonthEnd.set(Calendar.SECOND, 0);
 		
 		
 		//current quarter's interval
-		GregorianCalendar thisQuarterStart = new GregorianCalendar();
-		GregorianCalendar lastQuarterStart = new GregorianCalendar();
+		GregorianCalendar thisQuarterStart = (GregorianCalendar) nowDate.clone();
+		GregorianCalendar lastQuarterStart = (GregorianCalendar) nowDate.clone();
 
 		if(this.nowDate.get(Calendar.MONTH) >= 0 && (this.nowDate.get(Calendar.MONTH) <= 2 ))
 		{
@@ -184,22 +187,25 @@ public class Intervals
 		lastQuarterStart.set(Calendar.MINUTE, 0);
 		lastQuarterStart.set(Calendar.SECOND, 0);
 		
-		GregorianCalendar lastQuarterEnd = thisQuarterStart;
+		GregorianCalendar lastQuarterEnd = new GregorianCalendar();
+		lastQuarterEnd.set(Calendar.MONTH, thisQuarterStart.get(Calendar.MONTH));
+		lastQuarterEnd.set(Calendar.YEAR, thisQuarterStart.get(Calendar.YEAR));
+		
+		
 		lastQuarterEnd.set(Calendar.DAY_OF_MONTH, 1);
-		lastQuarterEnd.add(Calendar.DAY_OF_MONTH, -1);
-		lastQuarterEnd.set(Calendar.HOUR_OF_DAY, 23);
-		lastQuarterEnd.set(Calendar.MINUTE, 59);
-		lastQuarterEnd.set(Calendar.SECOND, 59);
+		lastQuarterEnd.set(Calendar.HOUR_OF_DAY, 0);
+		lastQuarterEnd.set(Calendar.MINUTE, 0);
+		lastQuarterEnd.set(Calendar.SECOND, 0);
 		
 		
-		GregorianCalendar thisYearStart = new GregorianCalendar();
+		GregorianCalendar thisYearStart = (GregorianCalendar) nowDate.clone();
 		thisYearStart.set(Calendar.MONTH, 0);
 		thisYearStart.set(Calendar.DAY_OF_MONTH, 1);
 		thisYearStart.set(Calendar.HOUR_OF_DAY, 0);
 		thisYearStart.set(Calendar.MINUTE, 0);
 		thisYearStart.set(Calendar.SECOND, 0);
 		
-		GregorianCalendar lastYearStart = new GregorianCalendar();
+		GregorianCalendar lastYearStart = (GregorianCalendar) nowDate.clone();
 		lastYearStart.add(Calendar.YEAR, -1);
 		lastYearStart.set(Calendar.MONTH, 0);
 		lastYearStart.set(Calendar.DAY_OF_MONTH, 1);
@@ -207,18 +213,16 @@ public class Intervals
 		lastYearStart.set(Calendar.MINUTE, 0);
 		lastYearStart.set(Calendar.SECOND, 0);
 		
-		GregorianCalendar lastYearEnd = new GregorianCalendar();
-		lastYearEnd.add(Calendar.YEAR, -1);
-		lastYearEnd.set(Calendar.MONTH, 11);
-		lastYearEnd.set(Calendar.DAY_OF_MONTH, 31);
-		lastYearEnd.set(Calendar.HOUR_OF_DAY, 23);
-		lastYearEnd.set(Calendar.MINUTE, 59);
-		lastYearEnd.set(Calendar.SECOND, 59);
+		GregorianCalendar lastYearEnd =  (GregorianCalendar) nowDate.clone();
+		lastYearEnd.set(Calendar.DAY_OF_YEAR, 1);
+		lastYearEnd.set(Calendar.HOUR_OF_DAY, 0);
+		lastYearEnd.set(Calendar.MINUTE, 0);
+		lastYearEnd.set(Calendar.SECOND, 0);
 		
 		//XXXX-07-01 -> (XXXX+1)-06-30
 		
 		//get the current year from the now date
-		GregorianCalendar thisFiscalYearStart = new GregorianCalendar();
+		GregorianCalendar thisFiscalYearStart = (GregorianCalendar) nowDate.clone();
 		thisFiscalYearStart.set(Calendar.DAY_OF_MONTH, FISCAL_YEAR_START_DAY);
 		thisFiscalYearStart.set(Calendar.MONTH, FISCAL_YEAR_START_MON);
 		thisFiscalYearStart.set(Calendar.HOUR_OF_DAY, 0);
@@ -231,7 +235,7 @@ public class Intervals
 			thisFiscalYearStart.add(Calendar.YEAR, -1);
 		}
 
-		GregorianCalendar lastFiscalYearStart = new GregorianCalendar();
+		GregorianCalendar lastFiscalYearStart = (GregorianCalendar) thisFiscalYearStart.clone();
 		lastFiscalYearStart.set(Calendar.DAY_OF_MONTH, FISCAL_YEAR_START_DAY);
 		lastFiscalYearStart.set(Calendar.MONTH, FISCAL_YEAR_START_MON);
 		lastFiscalYearStart.set(Calendar.HOUR_OF_DAY, 0);
@@ -240,19 +244,18 @@ public class Intervals
 		lastFiscalYearStart.set(Calendar.YEAR, thisFiscalYearStart.get(Calendar.YEAR));
 		lastFiscalYearStart.add(Calendar.YEAR, -1);
 
-		GregorianCalendar lastFiscalYearEnd = new GregorianCalendar();
+		GregorianCalendar lastFiscalYearEnd = (GregorianCalendar) thisFiscalYearStart.clone();
 		lastFiscalYearEnd.set(Calendar.DAY_OF_MONTH, thisFiscalYearStart.get(Calendar.DAY_OF_MONTH));
 		lastFiscalYearEnd.set(Calendar.MONTH, thisFiscalYearStart.get(Calendar.MONTH));
 		lastFiscalYearEnd.set(Calendar.YEAR, thisFiscalYearStart.get(Calendar.YEAR));
 		lastFiscalYearEnd.set(Calendar.HOUR_OF_DAY, 0);
 		lastFiscalYearEnd.set(Calendar.MINUTE, 0);
 		lastFiscalYearEnd.set(Calendar.SECOND, 0);
-		lastFiscalYearEnd.add(Calendar.SECOND, -1);
 
 		//generate the fiscal quarter intervals, sort out this/last with gregcal.before/after
 		//next fq is +3 months, -1 second
 		//this fiscal quarter is within this fiscal year
-		GregorianCalendar nextFiscalQEnd = new GregorianCalendar();
+		GregorianCalendar nextFiscalQEnd = (GregorianCalendar) thisFiscalYearStart.clone();
 		nextFiscalQEnd.set(Calendar.YEAR, thisFiscalYearStart.get(Calendar.YEAR));
 		nextFiscalQEnd.set(Calendar.MONTH, thisFiscalYearStart.get(Calendar.MONTH));
 		nextFiscalQEnd.set(Calendar.DAY_OF_MONTH, thisFiscalYearStart.get(Calendar.DAY_OF_MONTH));
@@ -266,30 +269,27 @@ public class Intervals
 			nextFiscalQEnd.add(Calendar.MONTH, 3);
 		} while (this.nowDate.after(nextFiscalQEnd));
 
-
-		GregorianCalendar thisFiscalQStart = new GregorianCalendar();
+		GregorianCalendar thisFiscalQStart = (GregorianCalendar) nextFiscalQEnd.clone();
 		thisFiscalQStart.set(Calendar.DAY_OF_MONTH, 1);
-		thisFiscalQStart.set(Calendar.MONTH, nextFiscalQEnd.get(Calendar.MONTH)-3);
 		thisFiscalQStart.set(Calendar.HOUR_OF_DAY, 0);
 		thisFiscalQStart.set(Calendar.MINUTE, 0);
 		thisFiscalQStart.set(Calendar.SECOND, 0);
+		thisFiscalQStart.add(Calendar.MONTH, -3);
 
-		GregorianCalendar lastFiscalQStart = new GregorianCalendar();
-		lastFiscalQStart.set(Calendar.DAY_OF_MONTH, nextFiscalQEnd.get(Calendar.DAY_OF_MONTH));
-		lastFiscalQStart.set(Calendar.MONTH, nextFiscalQEnd.get(Calendar.MONTH));
+		GregorianCalendar lastFiscalQStart = (GregorianCalendar) thisFiscalQStart.clone();
+		lastFiscalQStart.set(Calendar.DAY_OF_MONTH, 1);
 		lastFiscalQStart.set(Calendar.HOUR_OF_DAY, 0);
 		lastFiscalQStart.set(Calendar.MINUTE, 0);
 		lastFiscalQStart.set(Calendar.SECOND, 0);
+		lastFiscalQStart.add(Calendar.MONTH, -3);
 
-		GregorianCalendar lastFiscalQEnd = new GregorianCalendar();
-		lastFiscalQEnd.set(Calendar.DAY_OF_MONTH, thisFiscalQStart.get(Calendar.DAY_OF_MONTH));
-		lastFiscalQEnd.set(Calendar.YEAR, thisFiscalQStart.get(Calendar.YEAR));
-		lastFiscalQEnd.set(Calendar.MONTH, thisFiscalQStart.get(Calendar.MONTH));
-		lastFiscalQEnd.set(Calendar.HOUR_OF_DAY, thisFiscalQStart.get(Calendar.HOUR_OF_DAY));
-		lastFiscalQEnd.set(Calendar.MINUTE, thisFiscalQStart.get(Calendar.MINUTE));
-		lastFiscalQEnd.set(Calendar.SECOND, thisFiscalQStart.get(Calendar.SECOND));
-		lastFiscalQEnd.add(Calendar.SECOND, -1);
+		GregorianCalendar lastFiscalQEnd = (GregorianCalendar) thisFiscalQStart.clone();
+		lastFiscalQEnd.set(Calendar.HOUR_OF_DAY, 0);
+		lastFiscalQEnd.set(Calendar.MINUTE, 0);
+		lastFiscalQEnd.set(Calendar.SECOND, 0);
 				
+		String nowDateString = DateParser.toSQLDateFormat(this.nowDate);
+		
 		avaliableTimeIntervals = new LinkedHashMap<String,Interval>();
 		avaliableTimeIntervals.put(TODAY_INTERVAL_NAME, new Interval(TODAY_INTERVAL_NAME, DateParser.toSQLDateFormat(todayStart), nowDateString));
 		avaliableTimeIntervals.put(YESTERDAY_INTERVAL_NAME, new Interval(YESTERDAY_INTERVAL_NAME, DateParser.toSQLDateFormat(yesterdayStart), DateParser.toSQLDateFormat(yesterdayEnd)));
@@ -298,7 +298,7 @@ public class Intervals
 		avaliableTimeIntervals.put(THIS_MONTH_INTERVAL_NAME, new Interval(THIS_MONTH_INTERVAL_NAME, DateParser.toSQLDateFormat(thisMonthStart), nowDateString));
 		avaliableTimeIntervals.put(LAST_MONTH_INTERVAL_NAME, new Interval(LAST_MONTH_INTERVAL_NAME, DateParser.toSQLDateFormat(lastMonthStart), DateParser.toSQLDateFormat(thisMonthStart)));
 		avaliableTimeIntervals.put(THIS_FQ_INTERVAL_NAME, new Interval(THIS_FQ_INTERVAL_NAME, DateParser.toSQLDateFormat(thisFiscalQStart), nowDateString));
-		avaliableTimeIntervals.put(LAST_FQ_INTERVAL_NAME, new Interval(LAST_FQ_INTERVAL_NAME, DateParser.toSQLDateFormat(lastFiscalQEnd), DateParser.toSQLDateFormat(thisFiscalQStart)));
+		avaliableTimeIntervals.put(LAST_FQ_INTERVAL_NAME, new Interval(LAST_FQ_INTERVAL_NAME, DateParser.toSQLDateFormat(lastFiscalQStart), DateParser.toSQLDateFormat(thisFiscalQStart)));
 		
 		avaliableTimeIntervals.put(THIS_QUARTER_INTERVAL_NAME, new Interval(THIS_QUARTER_INTERVAL_NAME, DateParser.toSQLDateFormat(thisQuarterStart), nowDateString));
 		avaliableTimeIntervals.put(LAST_QUARTER_INTERVAL_NAME, new Interval(LAST_QUARTER_INTERVAL_NAME, DateParser.toSQLDateFormat(lastQuarterStart), DateParser.toSQLDateFormat(lastQuarterEnd)));
