@@ -34,9 +34,23 @@
 			
 				<TR>
 					<td width = "400" align="left" valign="top">
-						<a href="/Framework/"><img height="93" width="400" src="<%= request.getContextPath( )%>/images/helios_banner.jpg"/></a>
+					
+					<%
+					
+						String heliosLogoPath = request.getContextPath() + "/images/helios_banner.jpg";
+					
+						if(SiteConfig.STANDALONE)
+						{
+							out.println("<img height=\"93\" width=\"400\" src=\"" +  heliosLogoPath + "\"/>");
+						}
+						else
+						{
+							out.println("<a href=\"/Framework/\"><img height=\"93\" width=\"400\" src=\"" +  heliosLogoPath +"\"/></a>");
+						}
+					%>
 					</td>
 					<td width = "400" align="right" valign="top">
+					
 					<%
 					
                    String host = request.getServerName();
