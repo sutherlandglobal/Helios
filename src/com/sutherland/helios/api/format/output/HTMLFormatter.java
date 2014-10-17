@@ -96,15 +96,18 @@ public class HTMLFormatter extends ResultsFormatter
 		
 		//if we have a date field, normalize the date to sql
 		StringBuilder sorterString = new StringBuilder();
-		for(int i = 0; i< results.get(0).length; i++)
+		
+		if(results != null && results.size() > 0)
 		{
-			//if we have a regex match, note the index
-			if( StringSanitizer.isValidExcelDate(results.get(0)[i]))
+			for(int i = 0; i< results.get(0).length; i++)
 			{
-				sorterString.append( i + ": {sorter: 'excelDateSorter'}," );
+				//if we have a regex match, note the index
+				if( StringSanitizer.isValidExcelDate(results.get(0)[i]))
+				{
+					sorterString.append( i + ": {sorter: 'excelDateSorter'}," );
+				}
 			}
 		}
-		
 
 		//retval.add("<script type=\"text/javascript\" >$(document).ready(function() {  $(\"#data\").tablesorter({      sortList: [[0,0]], widgets: ['zebra'],headers:{ 0: {sorter: 'excelDateSorter'} }    }); }); </script>");
 		//retval.add("<script type=\"text/javascript\" >$(document).ready(function() {  $(\"#data\").tablesorter({      sortList: [[0,0]], widgets: ['zebra'],headers:{ 0: {sorter: 'sqlDateSorter'} }    }); }); </script>");
