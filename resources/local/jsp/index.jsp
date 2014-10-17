@@ -66,7 +66,7 @@ tomcatVersion =  tomcatVersion.substring(  tomcatVersion.indexOf("/") + 1);
 //tomee version
 
 %>
-<link rel="stylesheet" href="css/helios_landing_page.css" type="text/css"  />
+<link rel="stylesheet" href="<%=request.getContextPath( ) %>/css/helios_landing_page.css" type="text/css"  />
 <div class="roundedtable">
 <table width="100%" >
 		<thead>
