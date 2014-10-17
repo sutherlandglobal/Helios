@@ -49,6 +49,7 @@ public class SiteCodeGenerator
       	servletMapping.put("supportedFrontEnds", siteProperties.getProperty("API_CLASS_PREFIX") + ".GetSupportedFrontEnds");
       	servletMapping.put("timeGrains", siteProperties.getProperty("API_CLASS_PREFIX") + ".GetTimeGrains");
       	servletMapping.put("dateFormats", siteProperties.getProperty("API_CLASS_PREFIX") + ".GetDateFormats");
+      	servletMapping.put("dateIntervals", siteProperties.getProperty("API_CLASS_PREFIX") + ".GetDateIntervals");
       	servletMapping.put("userGrains", siteProperties.getProperty("API_CLASS_PREFIX") + ".GetUserGrains");
       	servletMapping.put("reporting", siteProperties.getProperty("API_CLASS_PREFIX") + ".Reporting");
 
@@ -68,6 +69,7 @@ public class SiteCodeGenerator
 		generateSource("site/servlets/getTeamNames.vm",  siteProperties.getProperty("SITE_BUILD_DIR") +"/" + path + "/api/GetTeamNames.java");
 		generateSource("site/servlets/getTimeGrains.vm",  siteProperties.getProperty("SITE_BUILD_DIR") +"/" + path + "/api/GetTimeGrains.java");
 		generateSource("site/servlets/getDateFormats.vm",  siteProperties.getProperty("SITE_BUILD_DIR") +"/" + path + "/api/GetDateFormats.java");
+		generateSource("site/servlets/getDateIntervals.vm",  siteProperties.getProperty("SITE_BUILD_DIR") +"/" + path + "/api/GetDateIntervals.java");
 		generateSource("site/servlets/getUserGrains.vm",  siteProperties.getProperty("SITE_BUILD_DIR") +"/" + path + "/api/GetUserGrains.java");
 		generateSource("site/servlets/reporting.vm",  siteProperties.getProperty("SITE_BUILD_DIR") +"/" + path + "/api/Reporting.java");
 	}
