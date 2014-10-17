@@ -8,6 +8,7 @@
 	<property name="TOMEE_HOME" value="/opt/tomcat/apache-tomee-plus"/>
 	<property name="HTTPD_HOME" value="/opt/tomcat/httpd"/>
 	<property name="ANT_HOME" value="/opt/tomcat/apache-ant"/>
+	<property name="JAVA_HOME" value="/opt/tomcat/jdk"/>
 	<property name="TOMEE_LIB" value="${TOMEE_HOME}/lib"/>
 	<property name="HELIOS_HOME" value="/opt/tomcat/Helios"/>
 	<property name="HELIOS_LIB" value="${HELIOS_HOME}/lib"/>
@@ -89,7 +90,8 @@
     </target>
     <target name="build" depends="init">
         <echo message="${ant.project.name}: ${ant.file}"/>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="${HELIOS_HOME}/bin" source="${source}" target="${target}" verbose="on" excludes ="**/package-info.java">
+    	<echo message="Ant running on Java version ${java.runtime.version}"/>
+        <javac includeantruntime="false" debug="true" debuglevel="${debuglevel}" destdir="${HELIOS_HOME}/bin" source="${source}" target="${target}" verbose="on" excludes ="**/package-info.java">
             <src path="${HELIOS_HOME}/src"/>
             <classpath refid="Helios.junit.classpath"/>
         </javac>
@@ -139,7 +141,7 @@
 			<test name="com.sutherland.helios.data.test.AggregationTest" todir="${HELIOS_HOME}/test"/>	
 			<test name="com.sutherland.helios.date.parsing.test.DateParserTest" todir="${HELIOS_HOME}/test"/>	
 			<test name="com.sutherland.helios.date.formatting.test.DateFormatterTest" todir="${HELIOS_HOME}/test"/>	
-			<!--<test name="com.sutherland.helios.date.interval.test.IntervalsTest" todir="${HELIOS_HOME}/test"/>-->
+			<test name="com.sutherland.helios.date.interval.test.IntervalsTest" todir="${HELIOS_HOME}/test"/>
 			<test name="com.sutherland.helios.data.granularity.user.test.UserGrainsTest" todir="${HELIOS_HOME}/test"/>
 			<test name="com.sutherland.helios.report.parameters.sanitize.test.StringSanitizerTest" todir="${HELIOS_HOME}/test"/>		
 			<test name="com.sutherland.helios.report.parameters.test.ParameterInfoTest" todir="${HELIOS_HOME}/test"/>
@@ -214,6 +216,7 @@
 			
 	   		<fileset dir="${HELIOS_HOME}/resources/" includes="images/**"/>
 	   		<fileset dir="${HELIOS_HOME}/resources/jsp"/>
+	   		<fileset dir="${HELIOS_HOME}/resources/css"/>
 			<fileset dir="${HELIOS_HOME}/resources/local/jsp"/>
 			<fileset dir="${HELIOS_HOME}/resources/local/" includes="css/**"/>
 			<fileset dir="${HELIOS_HOME}/resources/" includes="js/**"/>
@@ -250,6 +253,12 @@
 		<exec executable="${HELIOS_HOME}/scripts/deployStructure.pl" failonerror="true" >
 			<arg value="${HELIOS_HOME}/platform/ant/apache-ant-1.9.4-bin.zip"/>
 			<arg value="${ANT_HOME}"/>
+		</exec>
+		
+		<!-- extract java -->
+		<exec executable="${HELIOS_HOME}/scripts/deployStructure.pl" failonerror="true" >
+			<arg value="${HELIOS_HOME}/platform/jdk/jdk-7u67-linux-x64.tar.gz"/>
+			<arg value="${JAVA_HOME}"/>
 		</exec>
 		
 		<!-- extract httpd -->
@@ -290,6 +299,8 @@
 		<sleep seconds="20" />
 		<delete dir="${TOMEE_HOME}"/>
 		<delete dir="${ANT_HOME}"/>
+		<delete dir="${HTTPD_HOME}"/>
+		<delete dir="${JAVA_HOME}"/>
 	</target>
 	
 	<target name="reinstall" depends="uninstall,install"/>
