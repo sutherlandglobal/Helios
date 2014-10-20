@@ -121,7 +121,7 @@
   		</jar>
   </target>
 	
-  	<target name="test" depends="build-jar">
+  	<target name="test" depends="build">
   		
   		<mkdir dir="${HELIOS_HOME}/logs"/>
   		<mkdir dir="${HELIOS_HOME}/test"/>
