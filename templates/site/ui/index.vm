@@ -19,14 +19,13 @@
 
 <script type="text/javascript" src="<%=request.getContextPath( )%>/js/jquery-1.10.2.min.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath( )%>/js/jquery.csv-0.71.min.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath( )%>/js/jquery-ui.min.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath( )%>/js/webRequest.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath( )%>/js/dateRequest.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath( )%>/js/jquery.datetimepicker.js"></script>
 
 <%
-	GregorianCalendar now = new GregorianCalendar();
-Intervals dateIntervals = new Intervals(now);
-
-
-String nowParam = DateParser.toSQLDateFormat(now);
+Intervals dateIntervals = new Intervals(DateParser.NOW_DATE_KEYWORD);
 
 String todayStartParam = dateIntervals.getTimeInterval(Intervals.TODAY_INTERVAL_NAME).getStartDate();
 String yesterdayStartParam = dateIntervals.getTimeInterval(Intervals.YESTERDAY_INTERVAL_NAME).getStartDate();
@@ -49,19 +48,20 @@ String lastFiscalYearEndParam = dateIntervals.getTimeInterval(Intervals.LAST_FY_
 String thisYearStartParam = dateIntervals.getTimeInterval(Intervals.THIS_YEAR_INTERVAL_NAME).getStartDate();
 String lastYearStartParam = dateIntervals.getTimeInterval(Intervals.LAST_YEAR_INTERVAL_NAME).getStartDate();
 String lastYearEndParam = dateIntervals.getTimeInterval(Intervals.LAST_YEAR_INTERVAL_NAME).getEndDate();
-
-//if agent time is selected, grab the roster type from the dropdown, and run a roster report through the api via xmlhttp
-//if team time is selected, run the teams report through the api
 %>
 
 <table width="100%">
 <tr>
 <td align ="left" width="50%"><img src="<%= request.getContextPath() %>/images/site_banner.jpg" width="400" height="72"/></td>
-<!-- <td align="right" width="20%"><b><%= SiteConfig.HELIOS_READABLE_SITE_NAME %></b></td>-->
+<td align="right" valign="center" width="30%"><b><font size="24"><%= SiteConfig.HELIOS_READABLE_SITE_NAME %></font></b></td>
 </tr>
 </table>
 
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/helios_site.css" type="text/css"  />
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/jquery.datetimepicker.css" type="text/css"  />
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/jquery-ui.min.css" type="text/css"  />
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/jquery-ui.structure.min.css" type="text/css"  />
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/jquery-ui.theme.min.css" type="text/css"  />
 
 <!-- 
 <table id="loadingSpace" width="100%">
@@ -129,25 +129,20 @@ String lastYearEndParam = dateIntervals.getTimeInterval(Intervals.LAST_YEAR_INTE
 						</tr>
 
 						<tr id="dateIntervalsRow">
-							<td><label id="dateIntervalLabel" for="dateIntervalsSelectList">Choose a date interval:</label><br><select
-								id="dateIntervalsSelectList">
-									<option value="Today">Today</option>
-									<option value="Yesterday">Yesterday</option>
-									<option value="This Week">This Week</option>
-									<option value="Last Week">Last Week</option>
-									<option value="This Month">This Month</option>
-									<option value="Last Month">Last Month</option>
-									<option value="This Quarter">This Quarter</option>
-									<option value="Last Quarter">Last Quarter</option>
-									<option value="This Fiscal Quarter">This Fiscal
-										Quarter</option>
-									<option value="Last Fiscal Quarter">Last Fiscal
-										Quarter</option>
-									<option value="This Fiscal Year">This Fiscal Year</option>
-									<option value="Last Fiscal Year">Last Fiscal Year</option>
-									<option value="This Year">This Year</option>
-									<option value="Last Year">Last Year</option>
-							</select></td>
+						<td>
+							<table>
+								<tr><td>
+									<label id="dateIntervalLabel" for="dateIntervalsSelectList">Choose a date interval:</label><br>
+									<select id="dateIntervalsSelectList"></select>
+								</td></tr>
+								<tr><td>
+									<label id="startDateLabel" for="startDateField">Start Date</label><br>
+									<input id="startDateField" type="text" size="19"><br>
+									<label id="endDateLabel" for="endDateField">End Date</label><br>
+									<input id="endDateField" type="text" size="19" >
+								</td></tr>
+							</table>
+						</td>
 						</tr>
 
 						<tr id="dateFormatsRow">
@@ -171,11 +166,11 @@ String lastYearEndParam = dateIntervals.getTimeInterval(Intervals.LAST_YEAR_INTE
 						</tr>
 						
 						<tr id="autoRefreshRow">
-							<td><label id="autoRefreshLebel" for="autoRefreshCheckBox">Auto Refresh:</label>&nbsp;<input type="checkbox" id="autoRefreshCheckBox" value="autoRefresh"></td>
+							<td><label id="autoRefreshLabel" for="autoRefreshCheckBox">Auto Refresh:</label>&nbsp;<input type="checkbox" id="autoRefreshCheckBox" value="autoRefresh"></td>
 						</tr>
 
 						<tr id="showHeadersRow">
-							<td><label id="showHeadersLebel" for="showHeadersCheckBox">Show Headers:</label>&nbsp;<input type="checkbox" id="showHeadersCheckBox" value="showHeaders"></td>
+							<td><label id="showHeadersLabel" for="showHeadersCheckBox">Show Headers:</label>&nbsp;<input type="checkbox" id="showHeadersCheckBox" value="showHeaders"></td>
 						</tr>
 
 						<tr id="reportLaunchButtonRow">
@@ -192,8 +187,9 @@ String lastYearEndParam = dateIntervals.getTimeInterval(Intervals.LAST_YEAR_INTE
 </table>
 </div>
 
-
 <script type="text/javascript">
+
+
 
 function loadMetricList()
 {
@@ -216,7 +212,24 @@ function loadMetricList()
 
 function loadDateIntervals()
 {
+	$('#dateIntervalsSelectList').html('');
 	
+	var dateIntervals = httpGet("<%=request.getContextPath()%>/dateIntervals").split("\n");
+	
+	for(var i = 0; i<dateIntervals.length; i++)
+	{
+		var dateInterval = $.csv.toArray(dateIntervals[i]);
+		
+		if(dateInterval.length == 3)
+		{
+			$("#dateIntervalsSelectList").append("<option onclick=\"updateDateIntervals()\" value=\"" + dateInterval[0] +"\">" + dateInterval[0] + "</option>");
+		}
+	}
+}
+
+function updateDateIntervals()
+{
+	$('#dateIntervalsSelectList').trigger("change");
 }
 
 function loadTimeGrains()
@@ -234,23 +247,8 @@ function loadTimeGrains()
 			$("#timeGrainsSelectList").append("<option value=\"" + timeGrain[1] +"\">" + timeGrain[0] + "</option>");
 		}
 	}
-}
-
-function loadDateFormats()
-{
-	$('#dateFormatsSelectList').html('');
 	
-	var dateFormats = httpGet("<%=request.getContextPath()%>/dateFormats").split("\n");
-	
-	for(var i = 0; i<dateFormats.length; i++)
-	{
-		var dateFormat = $.csv.toArray(dateFormats[i]);
-		
-		if(dateFormat.length == 2)
-		{
-			$("#dateFormatsSelectList").append("<option value=\"" + dateFormat[1] +"\">" + dateFormat[0] + "</option>");
-		}
-	}
+	//$('#timeGrainsSelectList').val($("#timeGrainsSelectList option:first").val());
 }
 
 function loadDateFormats()
@@ -429,55 +427,27 @@ function loadNumDrivers()
 	//select default item
 }
 
-$( document ).ready(function() 
-{
-	$("#loadingSpace").show();
-	$("#mainTable").hide();
-	
-	//hide until the lists are populated
-	$("#metricSelectList").hide();
-	$("#agentSelectList").hide();
-	$("#teamSelectList").hide();
-	
-	$("#autoRefreshCheckBox").attr('checked', false);
-	$("#autoRefreshRow").hide();
-	
-	$("#showHeadersCheckBox").attr('checked', true);
-	$("#showHeadersRow").hide();
-	
-	$("#reportTypesRow").hide();
-	 
-	$("#dateIntervalsRow").hide();
-	$("#numDriversRow").hide();	
-	$("#userGrainsRow").hide();	
-	$("#timeGrainsRow").hide();
-	$("#dateFormatsRow").hide();
-	$("#reportFrontEndsRow").hide();
-	$("#reportLaunchButtonRow").hide();
-	
-	$("#metricName").html('');
-	$("#metricDesc").html('');
-	
-	//loading image for metric list
-	//loading image for team list
-	//loading image for agent list
-	
-	loadMetricList();
-	loadNumDrivers();
 
-	loadTeamNames();
-	loadAgentNames();
-	
-	loadTimeGrains();
-	loadUserGrains();
-	loadDateFormats();
 
-	$("#metricSelectList").show();
-	$("#teamSelectList").show();
-	$("#agentSelectList").show();
-	$("#loadingSpace").hide();
-	$("#mainTable").show();
+jQuery('#startDateField').datetimepicker({
+	format:'Y-m-d H:i:00',
+	mask:true
 });
+jQuery('#endDateField').datetimepicker({
+	format:'Y-m-d H:i:00',
+	mask:true
+});
+
+//$("#metricSelectList").selectable();
+//$("#reportTypesSelectList").selectmenu();
+//$("#dateIntervalsSelectList").selectmenu();
+//$("#reportFrontEndsSelectList").selectmenu();
+//$("#userGrainsSelectList").selectmenu();
+//$("#numDriversSelectList").selectmenu();
+//$("#timeGrainsSelectList").selectmenu();
+//$("#dateFormatsSelectList").selectmenu();
+//
+//$("#reportLaunchButton").button();
 
 $("#metricSelectList").change(function() 
 {
@@ -498,9 +468,8 @@ $("#metricSelectList").change(function()
 		//get this report's support types and load them
 		loadReportTypes(thisReport);
 		
-		
-		
 		$("#reportTypesRow").show();
+		
 		$("#dateIntervalsRow").show();
 		
 		$("#autoRefreshCheckBox").attr('checked', false);
@@ -572,6 +541,88 @@ $("#reportTypesSelectList").change(function()
 	}
 });
 
+$("#dateIntervalsSelectList").change(function() 
+{
+	var interval = $("#dateIntervalsSelectList").val() || [];
+			
+	if(interval.length > 0)
+	{
+		//look up the interval values and populate the start and end date boxes
+		var selectedInterval = $("#dateIntervalsSelectList option:selected").text() || [];
+
+		if(selectedInterval == "<%=Intervals.TODAY_INTERVAL_NAME%>")
+		{
+			$("#startDateField").val("<%=todayStartParam%>");
+			$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
+		}
+		else if(selectedInterval == "<%=Intervals.YESTERDAY_INTERVAL_NAME%>")
+		{
+			$("#startDateField").val("<%=yesterdayStartParam%>");
+			$("#endDateField").val("<%=yesterdayEndParam%>");
+		}
+		else if(selectedInterval == "<%=Intervals.THIS_WEEK_INTERVAL_NAME%>")
+		{
+			$("#startDateField").val("<%=thisWeekStartParam%>");
+			$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
+		}
+		else if(selectedInterval == "<%=Intervals.LAST_WEEK_INTERVAL_NAME%>")
+		{
+			$("#startDateField").val("<%=lastWeekStartParam%>");
+			$("#endDateField").val("<%=lastWeekEndParam%>");
+		}
+		else if(selectedInterval == "<%=Intervals.THIS_MONTH_INTERVAL_NAME%>")
+		{
+			$("#startDateField").val("<%=thisMonthStartParam%>");
+			$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
+		}
+		else if(selectedInterval == "<%=Intervals.LAST_MONTH_INTERVAL_NAME%>")
+		{
+			$("#startDateField").val("<%=lastMonthStartParam%>");
+			$("#endDateField").val("<%=lastMonthEndParam%>");
+		}
+		else if(selectedInterval == "<%=Intervals.THIS_QUARTER_INTERVAL_NAME%>")
+		{
+			$("#startDateField").val("<%=thisQuarterStartParam%>");
+			$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
+		}
+		else if(selectedInterval == "<%=Intervals.LAST_QUARTER_INTERVAL_NAME%>")
+		{
+			$("#startDateField").val("<%=lastQuarterStartParam%>");
+			$("#endDateField").val("<%=lastQuarterEndParam%>");
+		}
+		else if(selectedInterval == "<%=Intervals.THIS_FQ_INTERVAL_NAME%>")
+		{
+			$("#startDateField").val("<%=thisFiscalQuarterStartParam%>");
+			$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
+		}
+		else if(selectedInterval == "<%=Intervals.LAST_FQ_INTERVAL_NAME%>")
+		{
+			$("#startDateField").val("<%=lastFiscalQuarterStartParam%>");
+			$("#endDateField").val("<%=lastFiscalQuarterEndParam%>");
+		}
+		else if(selectedInterval == "<%=Intervals.THIS_FY_INTERVAL_NAME%>")
+		{
+			$("#startDateField").val("<%=thisFiscalYearStartParam%>");
+			$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
+		}
+		else if(selectedInterval == "<%=Intervals.LAST_FY_INTERVAL_NAME%>")
+		{
+			$("#startDateField").val("<%=lastFiscalYearStartParam%>");
+			$("#endDateField").val("<%=lastFiscalYearEndParam%>");
+		}
+		else if(selectedInterval == "<%=Intervals.THIS_YEAR_INTERVAL_NAME%>")
+		{
+			$("#startDateField").val("<%=thisYearStartParam%>");
+			$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
+		}
+		else if(selectedInterval == "<%=Intervals.LAST_YEAR_INTERVAL_NAME%>")
+		{
+			$("#startDateField").val("<%=lastYearStartParam%>");
+			$("#endDateField").val("<%=lastYearEndParam%>");
+		}
+	}
+});
+
 $("#reportFrontEndsSelectList").change(function() 
 {
 	//expose the autorefresh checkbox for html reports	
@@ -600,8 +651,58 @@ $("#reportFrontEndsSelectList").change(function()
 	}
 });
 
-//loadDateIntervals();
-//loadTimeGrains();
+$( document ).ready(function() 
+		{
+	$("#loadingSpace").show();
+	$("#mainTable").hide();
+
+	//hide until the lists are populated
+	$("#metricSelectList").hide();
+	$("#agentSelectList").hide();
+	$("#teamSelectList").hide();
+
+	$("#autoRefreshCheckBox").attr('checked', false);
+	$("#autoRefreshRow").hide();
+
+	$("#showHeadersCheckBox").attr('checked', true);
+	$("#showHeadersRow").hide();
+
+	$("#reportTypesRow").hide();
+
+	$("#dateIntervalsRow").hide();
+	$("#numDriversRow").hide();	
+	$("#userGrainsRow").hide();	
+	$("#timeGrainsRow").hide();
+	$("#dateFormatsRow").hide();
+	$("#reportFrontEndsRow").hide();
+	$("#reportLaunchButtonRow").hide();
+
+	$("#metricName").html('');
+	$("#metricDesc").html('');
+
+	//loading image for metric list
+	//loading image for team list
+	//loading image for agent list
+
+	loadMetricList();
+	loadNumDrivers();
+
+	loadTeamNames();
+	loadAgentNames();
+
+	loadDateIntervals();
+	loadTimeGrains();
+	loadUserGrains();
+	loadDateFormats();
+
+	$("#metricSelectList").show();
+	$("#teamSelectList").show();
+	$("#agentSelectList").show();
+	$("#loadingSpace").hide();
+	$("#mainTable").show();
+
+	$('#dateIntervalsSelectList').trigger("change");
+});
 
 function launchReport()
 {
@@ -619,234 +720,125 @@ function launchReport()
 			teamNames.push($(this).val());
 		});
 	}
-
 	
-		//compile parameter url, switch on report type 
-		
-		var dateInterval =  $("#dateIntervalsSelectList").val();
-		var timeGrain =  $("#timeGrainsSelectList").val();
-		var userGrain =  $("#userGrainsSelectList").val();
-		var dateFormat = $("#dateFormatsSelectList").val()
-		
-		var reportURL ="<%=request.getContextPath()%>/";
-		
-		var reportType = $("#reportTypesSelectList").val();
-		
-		var selectedReports = $("#metricSelectList").val() || [];
-		
-		var reportFrontEnd = $("#reportFrontEndsSelectList").val();
-		
-		var numDrivers = $("#numDriversSelectList").val();
-		
-		if(selectedReports == null || selectedReports.length == 0)
+	//compile parameter url, switch on report type 
+	var dateInterval =  $("#dateIntervalsSelectList").val();
+	var timeGrain =  $("#timeGrainsSelectList").val();
+	var userGrain =  $("#userGrainsSelectList").val();
+	var dateFormat = $("#dateFormatsSelectList").val()
+	var reportURL ="<%=request.getContextPath()%>/";
+	var reportType = $("#reportTypesSelectList").val();
+	var selectedReports = $("#metricSelectList").val() || [];
+	var reportFrontEnd = $("#reportFrontEndsSelectList").val();
+	var numDrivers = $("#numDriversSelectList").val();
+	var startDate = $("#startDateField").val();
+	var endDate = $("#endDateField").val();
+
+	if(selectedReports == null || selectedReports.length == 0)
+	{
+		alert("Please choose at least one metric.");
+	}
+	else 	if(reportType == null || reportType == "")
+	{
+		alert("Please choose a report type");
+	}
+	else 	if(reportFrontEnd == null || reportFrontEnd == "")
+	{
+		alert("Please choose a report format");
+	}
+	else 	if(dateInterval == null || dateInterval == "")
+	{
+		alert("Please choose a date interval");
+	}
+	else
+	{
+		var runReport = 1;
+
+		//api source 
+		reportURL += "reporting?reportName=" + selectedReports[0] + "&source=UI";
+
+		reportURL += "&format=" + reportFrontEnd;
+		reportURL += "&reportType=" + reportType;
+		reportURL += "&numDrivers=" + numDrivers;
+		reportURL += "&dateFormat=" + dateFormat;
+		reportURL += "&startDate=" + startDate;
+		reportURL += "&endDate=" + endDate;
+
+
+		if(reportFrontEnd == <%=ReportFrontEnds.CSV%>)
 		{
-			alert("Please choose at least one metric.");
+			reportURL += "&enquote=1";
 		}
-		else 	if(reportType == null || reportType == "")
+		else if(reportFrontEnd == <%=ReportFrontEnds.HTML%>)
 		{
-			alert("Please choose a report type");
+			if($('#autoRefreshCheckBox').prop('checked') == true)
+			{
+				reportURL += "&autoRefresh=1";
+			}
 		}
-		else 	if(reportFrontEnd == null || reportFrontEnd == "")
+
+		if($('#showHeadersCheckBox').prop('checked') == true)
 		{
-			alert("Please choose a report format");
-		}
-		else 	if(dateInterval == null || dateInterval == "")
-		{
-			alert("Please choose a date interval");
+			reportURL += "&enableHeaders=1";
 		}
 		else
 		{
-			var runReport = 1;
-			
-			//api source 
-			reportURL += "reporting?reportName=" + selectedReports[0] + "&source=UI";
-				
-			reportURL += "&format=" + reportFrontEnd;
-			reportURL += "&reportType=" + reportType;
-			reportURL += "&numDrivers=" + numDrivers;
-			reportURL += "&dateFormat=" + dateFormat;
-			
-			if(reportFrontEnd == <%=ReportFrontEnds.CSV%>)
+			reportURL += "&enableHeaders=0";
+		}
+
+		if(reportType == <%=ReportTypes.TIME_TREND_REPORT%>)
+		{
+			if(timeGrain == null || timeGrain == "")
 			{
-				reportURL += "&enquote=1";
-			}
-			else if(reportFrontEnd == <%=ReportFrontEnds.HTML%>)
-			{
-				if($('#autoRefreshCheckBox').prop('checked') == true)
-				{
-					reportURL += "&autoRefresh=1";
-				}
-			}
-			
-			if($('#showHeadersCheckBox').prop('checked') == true)
-			{
-				reportURL += "&enableHeaders=1";
+				runReport =0;
+				alert("Please choose a time granularity");
 			}
 			else
 			{
-				reportURL += "&enableHeaders=0";
+				reportURL += "&timeGrain=" + timeGrain; 
 			}
-					
-			if(dateInterval == "Today")
+		}
+		else if(reportType == <%=ReportTypes.STACK_REPORT%>)
+		{
+			if(userGrain == null || userGrain == "")
 			{
-				reportURL += "&startDate="; 
-				reportURL += "<%=todayStartParam%>";
-				reportURL += "&endDate=";
-				reportURL += "now";
+				runReport = 0;
+				alert("Please choose a user granularity");
 			}
-			else if(dateInterval == "Yesterday")
+			else 
 			{
-				reportURL += "&startDate="; 
-				reportURL += "<%=yesterdayStartParam%>";
-				reportURL += "&endDate=";
-				reportURL += "<%=yesterdayEndParam%>";
+				reportURL += "&userGrain=" + userGrain; 
 			}
-			else if(dateInterval == "This Week")
+		}
+
+		if(agentNames != null)
+		{
+			for(var i =0; i<agentNames.length; i++)
 			{
-				reportURL += "&startDate="; 
-				reportURL += "<%=thisWeekStartParam%>";
-				reportURL += "&endDate=";
-				//reportURL += "<%=nowParam%>";
-				reportURL += "now";
-			}
-			else if(dateInterval == "Last Week")
-			{
-				reportURL += "&startDate="; 
-				reportURL += "<%=lastWeekStartParam%>";
-				reportURL += "&endDate=";
-				reportURL += "<%=lastWeekEndParam%>";
-			}
-			else if(dateInterval == "This Month")
-			{
-				reportURL += "&startDate="; 
-				reportURL += "<%=thisMonthStartParam%>";
-				reportURL += "&endDate=";
-				reportURL += "now";
-				
-			}
-			else if(dateInterval == "Last Month")
-			{
-				reportURL += "&startDate="; 
-				reportURL += "<%=lastMonthStartParam%>";
-				reportURL += "&endDate=";
-				reportURL += "<%=lastMonthEndParam%>";
-			}
-			
-			else if(dateInterval == "This Quarter")
-			{
-				reportURL += "&startDate="; 
-				reportURL += "<%=thisQuarterStartParam%>";
-				reportURL += "&endDate=";
-				reportURL += "now";
-			}
-			else if(dateInterval == "Last Quarter")
-			{
-				reportURL += "&startDate="; 
-				reportURL += "<%=lastQuarterStartParam%>";
-				reportURL += "&endDate=";
-				reportURL += "<%=lastQuarterEndParam%>";
-			}
-			
-			else if(dateInterval == "This Fiscal Quarter")
-			{
-				reportURL += "&startDate="; 
-				reportURL += "<%=thisFiscalQuarterStartParam%>";
-				reportURL += "&endDate=";
-				reportURL += "now";
-			}
-			else if(dateInterval == "Last Fiscal Quarter")
-			{
-				reportURL += "&startDate="; 
-				reportURL += "<%=lastFiscalQuarterStartParam%>";
-				reportURL += "&endDate=";
-				reportURL += "<%=lastFiscalQuarterEndParam%>";
-			}
-			
-			else if(dateInterval == "This Fiscal Year")
-			{
-				reportURL += "&startDate="; 
-				reportURL += "<%=thisFiscalYearStartParam%>";
-				reportURL += "&endDate=";
-				reportURL += "now";
-			}
-			
-			else if(dateInterval == "Last Fiscal Year")
-			{
-				reportURL += "&startDate="; 
-				reportURL += "<%=lastFiscalYearStartParam%>";
-				reportURL += "&endDate=";
-				reportURL += "now";
-			}
-			
-			else if(dateInterval == "This Year")
-			{
-				reportURL += "&startDate="; 
-				reportURL += "<%=thisYearStartParam%>";
-				reportURL += "&endDate=";
-				reportURL += "now";
-			}
-			else if(dateInterval == "Last Year")
-			{
-				reportURL += "&startDate="; 
-				reportURL += "<%=lastYearStartParam%>";
-				reportURL += "&endDate=";
-				reportURL += "<%=lastYearEndParam%>";
-			}
-			
-			if(reportType == <%=ReportTypes.TIME_TREND_REPORT%>)
-			{
-				if(timeGrain == null || timeGrain == "")
+				if(agentNames[i] != null)
 				{
-					runReport =0;
-					alert("Please choose a time granularity");
-				}
-				else
-				{
-					reportURL += "&timeGrain=" + timeGrain; 
+					reportURL += "&agentName=" + agentNames[i];
 				}
 			}
-			else if(reportType == <%=ReportTypes.STACK_REPORT%>)
+		}
+
+		if(teamNames != null)
+		{
+			for(var i =0; i<teamNames.length; i++)
 			{
-				if(userGrain == null || userGrain == "")
+				if(teamNames[i] != null)
 				{
-					runReport = 0;
-					alert("Please choose a user granularity");
-				}
-				else 
-				{
-					reportURL += "&userGrain=" + userGrain; 
-				}
-			}
-			
-			if(agentNames != null)
-			{
-				for(var i =0; i<agentNames.length; i++)
-				{
-					if(agentNames[i] != null)
-					{
-						reportURL += "&agentName=" + agentNames[i];
-					}
+					reportURL += "&teamName="+teamNames[i];
 				}
 			}
-			
-			if(teamNames != null)
-			{
-				for(var i =0; i<teamNames.length; i++)
-				{
-					if(teamNames[i] != null)
-					{
-						reportURL += "&teamName="+teamNames[i];
-					}
-				}
-			}
-			
-			//launch report
-			
-			if(runReport == 1)
-			{
-				window.open(reportURL);
-			}
-		
+		}
+
+		//launch report
+
+		if(runReport == 1)
+		{
+			window.open(reportURL);
+		}
 	}
 }
 
