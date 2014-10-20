@@ -4,6 +4,7 @@ package $fullPackageName;
 
 import com.sutherland.helios.date.interval.Intervals;
 import com.sutherland.helios.date.interval.Interval;
+import com.sutherland.helios.date.parsing.DateParser;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -31,7 +32,8 @@ public class GetDateIntervals extends HttpServlet
 		{				
 			out = response.getWriter();
 			
-			Intervals intervals = new Intervals();
+			Intervals intervals = new Intervals(DateParser.NOW_DATE_KEYWORD);
+						
 			for(Entry<String, Interval> timeInterval : intervals.getAvailableTimeIntervals().entrySet())
 			{
 				out.println("\"" + timeInterval.getKey() + "\",\"" + timeInterval.getValue().getStartDate()  + "\",\"" + timeInterval.getValue().getEndDate() + "\""); 
