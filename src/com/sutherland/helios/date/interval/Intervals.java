@@ -58,7 +58,7 @@ public class Intervals
 	
 	private LinkedHashMap<String, Interval> avaliableTimeIntervals;
 	
-	GregorianCalendar nowDate;
+	private GregorianCalendar nowDate;
 
 	public Intervals()
 	{
@@ -288,8 +288,17 @@ public class Intervals
 		lastFiscalQEnd.set(Calendar.MINUTE, 0);
 		lastFiscalQEnd.set(Calendar.SECOND, 0);
 				
-		String nowDateString = DateParser.toSQLDateFormat(this.nowDate);
+		String nowDateString;
 		
+		if(!dateString.equalsIgnoreCase(DateParser.NOW_DATE_KEYWORD))
+		{
+			nowDateString = DateParser.toSQLDateFormat(this.nowDate);
+		}
+		else
+		{
+			nowDateString = DateParser.NOW_DATE_KEYWORD;
+		}
+				
 		avaliableTimeIntervals = new LinkedHashMap<String,Interval>();
 		avaliableTimeIntervals.put(TODAY_INTERVAL_NAME, new Interval(TODAY_INTERVAL_NAME, DateParser.toSQLDateFormat(todayStart), nowDateString));
 		avaliableTimeIntervals.put(YESTERDAY_INTERVAL_NAME, new Interval(YESTERDAY_INTERVAL_NAME, DateParser.toSQLDateFormat(yesterdayStart), DateParser.toSQLDateFormat(yesterdayEnd)));
