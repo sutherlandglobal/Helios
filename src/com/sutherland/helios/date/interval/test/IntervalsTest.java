@@ -6,10 +6,10 @@ import org.junit.Test;
 
 import com.sutherland.helios.date.interval.Interval;
 import com.sutherland.helios.date.interval.Intervals;
+import com.sutherland.helios.date.parsing.DateParser;
 
 public class IntervalsTest extends TestCase 
 {
-	
 	@Test
 	public void testNewYearsIntervals()
 	{
@@ -413,5 +413,36 @@ public class IntervalsTest extends TestCase
 		testInterval = intervals.getTimeInterval(Intervals.LAST_FY_INTERVAL_NAME);
 		assertEquals("Last fiscal year start on " + dateDesc, "2013-07-01 00:00:00", testInterval.getStartDate());
 		assertEquals("Last fiscal year end on " + dateDesc, "2014-07-01 00:00:00", testInterval.getEndDate());
+	}
+	
+	@Test
+	public void testNowHandling()
+	{
+		Intervals intervals = new Intervals( DateParser.NOW_DATE_KEYWORD  );
+				
+		String dateDesc = DateParser.NOW_DATE_KEYWORD;
+		
+		Interval testInterval;
+		
+		testInterval = intervals.getTimeInterval(Intervals.TODAY_INTERVAL_NAME);
+		assertEquals("Today end on " + dateDesc, DateParser.NOW_DATE_KEYWORD.toLowerCase(), testInterval.getEndDate().toLowerCase());
+		
+		testInterval = intervals.getTimeInterval(Intervals.THIS_WEEK_INTERVAL_NAME);
+		assertEquals("This week end on " + dateDesc, DateParser.NOW_DATE_KEYWORD.toLowerCase(), testInterval.getEndDate().toLowerCase());
+		
+		testInterval = intervals.getTimeInterval(Intervals.THIS_MONTH_INTERVAL_NAME);
+		assertEquals("This month end on " + dateDesc, DateParser.NOW_DATE_KEYWORD.toLowerCase(), testInterval.getEndDate().toLowerCase());
+		
+		testInterval = intervals.getTimeInterval(Intervals.THIS_YEAR_INTERVAL_NAME);
+		assertEquals("This year end on " + dateDesc, DateParser.NOW_DATE_KEYWORD.toLowerCase(), testInterval.getEndDate().toLowerCase());
+		
+		testInterval = intervals.getTimeInterval(Intervals.THIS_QUARTER_INTERVAL_NAME);
+		assertEquals("This quarter end on " + dateDesc, DateParser.NOW_DATE_KEYWORD.toLowerCase(), testInterval.getEndDate().toLowerCase());
+		
+		testInterval = intervals.getTimeInterval(Intervals.THIS_FQ_INTERVAL_NAME);
+		assertEquals("This fiscal quarter end on " + dateDesc, DateParser.NOW_DATE_KEYWORD.toLowerCase(), testInterval.getEndDate().toLowerCase());
+		
+		testInterval = intervals.getTimeInterval(Intervals.THIS_FY_INTERVAL_NAME);
+		assertEquals("This fiscal year end on " + dateDesc, DateParser.NOW_DATE_KEYWORD.toLowerCase(), testInterval.getEndDate().toLowerCase());
 	}
 }
