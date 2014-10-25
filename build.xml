@@ -239,56 +239,6 @@
 	  	<sleep seconds="5"/>
 	</target>
 
-	<target name="install">
-
-		<chmod file="${HELIOS_HOME}/scripts/deployStructure.pl" perm="775" />
-
-		<!-- extract tomee -->
-		<exec executable="${HELIOS_HOME}/scripts/deployStructure.pl" failonerror="true" >
-			<arg value="${HELIOS_HOME}/platform/tomee/apache-tomee-1.6.0-plus.zip"/>
-			<arg value="${TOMEE_HOME}"/>
-		</exec>
-		
-		<!-- extract ant -->
-		<exec executable="${HELIOS_HOME}/scripts/deployStructure.pl" failonerror="true" >
-			<arg value="${HELIOS_HOME}/platform/ant/apache-ant-1.9.4-bin.zip"/>
-			<arg value="${ANT_HOME}"/>
-		</exec>
-		
-		<!-- extract java -->
-		<exec executable="${HELIOS_HOME}/scripts/deployStructure.pl" failonerror="true" >
-			<arg value="${HELIOS_HOME}/platform/jdk/jdk-7u67-linux-x64.tar.gz"/>
-			<arg value="${JAVA_HOME}"/>
-		</exec>
-		
-		<!-- extract httpd -->
-		<exec executable="${HELIOS_HOME}/scripts/deployStructure.pl" failonerror="true" >
-			<arg value="${HELIOS_HOME}/platform/httpd/httpd-2.4.10.tar.gz"/>
-			<arg value="${HTTPD_HOME}"/>
-		</exec>
-		
-		<!-- load sql driver for auth-->
-		<copy file="${HELIOS_HOME}/lib/jtds-1.2.5.jar" todir="${TOMEE_LIB}" verbose="on" overwrite="true"/>
-
-		<!-- tomcat config -->
-		<copy file="${HELIOS_HOME}/platform/tomee/server.xml" todir="${TOMEE_HOME}/conf/" verbose="on" overwrite="true"/>
-		<copy file="${HELIOS_HOME}/platform/tomee/tomcat-users.xml" todir="${TOMEE_HOME}/conf/" verbose="on" overwrite="true"/>
-		<copy file="${HELIOS_HOME}/platform/tomee/setenv.sh" todir="${TOMEE_HOME}/bin/" verbose="on" overwrite="true"/>
-		
-		<!-- remove docs webapp -->
-		<delete dir ="${HELIOS_APP_DIR}/../docs"/>
-		<delete dir ="${HELIOS_APP_DIR}/../examples"/>
-		
-		<!-- start tomcat -->
-		<chmod file="${TOMEE_HOME}/bin/startup.sh" perm="775" />
-		<chmod file="${TOMEE_HOME}/bin/shutdown.sh" perm="775" />
-		<chmod file="${TOMEE_HOME}/bin/catalina.sh" perm="775" />
-		<exec executable="${TOMEE_HOME}/bin/startup.sh" />
-		
-		<!-- start httpd -->
-		
-	</target>
-	
 	<target name ="nuke" depends="clean">
 		<delete dir="${HELIOS_HOME}/src"/>
 	</target>
@@ -298,12 +248,10 @@
 		<echo>Sleeping so tomcat can shutdown...</echo>
 		<sleep seconds="20" />
 		<delete dir="${TOMEE_HOME}"/>
-		<delete dir="${ANT_HOME}"/>
 		<delete dir="${HTTPD_HOME}"/>
 		<delete dir="${JAVA_HOME}"/>
+		<delete dir="${ANT_HOME}"/>
 	</target>
-	
-	<target name="reinstall" depends="uninstall,install"/>
 	
 	<target name="properties">
     	<echoproperties />
