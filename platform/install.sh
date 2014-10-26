@@ -28,6 +28,9 @@ then
 	echo "export ANT_HOME" >> /opt/tomcat/.bash_profile
 fi
 
+#create sym link to uncouple version from path
+/bin/ln -s /opt/tomcat/apache-ant-1.9.4 /opt/tomcat/apache-ant
+
 #####################################
 #httpd/httpd-2.4.10.tar.gz
 
