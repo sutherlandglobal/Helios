@@ -1,0 +1,97 @@
+#set( $fullPackageName = $SITE_CLASS_PREFIX + ".api")
+
+package $fullPackageName;
+
+import com.sutherland.helios.data.granularity.time.TimeGrains;
+import com.sutherland.helios.data.granularity.user.UserGrains;
+import com.sutherland.helios.date.formatting.DateFormatter;
+import com.sutherland.helios.date.interval.Intervals;
+import com.sutherland.helios.date.interval.Interval;
+import com.sutherland.helios.date.parsing.DateParser;
+
+import com.google.gson.Gson;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.LinkedHashMap;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * @author $AUTHOR
+ *
+ */
+public class GetParameterData extends HttpServlet 
+{
+
+	private static final long serialVersionUID = $math.random(1,99999999)L;
+
+	private GetParameterData(){};
+	
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+	{
+		PrintWriter out = null;
+		try
+		{				
+
+
+			GsonBuilder builder = new GsonBuilder();
+
+	        Gson gson = builder.enableComplexMapKeySerialization().create();
+	        Type type = new TypeToken<LinkedHashMap<String,String>>(){}.getType();
+			
+			
+			LinkedHashMap<String, String> reportInfo = new LinkedHashMap<String, String>();
+			reportInfo.put("timeGrains", gson.toJson(new LinkedHashMap<String, String>(TimeGrains.avaliableTimeGrains), type));
+			reportInfo.put("userGrains", gson.toJson(new LinkedHashMap<String, String>(UserGrains.avaliableUserGrains), type));
+			reportInfo.put("dateFormats", gson.toJson(new LinkedHashMap<String, String>(DateFormatter.avaliableDateFormats), type));
+			
+			type = new TypeToken<LinkedHashMap<String,Interval>>(){}.getType();
+			reportInfo.put("dateIntervals", gson.toJson(new Intervals(DateParser.NOW_DATE_KEYWORD).getAvailableTimeIntervals(), type));
+			
+			//no json for static hashmaps
+			out = response.getWriter();
+			out.println(gson.toJson(reportInfo).replace("\\", "").replace("\"{", "{").replace("}\"", "}"));
+		}
+		catch (Exception t)
+		{
+			t.printStackTrace();
+				
+			//simple message for the user
+			try 
+			{
+				if(out == null)
+				{
+					out = response.getWriter();
+				}
+				
+				out.println("Error: " + t.getMessage());
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
+			finally
+			{
+				if(out != null)
+				{
+					out.close();
+				}
+			}
+		}
+		finally
+		{
+			if(out != null)
+			{
+				out.close();
+			}
+		}
+	}
+
+}
