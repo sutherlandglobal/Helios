@@ -65,7 +65,7 @@ public class HTMLFormatter extends ResultsFormatter
 		retval.add("<body bgcolor=\"#ededed\"><link rel=\"stylesheet\" href=\"css/tablesorter.css\" type=\"text/css\" media=\"print, projection, screen\" />");
 		
 		
-		retval.add("<TABLE cellSpacing=0 border=0 cellpadding=\"2\" width=\"100%\">	<TBODY>	<TR><td align=\"left\" valign=\"top\"><img height=\"93\" width=\"400\" src=\"images/helios_banner.jpg\"/></a>	</td>");
+		retval.add("<TABLE cellSpacing=0 border=0 cellpadding=\"2\" width=\"100%\">	<TBODY>	<TR><td align=\"left\" valign=\"top\"><img height=\"93\" width=\"400\" src=\"images/helios_banner.png\"/></a>	</td>");
 		retval.add("</tr></TBODY></TABLE>");
 		
 		retval.add("<script type=\"text/javascript\" src=\"js/jquery-1.10.2.min.js\"></script>");
