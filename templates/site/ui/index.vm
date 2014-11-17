@@ -17,295 +17,158 @@
 <%@ page import="java.util.Arrays"%>
 <%@ page import="$siteConfigClass"%>
 
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/jquery-ui.min.css" type="text/css"  />
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/jquery-ui.structure.min.css" type="text/css"  />
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/jquery-ui.theme.min.css" type="text/css"  />
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/primeui/primeui-1.1-min.css" type="text/css"  />
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/primeui/theme.css" type="text/css"  />
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/primeui/core/core.css" type="text/css"  />
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/primeui/inputtext/inputtext.css" type="text/css"  />
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/primeui/dropdown/dropdown.css" type="text/css"  />
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/primeui/checkbox/checkbox.css" type="text/css"  />
+<link rel="stylesheet" href="<%= request.getContextPath() %>/css/primeui/button/button.css" type="text/css"  />
+
 <script type="text/javascript" src="<%=request.getContextPath( )%>/js/jquery-1.10.2.min.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath( )%>/js/jquery.csv-0.71.min.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath( )%>/js/jquery-ui.min.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath( )%>/js/webRequest.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath( )%>/js/dateRequest.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath( )%>/js/jquery.datetimepicker.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath( )%>/js/primeui/primeui-1.1-min.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath( )%>/js/primeui/core/core.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath( )%>/js/primeui/inputtext/inputtext.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath( )%>/js/primeui/dropdown/dropdown.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath( )%>/js/primeui/checkbox/checkbox.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath( )%>/js/primeui/button/button.js"></script>
 
 <%
 Intervals dateIntervals = new Intervals(DateParser.NOW_DATE_KEYWORD);
 
-String todayStartParam = dateIntervals.getTimeInterval(Intervals.TODAY_INTERVAL_NAME).getStartDate();
-String yesterdayStartParam = dateIntervals.getTimeInterval(Intervals.YESTERDAY_INTERVAL_NAME).getStartDate();
-String yesterdayEndParam = dateIntervals.getTimeInterval(Intervals.YESTERDAY_INTERVAL_NAME).getEndDate();
-String thisWeekStartParam = dateIntervals.getTimeInterval(Intervals.THIS_WEEK_INTERVAL_NAME).getStartDate();
-String lastWeekStartParam = dateIntervals.getTimeInterval(Intervals.LAST_WEEK_INTERVAL_NAME).getStartDate();
-String lastWeekEndParam = dateIntervals.getTimeInterval(Intervals.LAST_WEEK_INTERVAL_NAME).getEndDate();
-String thisMonthStartParam = dateIntervals.getTimeInterval(Intervals.THIS_MONTH_INTERVAL_NAME).getStartDate();
-String lastMonthStartParam = dateIntervals.getTimeInterval(Intervals.LAST_MONTH_INTERVAL_NAME).getStartDate();
-String lastMonthEndParam = dateIntervals.getTimeInterval(Intervals.LAST_MONTH_INTERVAL_NAME).getEndDate();
-String thisQuarterStartParam = dateIntervals.getTimeInterval(Intervals.THIS_QUARTER_INTERVAL_NAME).getStartDate();
-String lastQuarterStartParam = dateIntervals.getTimeInterval(Intervals.LAST_QUARTER_INTERVAL_NAME).getStartDate();
-String lastQuarterEndParam = dateIntervals.getTimeInterval(Intervals.LAST_QUARTER_INTERVAL_NAME).getEndDate();
-String thisFiscalQuarterStartParam = dateIntervals.getTimeInterval(Intervals.THIS_FQ_INTERVAL_NAME).getStartDate();
-String lastFiscalQuarterStartParam = dateIntervals.getTimeInterval(Intervals.LAST_FQ_INTERVAL_NAME).getStartDate();
-String lastFiscalQuarterEndParam = dateIntervals.getTimeInterval(Intervals.LAST_FQ_INTERVAL_NAME).getEndDate();
-String thisFiscalYearStartParam = dateIntervals.getTimeInterval(Intervals.THIS_FY_INTERVAL_NAME).getStartDate();
-String lastFiscalYearStartParam = dateIntervals.getTimeInterval(Intervals.LAST_FY_INTERVAL_NAME).getStartDate();
-String lastFiscalYearEndParam = dateIntervals.getTimeInterval(Intervals.LAST_FY_INTERVAL_NAME).getEndDate();
-String thisYearStartParam = dateIntervals.getTimeInterval(Intervals.THIS_YEAR_INTERVAL_NAME).getStartDate();
-String lastYearStartParam = dateIntervals.getTimeInterval(Intervals.LAST_YEAR_INTERVAL_NAME).getStartDate();
-String lastYearEndParam = dateIntervals.getTimeInterval(Intervals.LAST_YEAR_INTERVAL_NAME).getEndDate();
+String todayStartParam = dateIntervals.getTimeInterval(Intervals.TODAY_INTERVAL_NAME).getStartDate().substring(0, 10);
+String yesterdayStartParam = dateIntervals.getTimeInterval(Intervals.YESTERDAY_INTERVAL_NAME).getStartDate().substring(0, 10);
+String yesterdayEndParam = dateIntervals.getTimeInterval(Intervals.YESTERDAY_INTERVAL_NAME).getEndDate().substring(0, 10);
+String thisWeekStartParam = dateIntervals.getTimeInterval(Intervals.THIS_WEEK_INTERVAL_NAME).getStartDate().substring(0, 10);
+String lastWeekStartParam = dateIntervals.getTimeInterval(Intervals.LAST_WEEK_INTERVAL_NAME).getStartDate().substring(0, 10);
+String lastWeekEndParam = dateIntervals.getTimeInterval(Intervals.LAST_WEEK_INTERVAL_NAME).getEndDate().substring(0, 10);
+String thisMonthStartParam = dateIntervals.getTimeInterval(Intervals.THIS_MONTH_INTERVAL_NAME).getStartDate().substring(0, 10);
+String lastMonthStartParam = dateIntervals.getTimeInterval(Intervals.LAST_MONTH_INTERVAL_NAME).getStartDate().substring(0, 10);
+String lastMonthEndParam = dateIntervals.getTimeInterval(Intervals.LAST_MONTH_INTERVAL_NAME).getEndDate().substring(0, 10);
+String thisQuarterStartParam = dateIntervals.getTimeInterval(Intervals.THIS_QUARTER_INTERVAL_NAME).getStartDate().substring(0, 10);
+String lastQuarterStartParam = dateIntervals.getTimeInterval(Intervals.LAST_QUARTER_INTERVAL_NAME).getStartDate().substring(0, 10);
+String lastQuarterEndParam = dateIntervals.getTimeInterval(Intervals.LAST_QUARTER_INTERVAL_NAME).getEndDate().substring(0, 10);
+String thisFiscalQuarterStartParam = dateIntervals.getTimeInterval(Intervals.THIS_FQ_INTERVAL_NAME).getStartDate().substring(0, 10);
+String lastFiscalQuarterStartParam = dateIntervals.getTimeInterval(Intervals.LAST_FQ_INTERVAL_NAME).getStartDate().substring(0, 10);
+String lastFiscalQuarterEndParam = dateIntervals.getTimeInterval(Intervals.LAST_FQ_INTERVAL_NAME).getEndDate().substring(0, 10);
+String thisFiscalYearStartParam = dateIntervals.getTimeInterval(Intervals.THIS_FY_INTERVAL_NAME).getStartDate().substring(0, 10);
+String lastFiscalYearStartParam = dateIntervals.getTimeInterval(Intervals.LAST_FY_INTERVAL_NAME).getStartDate().substring(0, 10);
+String lastFiscalYearEndParam = dateIntervals.getTimeInterval(Intervals.LAST_FY_INTERVAL_NAME).getEndDate().substring(0, 10);
+String thisYearStartParam = dateIntervals.getTimeInterval(Intervals.THIS_YEAR_INTERVAL_NAME).getStartDate().substring(0, 10);
+String lastYearStartParam = dateIntervals.getTimeInterval(Intervals.LAST_YEAR_INTERVAL_NAME).getStartDate().substring(0, 10);
+String lastYearEndParam = dateIntervals.getTimeInterval(Intervals.LAST_YEAR_INTERVAL_NAME).getEndDate().substring(0, 10);
 %>
-
-<table width="100%">
-<tr>
-<td align ="left" width="50%"><img src="<%= request.getContextPath() %>/images/site_banner.jpg" width="400" height="72"/></td>
-<td align="right" valign="center" width="30%"><b><font size="24"><%= SiteConfig.HELIOS_READABLE_SITE_NAME %></font></b></td>
-</tr>
-</table>
-
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/helios_site.css" type="text/css"  />
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/jquery.datetimepicker.css" type="text/css"  />
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/jquery-ui.min.css" type="text/css"  />
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/jquery-ui.structure.min.css" type="text/css"  />
-<link rel="stylesheet" href="<%= request.getContextPath() %>/css/jquery-ui.theme.min.css" type="text/css"  />
-
-<!-- 
-<table id="loadingSpace" width="100%">
-<tr><td style="background-color: #ededed" align="center" valign="top">
-<div id="loadingDiv" style="display: block;">
-<img src="<%= request.getContextPath() %>/images/loading.gif" width="100" height="100" />
-</div>
-</td></tr>
-</table>
--->
-
-<div class="roundedtable">
-<table id="mainTable">
-	<thead>
-		<tr>
-			<th id="metricsHeader">Metrics</th>
-			<th id="rosterHeader">Roster</th>
-			<th id="paramsHeader">Parameters</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td id="metricsCol" align="left" valign="top" style="width: 175px;">
-				<!--  report names -->
-				<p><b>Select Metrics</b></p> 
-				<select style="background-color: #ededed; border: 1px solid #0000FF; width: 175px;" id="metricSelectList" multiple></select>
-			</td>
-			<td id="rosterCol" align="left" valign="top" style="width: 400px" >
-				<!-- user and team lists --> 
-				
-				<table id="rosterTable" style="width: 400px	; table-layout: fixed;" >
-				<tr>
-				<td valign="top">
-					<p><b>Select Teams</b></p>
-					<select style="background-color: #ededed; border: 1px solid #0000FF; width: 200px;" id="teamSelectList" multiple></select> 
-				</td>
-				<td valign="top">
-					<p><b>Select Agents</b></p>
-					<select style="background-color: #ededed; border: 1px solid #0000FF; width: 200px;" id="agentSelectList" multiple></select>
-				</td>
-				</tr>
-				</table>
-			</td>
-
-			<td id="paramsCol" valign="top" align="left" style="width: 350px;">
-				<table id="paramsTable" style="width: 350px; table-layout: fixed;">
-					<tbody>
-						<tr>
-							<td><b>Select Parameters</b><br>
-							<br></td>
-						</tr>
-						<tr id="selectMetricRow">
-							<td>Select a Metric.</td>
-						</tr>
-
-						<tr id="reportInfoRow">
-							<td>
-								<p id="metricName">Metric Name</p>
-								<p id="metricDesc">Metric Description</p> <br>
-							</td>
-						</tr>
-
-						<tr id="reportTypesRow">
-							<td><label id="reportTypesLabel" for="reportTypesSelectList">Choose a report type:</label><br><select id="reportTypesSelectList"></select></td>
-						</tr>
-
-						<tr id="dateIntervalsRow">
-						<td>
-							<table>
-								<tr><td>
-									<label id="dateIntervalLabel" for="dateIntervalsSelectList">Choose a date interval:</label><br>
-									<select id="dateIntervalsSelectList"></select>
-								</td></tr>
-								<tr><td>
-									<label id="startDateLabel" for="startDateField">Start Date</label><br>
-									<input id="startDateField" type="text" size="19"><br>
-									<label id="endDateLabel" for="endDateField">End Date</label><br>
-									<input id="endDateField" type="text" size="19" >
-								</td></tr>
-							</table>
-						</td>
-						</tr>
-
-						<tr id="dateFormatsRow">
-							<td><label id="dateFormatsLabel" for="dateFormatsSelectList">Choose a date format:</label><br><select id="dateFormatsSelectList"></select></td>
-						</tr>
-
-						<tr id="timeGrainsRow">
-							<td><label id="timeGrainLabel" for="timeGrainsSelectList">Choose a time granularity:</label><br><select id="timeGrainsSelectList"></select></td>
-						</tr>
-
-						<tr id="userGrainsRow">
-							<td><label id="userGrainsLabel" for="userGrainsSelectList">Choose a user granularity:</label><br><select id="userGrainsSelectList"></select></td>
-						</tr>
-
-						<tr id="numDriversRow">
-							<td><label id="numDriversLabel" for="numDriversSelectList">Choose	number of drivers:</label><br><select id="numDriversSelectList"></select></td>
-						</tr>
-
-						<tr id="reportFrontEndsRow">
-							<td><label id="reportFrontEndLabel" for="reportFrontEndSelectList">Choose a format:</label><br><select id="reportFrontEndsSelectList"></select></td>
-						</tr>
-						
-						<tr id="autoRefreshRow">
-							<td><label id="autoRefreshLabel" for="autoRefreshCheckBox">Auto Refresh:</label>&nbsp;<input type="checkbox" id="autoRefreshCheckBox" value="autoRefresh"></td>
-						</tr>
-
-						<tr id="showHeadersRow">
-							<td><label id="showHeadersLabel" for="showHeadersCheckBox">Show Headers:</label>&nbsp;<input type="checkbox" id="showHeadersCheckBox" value="showHeaders"></td>
-						</tr>
-
-						<tr id="reportLaunchButtonRow">
-							<td>
-								<button id="reportLaunchButton" type="button"
-									onclick="launchReport()">Run!</button>
-							</td>
-						</tr>
-					<tbody>
-				</table>
-			</td>
-		</tr>
-	</tbody>
-</table>
-</div>
 
 <script type="text/javascript">
 
-
-
 function loadMetricList()
 {
-	$('#metricSelectList').html('');
+	$("#metricSelectList").empty();
 	
-	var siteMetrics = httpGet("<%=request.getContextPath()%>/siteMetrics").split("\n");
+	$.ajax
+	({
+        type:"get",
+        url:"<%=request.getContextPath()%>/siteMetrics",
+        dataType : 'json'
+	})
+	.success(function(data)
+    {
+		$.each(data, function(key, value) 
+       	{
+       		$("#metricSelectList").append("'<option value=\"" + value + "\">" + key + '</option>' );
+       	});
+    }).error (function()
+    {
+    	alert("Error loading site metrics");
+	});
 	
-	for(var i = 0; i<siteMetrics.length; i++)
-	{
-		var metric = $.csv.toArray(siteMetrics[i]);
-		
-		if(metric.length == 2)
-		{
-			$("#metricSelectList").append("<option value=\"" + metric[0] +"\">" + metric[0] + "</option>");
-		}
-	}
-
 	$('#metricSelectList').attr('size', 40);
 }
 
-function loadDateIntervals()
-{
-	$('#dateIntervalsSelectList').html('');
-	
-	var dateIntervals = httpGet("<%=request.getContextPath()%>/dateIntervals").split("\n");
-	
-	for(var i = 0; i<dateIntervals.length; i++)
-	{
-		var dateInterval = $.csv.toArray(dateIntervals[i]);
-		
-		if(dateInterval.length == 3)
-		{
-			$("#dateIntervalsSelectList").append("<option onclick=\"updateDateIntervals()\" value=\"" + dateInterval[0] +"\">" + dateInterval[0] + "</option>");
-		}
-	}
-}
-
 function updateDateIntervals()
-{
-	$('#dateIntervalsSelectList').trigger("change");
-}
+{	
+	var interval = $("#dateIntervalsSelectList").val() || [];
+	
+	//look up the interval values and populate the start and end date boxes
+	var selectedInterval = $("#dateIntervalsSelectList option:selected").text() || [];
 
-function loadTimeGrains()
-{
-	$('#timeGrainsSelectList').html('');
-	
-	var timeGrains = httpGet("<%=request.getContextPath()%>/timeGrains").split("\n");
-	
-	for(var i = 0; i<timeGrains.length; i++)
+	if(selectedInterval == "<%=Intervals.TODAY_INTERVAL_NAME%>")
 	{
-		var timeGrain = $.csv.toArray(timeGrains[i]);
-		
-		if(timeGrain.length == 2)
-		{
-			$("#timeGrainsSelectList").append("<option value=\"" + timeGrain[1] +"\">" + timeGrain[0] + "</option>");
-		}
+		$("#startDateField").val("<%=todayStartParam%>");
+		$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
 	}
-	
-	//$('#timeGrainsSelectList').val($("#timeGrainsSelectList option:first").val());
-}
-
-function loadDateFormats()
-{
-	$('#dateFormatsSelectList').html('');
-	
-	var dateFormats = httpGet("<%=request.getContextPath()%>/dateFormats").split("\n");
-	
-	for(var i = 0; i<dateFormats.length; i++)
+	else if(selectedInterval == "<%=Intervals.YESTERDAY_INTERVAL_NAME%>")
 	{
-		var dateFormat = $.csv.toArray(dateFormats[i]);
-		
-		if(dateFormat.length == 2)
-		{
-			$("#dateFormatsSelectList").append("<option value=\"" + dateFormat[1] +"\">" + dateFormat[0] + "</option>");
-		}
+		$("#startDateField").val("<%=yesterdayStartParam%>");
+		$("#endDateField").val("<%=yesterdayEndParam%>");
 	}
-}
-
-function loadUserGrains()
-{
-	$('#userGrainsSelectList').html('');
-	
-	var userGrains = httpGet("<%=request.getContextPath()%>/userGrains").split("\n");
-	
-	for(var i = 0; i<userGrains.length; i++)
+	else if(selectedInterval == "<%=Intervals.THIS_WEEK_INTERVAL_NAME%>")
 	{
-		var userGrain = $.csv.toArray(userGrains[i]);
-		
-		if(userGrain.length == 2)
-		{
-			$("#userGrainsSelectList").append("<option value=\"" + userGrain[1] +"\">" + userGrain[0] + "</option>");
-		}
+		$("#startDateField").val("<%=thisWeekStartParam%>");
+		$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
 	}
-}
-
-function loadReportTypes(thisReport)
-{
-	//reset the list, otherwise we'll just keep appending
-	$('#reportTypesSelectList').html('');
-	
-	//get the selected report types for the selected metric
-	
-	var reportTypes = httpGet("<%=request.getContextPath()%>/reportTypes?reportName=" + thisReport).split("\n");
-		
-	for(var i = 0; i<reportTypes.length; i++)
+	else if(selectedInterval == "<%=Intervals.LAST_WEEK_INTERVAL_NAME%>")
 	{
-		var reportType = $.csv.toArray(reportTypes[i]);
-			
-		if(reportType.length == 2)
-		{
-			$("#reportTypesSelectList").append("<option value=\"" + reportType[1] +"\">" + reportType[0] + "</option>");
-		}
+		$("#startDateField").val("<%=lastWeekStartParam%>");
+		$("#endDateField").val("<%=lastWeekEndParam%>");
+	}
+	else if(selectedInterval == "<%=Intervals.THIS_MONTH_INTERVAL_NAME%>")
+	{
+		$("#startDateField").val("<%=thisMonthStartParam%>");
+		$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
+	}
+	else if(selectedInterval == "<%=Intervals.LAST_MONTH_INTERVAL_NAME%>")
+	{
+		$("#startDateField").val("<%=lastMonthStartParam%>");
+		$("#endDateField").val("<%=lastMonthEndParam%>");
+	}
+	else if(selectedInterval == "<%=Intervals.THIS_QUARTER_INTERVAL_NAME%>")
+	{
+		$("#startDateField").val("<%=thisQuarterStartParam%>");
+		$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
+	}
+	else if(selectedInterval == "<%=Intervals.LAST_QUARTER_INTERVAL_NAME%>")
+	{
+		$("#startDateField").val("<%=lastQuarterStartParam%>");
+		$("#endDateField").val("<%=lastQuarterEndParam%>");
+	}
+	else if(selectedInterval == "<%=Intervals.THIS_FQ_INTERVAL_NAME%>")
+	{
+		$("#startDateField").val("<%=thisFiscalQuarterStartParam%>");
+		$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
+	}
+	else if(selectedInterval == "<%=Intervals.LAST_FQ_INTERVAL_NAME%>")
+	{
+		$("#startDateField").val("<%=lastFiscalQuarterStartParam%>");
+		$("#endDateField").val("<%=lastFiscalQuarterEndParam%>");
+	}
+	else if(selectedInterval == "<%=Intervals.THIS_FY_INTERVAL_NAME%>")
+	{
+		$("#startDateField").val("<%=thisFiscalYearStartParam%>");
+		$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
+	}
+	else if(selectedInterval == "<%=Intervals.LAST_FY_INTERVAL_NAME%>")
+	{
+		$("#startDateField").val("<%=lastFiscalYearStartParam%>");
+		$("#endDateField").val("<%=lastFiscalYearEndParam%>");
+	}
+	else if(selectedInterval == "<%=Intervals.THIS_YEAR_INTERVAL_NAME%>")
+	{
+		$("#startDateField").val("<%=thisYearStartParam%>");
+		$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
+	}
+	else if(selectedInterval == "<%=Intervals.LAST_YEAR_INTERVAL_NAME%>")
+	{
+		$("#startDateField").val("<%=lastYearStartParam%>");
+		$("#endDateField").val("<%=lastYearEndParam%>");
 	}
 }
 
-function loadReportParameters(thisReport,reportType)
+function loadParameterData()
 {
 	//hide whatever params are already displayed
 	$("#dateIntervalsRow").hide();
@@ -315,356 +178,295 @@ function loadReportParameters(thisReport,reportType)
 	$("#timeGrainsRow").hide();
 	$("#reportFrontEndsRow").hide();
 	
-	var paramString = httpGet("<%=request.getContextPath()%>/reportParameters?reportName=" + thisReport + "&reportType=" + reportType);
-	var params = $.csv.toArray(paramString);
+	$("#metricSelectList").prop('disabled', true);
 	
-	for(var i = 0; i<params.length; i++)
-	{
-		if(params[i] == "<%=ParameterInfo.START_DATE_PARAM%>")
+	$.ajax
+	({
+        type:"get",
+        url:"<%=request.getContextPath()%>/parameterData",
+        dataType : 'json'
+	})
+	.success(function(data)
+    {
+		$.each(data["timeGrains"], function(key, value)
 		{
-			$("#dateIntervalsRow").show();
-		}
-		else if(params[i] == "<%=ParameterInfo.END_DATE_PARAM%>")
+			$("#timeGrainsSelectList").puidropdown("addOption", key, value);
+		});
+		
+		$.each(data["userGrains"], function(key, value)
 		{
-			$("#dateIntervalsRow").show();
-		}
-		else if(params[i] == "<%=ParameterInfo.USER_GRAIN_PARAM%>")
+			$("#userGrainsSelectList").puidropdown("addOption", key, value);
+		});
+		
+		$.each(data["dateFormats"], function(key, value)
 		{
-			$("#userGrainsRow").show();
-		}
-		else if(params[i] == "<%=ParameterInfo.TIME_GRAIN_PARAM%>")
+			$("#dateFormatsSelectList").puidropdown("addOption", key, value);
+		});
+		
+		$.each(data["dateIntervals"], function(key, value)
 		{
-			$("#timeGrainsRow").show();
-		}
-		else if(params[i] == "<%=ParameterInfo.NUM_DRIVERS_PARAM%>")
-		{
-			$("#numDriversRow").show();
-		}
-		else if(params[i] == "<%=ParameterInfo.DATE_FORMAT_PARAM%>")
-		{
-			$("#dateFormatsRow").show();	
-		}
-	}
-	
-	loadSupportedFrontEnds(thisReport);
-	
-	$("#reportLaunchButtonRow").show();
+			$("#dateIntervalsSelectList").puidropdown("addOption", key, key);
+		});
+		
+		loadDateIntervalTimes();
+		updateDateIntervals();
+		
+		$("#metricSelectList").prop('disabled', false);
+    }).error (function()
+    {
+    	alert("Error loading parameter data");
+	});
 }
+
 
 function loadReportInfo(thisReport)
 {
-	//reset the list, otherwise we'll just keep appending
-	$('#reportTypesSelectList').html('');
+	//this needs to be synchronous, as the parameters depend on this request completing
+	var reportInfo =  $.ajax
+	({
+		type:"get",
+		url:"<%=request.getContextPath()%>/reportInfo?reportName=" + thisReport,
+		dataType : 'json',
+		async: false
+	})
+	.error (function()
+	{
+		alert("Error loading report info for report " + thisReport);
+	}).responseText;
 	
-	//get the selected report types for the selected metric
-	
-	var reportInfoFields = httpGet("<%=request.getContextPath()%>/reportInfo?reportName=" + thisReport).split("\n");
-
-	$("#metricName").html("<b>" + reportInfoFields[0] + "</b>");
-	$("#metricDesc").html("<b>" + reportInfoFields[1] + "</b>");
+	//store this result
+	$("#loadedReportInfo").data("reportjson", reportInfo);
+	//alert("SJAX: " + $.parseJSON($("#loadedReportInfo").data("reportjson")).basicInfo.reportName);
 }
 
-function loadAgentNames()
+function loadReportParameters()
 {
-	 $("#agentSelectList").html('');
-	//web request to local roster report
-	var agentNames = httpGet("<%=request.getContextPath()%>/agentNames").split("\n");
+	//hide whatever params are already displayed
+	$("#dateIntervalsRow").hide();
+	$("#numDriversRow").hide();	
+	$("#userGrainsRow").hide();
+	$("#dateFormatsRow").hide();	
+	$("#timeGrainsRow").hide();
+	$("#reportFrontEndsRow").hide();
 	
-	for(var i = 0; i < agentNames.length; i++) 
+	var selectedReports = $("#metricSelectList").val() || [];
+	var reportJSONInfo = $("#loadedReportInfo").data("reportjson");
+	var loadReportTypes = false;
+
+	//get report info request when nothing cached 
+	if( reportJSONInfo == null )
 	{
-		if(agentNames[i] != "")
-		{
-	    	$("#agentSelectList").append("<option>" + agentNames[i] + "</option>");
-		}
+		//alert("getting new report json");
+		loadReportInfo(selectedReports[0]);
+		
+		loadReportTypes = true; 
 	}
+
+	reportJSONInfo = $.parseJSON($("#loadedReportInfo").data("reportjson"));
+
+	//new request if a different report is cached
+	if( reportJSONInfo.basicInfo.reportClassName != selectedReports[0] )
+	{
+		//alert("updating existing report json");
+		
+		loadReportInfo(selectedReports[0]);
+		reportJSONInfo = $.parseJSON($("#loadedReportInfo").data("reportjson"));
+
+		loadReportTypes = true; 
+	}
+		
+	if(reportJSONInfo != null)
+	{
+		//get basic info and desc and load them
+		$("#metricName").html("<b>" + reportJSONInfo.basicInfo.reportName + "</b>");
+		$("#metricDesc").html("<b>" + reportJSONInfo.basicInfo.reportDesc + "</b>");
+		$("#reportInfoRow").show();
+		
+		if(loadReportTypes)
+		{
+			$('#reportTypesSelectList').puidropdown("option", "data", []);
+			
+			//populate the report types since this is a new report
+			$.each(reportJSONInfo["reportTypes"], function(key, value)
+			{
+				$("#reportTypesSelectList").puidropdown("addOption", key, value);
+				//alert("added " + key + " " + value);
+			});
+		}
+		$("#reportTypesRow").show();
+
+		//get the report type and display the rest of the parameters accordingly
+		var selectedReportType = $("#reportTypesSelectList").puidropdown( "getSelectedLabel" );
+		
+		//alert("Getting params for " +selectedReportType);
+		
+		var params = reportJSONInfo["paramInfo"][selectedReportType];
+		
+		//alert(params);
+		
+		for(var i = 0; i<params.length; i++)
+		{
+			if(params[i] == "<%=ParameterInfo.START_DATE_PARAM%>" || params[i] == "<%=ParameterInfo.END_DATE_PARAM%>" )
+			{
+				$("#dateIntervalsRow").show();
+			}
+			else if(params[i] == "<%=ParameterInfo.USER_GRAIN_PARAM%>")
+			{
+				$("#userGrainsRow").show();
+			}
+			else if(params[i] == "<%=ParameterInfo.TIME_GRAIN_PARAM%>")
+			{
+				$("#timeGrainsRow").show();
+			}
+			else if(params[i] == "<%=ParameterInfo.NUM_DRIVERS_PARAM%>")
+			{
+				$("#numDriversRow").show();
+			}
+			else if(params[i] == "<%=ParameterInfo.DATE_FORMAT_PARAM%>")
+			{
+				$("#dateFormatsRow").show();	
+			}
+		}
+
+		//report formats/frontends
+		$("#reportFrontEndsSelectList").puidropdown("option", "data", []);
+		$.each(reportJSONInfo["frontEnds"], function(key, value)
+		{
+			$("#reportFrontEndsSelectList").puidropdown("addOption", key, value);
+		});
+		$("#reportFrontEndsRow").show();
+		
+		loadSecondaryParameters();
+		
+		$("#reportLaunchButtonRow").show();
+	}
+	else
+	{
+		alert("Could not load report data");
+	}
+}
+
+function loadRoster()
+{
+	$("#agentSelectList").empty();
+	$("#teamSelectList").empty();
+	
+	$.ajax
+	({
+        type:"get",
+        url:"<%=request.getContextPath()%>/roster",
+        dataType : 'json'
+	})
+	.success(function(data)
+    {
+		$.each(data["teams"], function(key, value)
+		{			
+       		$("#teamSelectList").append( '<option>' + value + '</option>' );
+		});
+		
+		$.each(data["agents"], function(key, value)
+		{			
+			$("#agentSelectList").append( '<option>' + value + '</option>' );
+		});
+    }).error (function()
+    {
+    	alert("Error loading roster");
+	});
 	
 	$('#agentSelectList').attr('size', 40);
-}
-
-function loadSupportedFrontEnds(thisReport)
-{
-	//load supported report front ends
-	$("#reportFrontEndsSelectList").html('');
-	var reportFrontEnds = httpGet("<%=request.getContextPath()%>/supportedFrontEnds?reportName=" + thisReport).split("\n");
-	
-	for(var i = 0; i<reportFrontEnds.length; i++)
-	{
-		var reportFrontEnd = $.csv.toArray(reportFrontEnds[i]);
-		
-		if(reportFrontEnd.length == 2)
-		{
-			$("#reportFrontEndsSelectList").append("<option value=\"" + reportFrontEnd[1] +"\">" + reportFrontEnd[0] + "</option>");
-		}
-	}
-	
-	$("#reportFrontEndsRow").show();
-}
-
-function loadTeamNames()
-{
-	 $("#teamSelectList").html('');
-	//web request to local roster report
-	var teamNames = httpGet("<%=request.getContextPath()%>/teamNames").split("\n");
-	
-	for(var i = 0; i < teamNames.length; i++) 
-	{
-		if(teamNames[i] != "")
-		{
-	    	$("#teamSelectList").append("<option>" + teamNames[i] + "</option>");
-		}
-	}
-	
 	$('#teamSelectList').attr('size', 40);
 }
 
 function loadNumDrivers()
 {
+	$("#numDriversSelectList").empty();
+	
 	for(var i = 5; i <= 30; i+=5) 
 	{
-	    $("#numDriversSelectList").append("<option>" + i + "</option>");
+	    $("#numDriversSelectList").puidropdown("addOption", i, i);
 	}
-	
-	//select default item
 }
 
-
-
-jQuery('#startDateField').datetimepicker({
-	format:'Y-m-d H:i:00',
-	mask:true
-});
-jQuery('#endDateField').datetimepicker({
-	format:'Y-m-d H:i:00',
-	mask:true
-});
-
-//$("#metricSelectList").selectable();
-//$("#reportTypesSelectList").selectmenu();
-//$("#dateIntervalsSelectList").selectmenu();
-//$("#reportFrontEndsSelectList").selectmenu();
-//$("#userGrainsSelectList").selectmenu();
-//$("#numDriversSelectList").selectmenu();
-//$("#timeGrainsSelectList").selectmenu();
-//$("#dateFormatsSelectList").selectmenu();
-//
-//$("#reportLaunchButton").button();
-
-$("#metricSelectList").change(function() 
+function loadDateIntervalTimes()
 {
-	//get the selected values
-	//alert( $("#metricSelectList").val() ); 
+	$("#startTimeSelectList").puidropdown("option", "data", []);
+	$("#endTimeSelectList").puidropdown("option", "data", []);
 	
-	var selectedReports = $("#metricSelectList").val() || [];
-	
-	if(selectedReports.length > 0)
+	var hour;
+	for(var i = 0; i <= 23; i+=1) 
 	{
-		$("#selectMetricRow").hide();
+		hour = i;
 		
-		var thisReport = selectedReports[0];
-		
-		//get this report's name and description. line 1 is name, line 2 is desc
-		loadReportInfo(thisReport);
-		
-		//get this report's support types and load them
-		loadReportTypes(thisReport);
-		
-		$("#reportTypesRow").show();
-		
-		$("#dateIntervalsRow").show();
-		
-		$("#autoRefreshCheckBox").attr('checked', false);
-		$("#autoRefreshRow").hide();
-		
-		$("#showHeadersCheckBox").attr('checked', true);
-		$("#showHeadersRow").hide();
-		
-		var selectedReportType = $("#reportTypesSelectList option:selected").text() || [];
-		
-		loadReportParameters(thisReport,selectedReportType);
-
-		
-		var reportFrontEnd = $("#reportFrontEndsSelectList").val();
-		
-		if(reportFrontEnd == <%=ReportFrontEnds.HTML%>)
+		if( i < 10)
 		{
-			$("#autoRefreshRow").show();
-		}
-		else
-		{
-			$("#autoRefreshCheckBox").attr('checked', false);
-			$("#autoRefreshRow").hide();
+			hour = "0" + hour;
 		}
 		
-		if(reportFrontEnd == <%=ReportFrontEnds.CSV%> || reportFrontEnd == <%=ReportFrontEnds.EXCEL%>)
-		{
-			$("#showHeadersRow").show();
-		}
-		else
-		{
-			$("#showHeadersCheckBox").attr('checked', false);
-			$("#showHeadersRow").hide();
-		}
+		hour = hour + ":00";
+		
+		$("#startTimeSelectList").puidropdown("addOption", hour, hour);
+		$("#endTimeSelectList").puidropdown("addOption", hour, hour);
 	}
-	else
-	{
-		$("#selectMetricRow").show();
-		$("#metricName").html('');
-		$("#metricDesc").html('');
-		
-		$("#autoRefreshCheckBox").attr('checked', false);
-		$("#autoRefreshRow").hide();
-		
-		$("#showHeadersCheckBox").attr('checked', true);
-		$("#showHeadersRow").hide();
-		
-		$("#reportTypesRow").hide();
-		$("#dateIntervalsRow").hide();
-		
-		$("#timeGrainsRow").hide();
-		$("#userGrainsRow").hide();
-		$("#autoRefreshRow").hide();
+}
 
-		$("#numDriversRow").hide();	
-		$("#reportFrontEndsRow").hide();
-		$("#reportLaunchButtonRow").hide();
-	}
-});
-
-$("#reportTypesSelectList").change(function() 
+function loadSecondaryParameters()
 {
-	var selectedReports = $("#metricSelectList").val() || [];
-	
-	if(selectedReports.length > 0)
-	{
-		var selectedReportType = $("#reportTypesSelectList option:selected").text() || [];
-		loadReportParameters(selectedReports, selectedReportType);
-	}
-});
-
-$("#dateIntervalsSelectList").change(function() 
-{
-	var interval = $("#dateIntervalsSelectList").val() || [];
-			
-	if(interval.length > 0)
-	{
-		//look up the interval values and populate the start and end date boxes
-		var selectedInterval = $("#dateIntervalsSelectList option:selected").text() || [];
-
-		if(selectedInterval == "<%=Intervals.TODAY_INTERVAL_NAME%>")
-		{
-			$("#startDateField").val("<%=todayStartParam%>");
-			$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
-		}
-		else if(selectedInterval == "<%=Intervals.YESTERDAY_INTERVAL_NAME%>")
-		{
-			$("#startDateField").val("<%=yesterdayStartParam%>");
-			$("#endDateField").val("<%=yesterdayEndParam%>");
-		}
-		else if(selectedInterval == "<%=Intervals.THIS_WEEK_INTERVAL_NAME%>")
-		{
-			$("#startDateField").val("<%=thisWeekStartParam%>");
-			$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
-		}
-		else if(selectedInterval == "<%=Intervals.LAST_WEEK_INTERVAL_NAME%>")
-		{
-			$("#startDateField").val("<%=lastWeekStartParam%>");
-			$("#endDateField").val("<%=lastWeekEndParam%>");
-		}
-		else if(selectedInterval == "<%=Intervals.THIS_MONTH_INTERVAL_NAME%>")
-		{
-			$("#startDateField").val("<%=thisMonthStartParam%>");
-			$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
-		}
-		else if(selectedInterval == "<%=Intervals.LAST_MONTH_INTERVAL_NAME%>")
-		{
-			$("#startDateField").val("<%=lastMonthStartParam%>");
-			$("#endDateField").val("<%=lastMonthEndParam%>");
-		}
-		else if(selectedInterval == "<%=Intervals.THIS_QUARTER_INTERVAL_NAME%>")
-		{
-			$("#startDateField").val("<%=thisQuarterStartParam%>");
-			$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
-		}
-		else if(selectedInterval == "<%=Intervals.LAST_QUARTER_INTERVAL_NAME%>")
-		{
-			$("#startDateField").val("<%=lastQuarterStartParam%>");
-			$("#endDateField").val("<%=lastQuarterEndParam%>");
-		}
-		else if(selectedInterval == "<%=Intervals.THIS_FQ_INTERVAL_NAME%>")
-		{
-			$("#startDateField").val("<%=thisFiscalQuarterStartParam%>");
-			$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
-		}
-		else if(selectedInterval == "<%=Intervals.LAST_FQ_INTERVAL_NAME%>")
-		{
-			$("#startDateField").val("<%=lastFiscalQuarterStartParam%>");
-			$("#endDateField").val("<%=lastFiscalQuarterEndParam%>");
-		}
-		else if(selectedInterval == "<%=Intervals.THIS_FY_INTERVAL_NAME%>")
-		{
-			$("#startDateField").val("<%=thisFiscalYearStartParam%>");
-			$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
-		}
-		else if(selectedInterval == "<%=Intervals.LAST_FY_INTERVAL_NAME%>")
-		{
-			$("#startDateField").val("<%=lastFiscalYearStartParam%>");
-			$("#endDateField").val("<%=lastFiscalYearEndParam%>");
-		}
-		else if(selectedInterval == "<%=Intervals.THIS_YEAR_INTERVAL_NAME%>")
-		{
-			$("#startDateField").val("<%=thisYearStartParam%>");
-			$("#endDateField").val("<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>");
-		}
-		else if(selectedInterval == "<%=Intervals.LAST_YEAR_INTERVAL_NAME%>")
-		{
-			$("#startDateField").val("<%=lastYearStartParam%>");
-			$("#endDateField").val("<%=lastYearEndParam%>");
-		}
-	}
-});
-
-$("#reportFrontEndsSelectList").change(function() 
-{
-	//expose the autorefresh checkbox for html reports	
-	//else, uncheck and hide
-	
-	var reportFrontEnd = $("#reportFrontEndsSelectList").val();
-	
+	var reportFrontEnd = $("#reportFrontEndsSelectList").puidropdown( "getSelectedValue" );
+		
 	if(reportFrontEnd == <%=ReportFrontEnds.HTML%>)
 	{
 		$("#autoRefreshRow").show();
 	}
 	else
 	{
-		$("#autoRefreshCheckBox").attr('checked', false);
+		$("#autoRefreshCheckBox").puicheckbox("uncheck");
 		$("#autoRefreshRow").hide();
 	}
 	
 	if(reportFrontEnd == <%=ReportFrontEnds.CSV%> || reportFrontEnd == <%=ReportFrontEnds.EXCEL%>)
 	{
+		$("#showHeadersCheckBox").puicheckbox("check");
 		$("#showHeadersRow").show();
 	}
 	else
 	{
-		$("#showHeadersCheckBox").attr('checked', false);
+		$("#showHeadersCheckBox").puicheckbox("uncheck");
 		$("#showHeadersRow").hide();
 	}
-});
+}
+
+//---------------------------------------------------------------------------------------------
 
 $( document ).ready(function() 
-		{
-	$("#loadingSpace").show();
+{		
 	$("#mainTable").hide();
+	
+	$("#loadedReportInfo").removeData("reportjson");
+	
+	//ajax to load stuff to display on page load
+	loadMetricList();
+	loadRoster();
+	loadParameterData();
+	
+	$("#loadingSpace").show();
 
+	$("#mainTable").addClass("ui-corner-all");
+	
+	$("#metricsHeader").addClass("ui-widget-header");
+	$("#metricsHeader").addClass("ui-corner-all");
+	
+	$("#rosterHeader").addClass("ui-widget-header");
+	$("#rosterHeader").addClass("ui-corner-all");
+	
+	$("#paramsHeader").addClass("ui-widget-header");
+	$("#paramsHeader").addClass("ui-corner-all");
+		
 	//hide until the lists are populated
 	$("#metricSelectList").hide();
 	$("#agentSelectList").hide();
 	$("#teamSelectList").hide();
 
-	$("#autoRefreshCheckBox").attr('checked', false);
 	$("#autoRefreshRow").hide();
-
-	$("#showHeadersCheckBox").attr('checked', true);
 	$("#showHeadersRow").hide();
 
 	$("#reportTypesRow").hide();
@@ -679,29 +481,93 @@ $( document ).ready(function()
 
 	$("#metricName").html('');
 	$("#metricDesc").html('');
+	
+	$("#startDateField").puiinputtext().datepicker();
+	$("#startDateField").datepicker("option", "dateFormat", "yy-mm-dd");
+	
+	$("#endDateField").puiinputtext().datepicker();
+	$("#startDateField").datepicker("option", "dateFormat", "yy-mm-dd");
 
-	//loading image for metric list
-	//loading image for team list
-	//loading image for agent list
+	$("#autoRefreshCheckBox").puicheckbox();
+	$("#showHeadersCheckBox").puicheckbox();
+	
+	$("#dateIntervalsSelectList").puidropdown
+	({
+		change:  function() { updateDateIntervals(); }	
+	});
+	
+	$("#dateFormatsSelectList").puidropdown(); 
+	$("#startTimeSelectList").puidropdown(); 
+	$("#endTimeSelectList").puidropdown(); 
+	$("#userGrainsSelectList").puidropdown(); 
+	$("#timeGrainsSelectList").puidropdown(); 
+	$("#numDriversSelectList").puidropdown(); 
+	
+	$("#reportLaunchButton").puibutton(); 
+	
+	$("#reportTypesSelectList").puidropdown
+	({ 
+		change: function() { 	loadReportParameters(); }	
+	}); 
+	
+	$("#reportFrontEndsSelectList").puidropdown
+	({
+		change: function() { loadSecondaryParameters(); }	
+	}); 
+	
+	$("#metricSelectList").change(function() 
+	{
+		//get the selected values
 
-	loadMetricList();
-	loadNumDrivers();
+		var selectedReports = $("#metricSelectList").val() || [];
 
-	loadTeamNames();
-	loadAgentNames();
+		if(selectedReports.length > 0)
+		{
+			$("#selectMetricRow").hide();
 
-	loadDateIntervals();
-	loadTimeGrains();
-	loadUserGrains();
-	loadDateFormats();
+			loadReportParameters();
+		}
+		else
+		{	
+			$("#selectMetricRow").show();
+			$("#metricName").html('');
+			$("#metricDesc").html('');
 
+			$("#autoRefreshRow").hide();
+			$("#showHeadersRow").hide();
+
+			$("#reportTypesRow").hide();
+			$("#dateIntervalsRow").hide();
+
+			$("#timeGrainsRow").hide();
+			$("#userGrainsRow").hide();
+			$("#autoRefreshRow").hide();
+
+			$("#numDriversRow").hide();	
+			$("#reportFrontEndsRow").hide();
+			$("#reportLaunchButtonRow").hide();
+		}
+	});
+	
+	$("#metricSelectList").addClass("ui-widget");
+	$("#metricSelectList").addClass("ui-corner-all");
+	$("#metricSelectList").css('background-color',"white");
+
+	$("#teamSelectList").addClass("ui-widget");
+	$("#teamSelectList").addClass("ui-corner-all");
+	$("#teamSelectList").css('background-color',"white");
+
+	$("#agentSelectList").addClass("ui-widget");
+	$("#agentSelectList").addClass("ui-corner-all");
+	$("#agentSelectList").css('background-color',"white");
+	
 	$("#metricSelectList").show();
 	$("#teamSelectList").show();
 	$("#agentSelectList").show();
 	$("#loadingSpace").hide();
 	$("#mainTable").show();
 
-	$('#dateIntervalsSelectList').trigger("change");
+	loadNumDrivers();
 });
 
 function launchReport()
@@ -733,20 +599,22 @@ function launchReport()
 	var numDrivers = $("#numDriversSelectList").val();
 	var startDate = $("#startDateField").val();
 	var endDate = $("#endDateField").val();
+	var startTime = $("#startTimeSelectList").puidropdown( "getSelectedLabel" );
+	var endTime = $("#endTimeSelectList").puidropdown( "getSelectedLabel" );
 
 	if(selectedReports == null || selectedReports.length == 0)
 	{
 		alert("Please choose at least one metric.");
 	}
-	else 	if(reportType == null || reportType == "")
+	else if(reportType == null || reportType == "")
 	{
 		alert("Please choose a report type");
 	}
-	else 	if(reportFrontEnd == null || reportFrontEnd == "")
+	else if(reportFrontEnd == null || reportFrontEnd == "")
 	{
 		alert("Please choose a report format");
 	}
-	else 	if(dateInterval == null || dateInterval == "")
+	else if(dateInterval == null || dateInterval == "")
 	{
 		alert("Please choose a date interval");
 	}
@@ -762,8 +630,17 @@ function launchReport()
 		reportURL += "&numDrivers=" + numDrivers;
 		reportURL += "&dateFormat=" + dateFormat;
 		reportURL += "&startDate=" + startDate;
+		
+		if(startDate != "<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>")
+		{
+			reportURL += " " + startTime + ":00";
+		}
+		
 		reportURL += "&endDate=" + endDate;
-
+		if(endDate != "<%= DateParser.NOW_DATE_KEYWORD.toLowerCase() %>")
+		{
+			 reportURL += " " + endTime + ":00";
+		}
 
 		if(reportFrontEnd == <%=ReportFrontEnds.CSV%>)
 		{
@@ -844,5 +721,145 @@ function launchReport()
 
 </script>
 
+
+<div id="loadedReportInfo"></div>
+
+<table width="100%">
+<tr>
+<td align ="left" width="50%"><img id="siteBannerImg" src="<%= request.getContextPath() %>/images/site_banner.jpg" width="400" height="72"/></td>
+<td align="right" valign="center" width="50%"><b><font size="24"><%= SiteConfig.HELIOS_READABLE_SITE_NAME.replace(" ", "&nbsp;") %></font></b></td>
+</tr>
+</table>
+
+<!-- 
+<table id="loadingSpace" width="100%">
+<tr><td style="background-color: #ededed" align="center" valign="top">
+<div id="loadingDiv" style="display: block;">
+<img src="<%= request.getContextPath() %>/images/loading.gif" width="100" height="100" />
+</div>
+</td></tr>
+</table>
+-->
+
+
+<table id="mainTable" style="border: 1px solid #0000FF;">
+	<thead>
+		<tr>
+			<th id="metricsHeader">Metrics</th>
+			<th id="rosterHeader">Roster</th>
+			<th id="paramsHeader">Parameters</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td id="metricsCol" align="left" valign="top" style="width: 175px;">
+				<!--  report names -->
+				<p><b>Select Metrics</b></p> 
+				<!--<select style="background-color: #ededed; border: 1px solid #0000FF; width: 175px;" id="metricSelectList" multiple></select>-->
+				<select style="width: 175px; border: 1px solid #0000FF;" id="metricSelectList" multiple size="40"></select>
+			</td>
+			<td id="rosterCol" align="left" valign="top" style="width: 400px" >
+				<!-- user and team lists --> 
+				
+				<table id="rosterTable" style="width: 600px; table-layout: fixed;" >
+				<tr>
+				<td valign="top" style="width: 300px;">
+					<p><b>Select Teams</b></p>
+					<!--<select style="background-color: #ededed; border: 1px solid #0000FF; width: 200px;" id="teamSelectList" multiple></select>--> 
+					<select style="width: 300px; border: 1px solid #0000FF;" id="teamSelectList" size="40" multiple="multiple"></select> 
+				</td>
+				<td valign="top" style="width: 300px;">
+					<p><b>Select Agents</b></p>
+					<!--<select style="background-color: #ededed; border: 1px solid #0000FF; width: 200px;" id="agentSelectList" multiple></select>-->
+					<select style="width: 300px; border: 1px solid #0000FF;" id="agentSelectList" multiple size="40"></select>
+					
+				</td>
+				</tr>
+				</table>
+			</td>
+
+			<td id="paramsCol" valign="top" align="left" style="width: 350px;">
+				<table id="paramsTable" style="width: 350px; table-layout: fixed;">
+					<tbody>
+						<tr>
+							<td><b>Select Parameters</b><br>
+							<br></td>
+						</tr>
+						<tr id="selectMetricRow">
+							<td>Select a Metric.</td>
+						</tr>
+
+						<tr id="reportInfoRow">
+							<td>
+								<p id="metricName">Metric Name</p>
+								<p id="metricDesc">Metric Description</p> <br>
+							</td>
+						</tr>
+
+						<tr id="reportTypesRow">
+							<td><label id="reportTypesLabel" for="reportTypesSelectList">Choose a report type:</label><br><select id="reportTypesSelectList" style="width: 250px;"></select></td>
+						</tr>
+
+						<tr id="dateIntervalsRow">
+						<td>
+							<table>
+								<tr><td>
+									<label id="dateIntervalLabel" for="dateIntervalsSelectList">Choose a date interval:</label><br>
+									<select id="dateIntervalsSelectList" style="width: 250px;" onchange="updateDateIntervals();"></select>
+								</td></tr>
+								<tr><td valign="bottom">
+									<label id="startDateLabel" for="startDateField">Start Date:</label>
+									<input id="startDateField" type="text" size="10">
+									<select id="startTimeSelectList" style="width: 75px;"></select>
+								</td></tr>
+								<tr><td valign="bottom">
+									<label id="endDateLabel" for="endDateField">End Date:</label>
+									<input id="endDateField" type="text" size="10" >
+									<select id="endTimeSelectList" style="width: 75px;" ></select>
+								</td></tr>
+							</table>
+						</td>
+						</tr>
+
+						<tr id="dateFormatsRow">
+							<td><label id="dateFormatsLabel" for="dateFormatsSelectList">Choose a date format:</label><br><select id="dateFormatsSelectList" style="width: 250px;"></select></td>
+						</tr>
+
+						<tr id="timeGrainsRow">
+							<td><label id="timeGrainLabel" for="timeGrainsSelectList">Choose a time granularity:</label><br><select id="timeGrainsSelectList" style="width: 250px;"></select></td>
+						</tr>
+
+						<tr id="userGrainsRow">
+							<td><label id="userGrainsLabel" for="userGrainsSelectList">Choose a user granularity:</label><br><select id="userGrainsSelectList" style="width: 250px;"></select></td>
+						</tr>
+
+						<tr id="numDriversRow">
+							<td><label id="numDriversLabel" for="numDriversSelectList">Choose	number of drivers:</label><br><select id="numDriversSelectList" style="width: 20px;" ></select></td>
+						</tr>
+
+						<tr id="reportFrontEndsRow">
+							<td><label id="reportFrontEndLabel" for="reportFrontEndSelectList">Choose a format:</label><br><select id="reportFrontEndsSelectList" style="width: 250px;"></select></td>
+						</tr>
+						
+						<tr id="autoRefreshRow">
+							<td><label id="autoRefreshLabel" for="autoRefreshCheckBox">Auto Refresh:</label>&nbsp;<input type="checkbox" id="autoRefreshCheckBox" value="autoRefresh"></td>
+						</tr>
+
+						<tr id="showHeadersRow">
+							<td><label id="showHeadersLabel" for="showHeadersCheckBox">Show Headers:</label>&nbsp;<input type="checkbox" id="showHeadersCheckBox" value="showHeaders"></td>
+						</tr>
+
+						<tr id="reportLaunchButtonRow">
+							<td>
+								<button id="reportLaunchButton" type="button"
+									onclick="launchReport()">Run!</button>
+							</td>
+						</tr>
+					<tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
 
 <%@include file="/footer.jsp"%>
