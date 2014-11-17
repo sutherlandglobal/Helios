@@ -3,9 +3,6 @@
  */
 package com.sutherland.helios.util.threading;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -17,12 +14,11 @@ import java.util.concurrent.TimeUnit;
  * @author Jason Diamond
  *
  */
-public class ThreadPool {
+public class ThreadPool 
+{
 
 	private final static int TERMINATION_TIMEOUT = 2;
-	
 	private final static int DEFAULT_POOL_SIZE = 20;
-	
 	private ExecutorService pool;
 	
 	/**
@@ -82,58 +78,4 @@ public class ThreadPool {
 			e.printStackTrace();
 		}
 	}
-	
-	public static void main(String[] args)
-	{
-		int rows = 100;
-		ThreadPool pool = new ThreadPool(10);
-		
-		Vector<String[]> coreList = new Vector<String[]>(rows);
-		coreList.setSize(rows);
-		final List<String[]> output = Collections.synchronizedList(coreList);
-		
-
-		for(int i =0; i< rows; i++)
-		{
-			final int index = i;
-			pool.runTask
-			(
-				new Runnable()
-				{
-					@Override
-					public void run() 
-					{
-						long sleep = (long) (Math.random()*100);
-						//System.out.println("Starting thread " + index + " sleeping " + sleep);
-						
-						try 
-						{
-							Thread.sleep(sleep);
-						} 
-						catch (InterruptedException e) 
-						{
-
-							e.printStackTrace();
-						}
-						
-						//System.out.println("Ending thread " + index);
-						output.set(index, new String[]{""+index, ""+sleep});
-					}
-				}
-			);
-		}
-		
-		pool.close();
-
-		for(String[] row : output)
-		{
-			for(String col : row)
-			{
-				System.out.print(col + ",");
-			}
-			System.out.println();
-		}
-		
-	}
-
 }
