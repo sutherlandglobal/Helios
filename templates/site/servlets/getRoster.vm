@@ -1,0 +1,97 @@
+#set( $fullPackageName = $SITE_CLASS_PREFIX + ".api")
+
+package $fullPackageName;
+
+import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.TreeSet;
+import java.util.LinkedHashMap;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import $ROSTER_CLASS;
+
+/**
+ * @author $AUTHOR
+ *
+ */
+public class GetRoster extends HttpServlet 
+{
+	private static final long serialVersionUID = $math.random(1,99999999)L;
+
+	private GetRoster() {}
+	
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+	{
+		$ROSTER_CLASSNAME roster = null;
+		PrintWriter out = null;
+		//StringBuilder output = new StringBuilder();
+		try
+		{
+			roster = new $ROSTER_CLASSNAME();
+			
+			//tell site logs where we're coming from
+			roster.getParameters().setSource("UI");
+			
+			roster.setIncludeAllUsers(true);
+			roster.load();
+			
+			TreeSet<String> teamSet = new TreeSet<String>();
+			TreeSet<String> agentSet = new TreeSet<String>();
+			
+			//grab each user's full name and unique teams
+			for(String userID : roster.getUserIDs())
+			{
+				agentSet.add(roster.getFullName(userID));
+				teamSet.addAll(roster.getTeamNames(userID));
+			}
+
+			LinkedHashMap<String, TreeSet<String>> aggregateRoster = new LinkedHashMap<String, TreeSet<String>>();
+			
+			aggregateRoster.put("agents", agentSet);
+			aggregateRoster.put("teams", teamSet);
+			
+			Gson gson = new Gson();
+			out = response.getWriter();
+
+			out.print(gson.toJson(aggregateRoster));
+		}
+		catch (Exception t)
+		{
+			t.printStackTrace();
+				
+			//simple message for the user
+			try 
+			{
+				if(out == null)
+				{
+					out = response.getWriter();
+				}
+				
+				out.println("Error: " + t.getMessage());
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
+			finally
+			{
+				if(out != null)
+				{
+					out.close();
+				}
+			}
+		}
+		finally
+		{
+			if(out != null)
+			{
+				out.close();
+			}
+		}
+	}
+}
