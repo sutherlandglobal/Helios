@@ -3,7 +3,7 @@
  */
 package com.sutherland.helios.report;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 
 
@@ -26,7 +26,7 @@ public interface ReportTypes
 	public static final String TIME_TREND_REPORT_NAME = "Time Trend";
 	
 
-	public static final HashMap<String, String> TYPE_LOOKUP = new HashMap<String, String>()
+	public static final LinkedHashMap<String, String> TYPE_LOOKUP = new LinkedHashMap<String, String>()
 	{
 		private static final long serialVersionUID = 1502789438852373258L;
 		{
