@@ -11,7 +11,7 @@
 				LinkedHashMap<String, String> navTable = new LinkedHashMap<String,String>();
 
 				navTable.put("Home", request.getContextPath() + "/index.jsp");
-				navTable.put("Mantis", "http://mantis.rocjfsdev09.corp.suth.com/login_page.php");
+				navTable.put("Mantis Bug Tracking", "http://mantis.rocjfsdev09.corp.suth.com/login_page.php");
 				navTable.put("JUnit Testing", request.getContextPath() + "/testResults.jsp");
 				navTable.put("Statistics", request.getContextPath() + "/statistics.jsp");
 				navTable.put("Javadocs", request.getContextPath() + "/doc.jsp");				
