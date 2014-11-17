@@ -22,7 +22,7 @@
 		</STYLE>
 
 	</HEAD>
-	<BODY  bgcolor="#ededed" link="#0000FF" vlink="#0000FF">
+	<BODY   bgcolor="#f4f4f4" link="#0000FF" vlink="#0000FF">
 		
 		<%@include file="/browserAssist.jsp" %>
 		
@@ -37,7 +37,7 @@
 					
 					<%
 					
-						String heliosLogoPath = request.getContextPath() + "/images/helios_banner.jpg";
+						String heliosLogoPath = request.getContextPath() + "/images/helios_banner.png";
 					
 						if(SiteConfig.STANDALONE)
 						{
