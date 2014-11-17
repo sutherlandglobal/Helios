@@ -16,8 +16,8 @@ log4j.appender.$REPORT_LOGGER_HANDLE=org.apache.log4j.RollingFileAppender
 
 ## Set the name of the file
 #set( $line = "log4j.appender." + $REPORT_LOGGER_HANDLE + ".File")
-##log4j.appender.$REPORT_LOGGER_HANDLE.File=$SITE_DIR/logs/reporting.log
-$line=$SITE_DIR/logs/reporting.log
+##log4j.appender.$REPORT_LOGGER_HANDLE.File=$WEB_APP_DIR/logs/reporting.log
+$line=$WEB_APP_DIR/logs/reporting.log
 
 ## Set the immediate flush to true (default)
 #set( $line = "log4j.appender." + $REPORT_LOGGER_HANDLE + ".ImmediateFlush=true")
@@ -59,8 +59,8 @@ log4j.appender.$API_LOGGER_HANDLE=org.apache.log4j.RollingFileAppender
 
 ## Set the name of the file
 #set( $line = "log4j.appender." + $API_LOGGER_HANDLE + ".File")
-##log4j.appender.$API_LOGGER_HANDLE.File=$SITE_DIR/logs/api.log
-$line=$SITE_DIR/logs/api.log
+##log4j.appender.$API_LOGGER_HANDLE.File=$WEB_APP_DIR/logs/api.log
+$line=$WEB_APP_DIR/logs/api.log
 
 ## Set the immediate flush to true (default)
 #set( $line = "log4j.appender." + $API_LOGGER_HANDLE + ".ImmediateFlush=true")
