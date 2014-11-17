@@ -12,7 +12,7 @@ import com.sutherland.helios.report.parameters.sanitize.StringSanitizer;
  */
 public class ReportEntity 
 {
-	private String reportName;
+	//private String reportName;
 	private String reportClass;
 	private String jarPath;
 	private String superClassName;
@@ -30,22 +30,22 @@ public class ReportEntity
 		this.superClassName = getSuperClassName(this.reportClass);
 		
 		
-		int classNamePosStart = this.reportClass.replace(REPORT_CLASSNAME_SUFFIX, "").lastIndexOf('.');
+		//int classNamePosStart = this.reportClass.replace(REPORT_CLASSNAME_SUFFIX, "").lastIndexOf('.');
 		
 		//report name is calced from report class
-		this.reportName = this.reportClass.substring(classNamePosStart + 1).replace(REPORT_CLASSNAME_SUFFIX, "");	
+		//this.reportName = this.reportClass.substring(classNamePosStart + 1).replace(REPORT_CLASSNAME_SUFFIX, "");	
 	}
 	
-	public String getReportName() {
-		return reportName;
-	}
-	
+//	public String getReportName() {
+//		return reportName;
+//	}
+//	
 	public String getSuperClassName()
 	{
 		return superClassName;
 	}
 
-	public String getReportClass() {
+	public String getReportClassName() {
 		return reportClass;
 	}
 
@@ -77,8 +77,8 @@ public class ReportEntity
 	{
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append(reportName);
-		sb.append(", ");
+//		sb.append(reportName);
+//		sb.append(", ");
 		sb.append(reportClass);
 		sb.append(", ");
 		sb.append(superClassName);
