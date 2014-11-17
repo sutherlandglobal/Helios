@@ -18,7 +18,7 @@
 		</STYLE>
 
 	</HEAD>
-	<BODY  bgcolor="#ededed" link="#0000FF" vlink="#0000FF">
+	<BODY  bgcolor="#F4F4F4" link="#0000FF" vlink="#0000FF">
 		
 		<%@include file="/browserAssist.jsp" %>
 		
@@ -32,7 +32,7 @@
 			
 				<TR>
 					<td width = "400" align="left" valign="top">
-						<a href="/Framework/"><img height="93" width="400" src="<%=request.getContextPath( ) %>/images/helios_banner.jpg"/></a>
+						<a href="/Framework/"><img height="93" width="400" src="<%=request.getContextPath( ) %>/images/helios_banner.png"/></a>
 					</td>
 					<td width = "400" align="right" valign="top">
 					<%
