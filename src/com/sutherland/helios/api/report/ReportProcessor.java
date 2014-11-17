@@ -78,7 +78,7 @@ public class ReportProcessor
 		
 		if(targetEntity != null)
 		{
-			String className = targetEntity.getReportClass();
+			String className = targetEntity.getReportClassName();
 			
 			if( className != null && isValidReportClassName(className) )
 			{
@@ -96,11 +96,11 @@ public class ReportProcessor
 	/**
 	 * Get the class of the report object by name. Does not instantiate the object. used primarily when accessing informational methods for the ui
 	 * 
-	 * @param reportName
+	 * @param reportClassName
 	 * @return 	uninstantiated class object
 	 * @throws ClassNotFoundException
 	 */
-	public Class<?> getReportClass(String reportName) throws ClassNotFoundException
+	public Class<?> getReportClass(String reportClassName) throws ClassNotFoundException
 	{
 		Class<?> retval = null;
 		//URLClassLoader loader = null;
@@ -108,11 +108,11 @@ public class ReportProcessor
 		//loader = new URLClassLoader(new URL[]{new File(REPORT_JAR_PATH).toURI().toURL()});
 		//retval = loader.loadClass(className);
 		
-		ReportEntity targetEntity = getEntityByClassName(reportName);
+		ReportEntity targetEntity = getEntityByClassName(reportClassName);
 		
 		if(targetEntity != null)
 		{
-			String className = targetEntity.getReportClass();
+			String className = targetEntity.getReportClassName();
 			
 			if( className != null && isValidReportClassName(className) )
 			{
@@ -121,7 +121,7 @@ public class ReportProcessor
 		}
 		else
 		{
-			errorMessage =  "Could not build reportName " + reportName;
+			errorMessage =  "Could not build report for class name " + reportClassName;
 		}
 		
 		return retval;
@@ -138,7 +138,7 @@ public class ReportProcessor
 		
 		for(ReportEntity r : loadedReportEntities)
 		{
-			retval.add(r.getReportClass());
+			retval.add(r.getReportClassName());
 		}
 		
 		return retval;
@@ -149,7 +149,7 @@ public class ReportProcessor
 		ReportEntity retval = null;
 		for(ReportEntity r : loadedReportEntities)
 		{
-			if(r.getReportClass().equals(className))
+			if(r.getReportClassName().equals(className))
 			{
 				retval = r;
 				break;
@@ -159,28 +159,16 @@ public class ReportProcessor
 		return retval;
 	}
 	
-	public ReportEntity getEntityByReportName(String reportName)
+	public ReportEntity getEntityByReportName(String reportClassName)
 	{
 		ReportEntity retval = null;
 		for(ReportEntity r : loadedReportEntities)
 		{
-			if(r.getReportName().equals(reportName))
+			if(r.getReportClassName().equals(reportClassName))
 			{
 				retval = r;
 				break;
 			}
-		}
-		
-		return retval;
-	}
-	
-	public ArrayList<String> getReportNames()
-	{
-		ArrayList<String> retval = new ArrayList<String>();
-		
-		for(ReportEntity r : loadedReportEntities)
-		{
-			retval.add(r.getReportName());
 		}
 		
 		return retval;
@@ -234,6 +222,23 @@ public class ReportProcessor
 		}
 	}
 	
+	public void loadReportEntity(String reportClassName) throws ClassNotFoundException
+	{
+		loadedReportEntities.clear();
+		
+		for(String siteName : loadedJars)
+		{
+			for(ReportEntity r : SiteManager.getReportsFromJar(siteName))
+			{
+				if(reportClassName.equals(r.getReportClassName()))
+				{
+					loadedReportEntities.add(r);
+					break;
+				}
+			}
+		}
+	}
+	
 	public void printReportEntities()
 	{
 		for(ReportEntity r : loadedReportEntities)
@@ -253,31 +258,33 @@ public class ReportProcessor
 		loadedReportEntities.clear();
 	}
 	
-	public ArrayList<String> getReportInfo(String reportName) throws ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+	public LinkedHashMap<String, String> getReportInfo(String reportName) throws ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
 	{
-		ArrayList<String> retval = new ArrayList<String>();
+		LinkedHashMap<String, String> retval = new LinkedHashMap<String, String>();
 		
 		Class<?>reportClass = getReportClass(reportName);
 		
 		Method method = reportClass.getMethod("uiGetReportName", (Class<?>[])null);
 		//Object invoke = method.invoke(null, (Object)null);
 		Object invoke = method.invoke(null);
-		retval.add( (String) invoke);
+		retval.put( "reportName", (String) invoke);
+		
+		retval.put( "reportClassName", reportClass.getSimpleName());
 		
 		method = reportClass.getMethod("uiGetReportDesc", (Class<?>[])null);
 		//invoke = method.invoke(null, (Object)null);
 		invoke = method.invoke(null);
-		retval.add( (String) invoke);
+		retval.put( "reportDesc", (String) invoke);
 		
 		return retval;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public LinkedHashMap<String, String> getUISupportedReportTypes(String reportName) throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException 
+	public LinkedHashMap<String, String> getUISupportedReportTypes(String reportClassName) throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException 
 	{
 		LinkedHashMap<String,String> retval = new LinkedHashMap<String,String>();
 		
-		Class<?>reportClass = getReportClass(reportName);
+		Class<?>reportClass = getReportClass(reportClassName);
 		
 		Field field = reportClass.getField("uiSupportedReportTypes");
 		
@@ -287,11 +294,11 @@ public class ReportProcessor
 	}
 	
 	@SuppressWarnings("unchecked")
-	public LinkedHashMap<String, String> getUISupportedReportFrontEnds(String reportName) throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException 
+	public LinkedHashMap<String, String> getUISupportedReportFrontEnds(String reportClassName) throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException 
 	{
 		LinkedHashMap<String,String> retval = new LinkedHashMap<String,String>();
 		
-		Class<?>reportClass = getReportClass(reportName);
+		Class<?>reportClass = getReportClass(reportClassName);
 		
 		Field field = reportClass.getField("uiSupportedReportFrontEnds");
 		
@@ -301,11 +308,11 @@ public class ReportProcessor
 	}
 	
 	@SuppressWarnings("unchecked")
-	public LinkedHashMap<String, ArrayList<String>> getUIReportParameters(String reportName) throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException 
+	public LinkedHashMap<String, ArrayList<String>> getUIReportParameters(String reportClassName) throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException 
 	{
 		LinkedHashMap<String, ArrayList<String>> retval = new LinkedHashMap<String, ArrayList<String>>();
 		
-		Class<?>reportClass = getReportClass(reportName);
+		Class<?>reportClass = getReportClass(reportClassName);
 		
 		Field field = reportClass.getField("uiReportParameters");
 		
@@ -314,13 +321,30 @@ public class ReportProcessor
 		return retval;
 	}
 	
-	public ArrayList<String[]> startReport(String reportName, ReportParameters parameters) throws ClassNotFoundException
+	public LinkedHashMap<String, String> getSiteMetrics() throws ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
 	{
-		loadReportEntities();
+		LinkedHashMap<String,String> retval = new LinkedHashMap<String,String>();
+		
+		String className;
+		for(ReportEntity r : loadedReportEntities)
+		{
+			className = r.getReportClassName();
+			retval.put(getReportInfo(className).get("reportName"), className.substring(className.lastIndexOf(".") + 1));
+		}
+		
+		return retval;
+	}
+	
+	public ArrayList<String[]> startReport(String reportClassName, ReportParameters parameters) throws ClassNotFoundException
+	{
+		if(loadedReportEntities.isEmpty())
+		{
+			loadReportEntities();
+		}
 		
 		//reportname will be a raw name typically from the jsp layer, will have to look up the 
 		
-		Class<?>reportClass = buildReportClass(reportName);
+		Class<?>reportClass = buildReportClass(reportClassName);
 		ArrayList<String[]> retval = null;
 		//check for reportClass not being null
 		
