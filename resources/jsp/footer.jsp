@@ -7,7 +7,7 @@ int imgDim = 40;
 <table width="100%">
 	<tr>
 		<td width = "30%" align="left">
-			<img src="<%= request.getContextPath( ) + "/images/suth_logo.jpg" %>">
+			<img src="<%= request.getContextPath( ) + "/images/suth_logo.png" %>">
 		</td>
 		<td width="70%" align="right" valign="top">
 		<b>Powered By:</b>
