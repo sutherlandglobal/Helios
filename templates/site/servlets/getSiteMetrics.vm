@@ -2,6 +2,8 @@
 
 package $fullPackageName;
 
+import com.google.gson.Gson;
+
 import com.sutherland.helios.api.report.ReportEntity;
 import com.sutherland.helios.api.report.ReportProcessor;
 
@@ -34,11 +36,13 @@ public class GetSiteMetrics extends HttpServlet
 			
 			out = response.getWriter();
 			
-			//name -> report class
-			for(ReportEntity report : reportProcessor.getReportEntities())
-			{
-				out.println("\"" + report.getReportName() + "\",\"" + report.getReportClass() + "\""); 
-			}
+			Gson gson = new Gson();
+
+			//out.print(gson.toJson( reportProcessor.getReportEntities() ));
+			
+			//for loaded entities, get classname and readable name, return as linkedhash sorted alphabetically
+			out.print(gson.toJson( reportProcessor.getSiteMetrics() ));
+			
 		}
 		catch (Exception t)
 		{
