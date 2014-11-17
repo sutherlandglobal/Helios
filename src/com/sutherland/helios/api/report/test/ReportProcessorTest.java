@@ -42,13 +42,6 @@ public class ReportProcessorTest extends  TestCase
 	}
 	
 	@Test
-	public void testGetReportNames() 
-	{
-		assertNotNull(proc.getReportNames());
-		assertTrue(proc.getReportNames().size() > 0);
-	}
-
-	@Test
 	public void testIsValidReport() 
 	{
 		try 
@@ -141,7 +134,7 @@ public class ReportProcessorTest extends  TestCase
 	{
 		try 
 		{
-			ArrayList<String> actualReportInfo = proc.getReportInfo(testReportClassName);
+			LinkedHashMap<String, String> actualReportInfo = proc.getReportInfo(testReportClassName);
 			
 			assertTrue("Check that two strings are returned", actualReportInfo.size() == 2);
 			assertEquals("Has correct Report Name", MockReport.uiGetReportName(), actualReportInfo.get(0));

@@ -32,7 +32,6 @@ public class ReportEntityTest extends  TestCase
 		String className = "com/sutherland/helios/report/test/MockReport.class";
 		String expectedClassName = "com.sutherland.helios.report.test.MockReport";
 		String expectedSuperClassName = "com.sutherland.helios.report.Report";
-		String expectedReportName = "MockReport";
 		
 		String jarPath = "/opt/tomcat/Helios/Helios.jar";
 		
@@ -42,11 +41,9 @@ public class ReportEntityTest extends  TestCase
 			ent = new ReportEntity(className,jarPath);
 			
 			assertNotNull("Entity non-null test", ent);
-			assertFalse("Retrieve report name", ent.getReportName().isEmpty());
-			assertEquals("Verify class name", expectedClassName, ent.getReportClass() );
+			assertEquals("Verify class name", expectedClassName, ent.getReportClassName() );
 
 			assertEquals("Verify jar path", jarPath, ent.getJarPath() );
-			assertEquals("Verify report name", expectedReportName, ent.getReportName());
 			assertEquals("Verify superclass name", expectedSuperClassName, ent.getSuperClassName());
 		} 
 		catch (ClassNotFoundException e) 
