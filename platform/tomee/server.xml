@@ -77,9 +77,9 @@
 -->
 
 	    <Connector port="8080" maxHttpHeaderSize="8192"
-               maxThreads="150" minSpareThreads="25"
+               maxThreads="150" minSpareThreads="10"
                enableLookups="false" redirectPort="8443" acceptCount="100"
-               connectionTimeout="20000" disableUploadTimeout="true" URIEncoding="UTF-8" 
+               connectionTimeout="20000" URIEncoding="UTF-8" connectionUploadTimeout="300000" disableUploadTimeout="false"
         proxyPort="80" />
 
 
