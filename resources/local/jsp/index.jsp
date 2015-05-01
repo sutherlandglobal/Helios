@@ -113,9 +113,9 @@ tomcatVersion =  tomcatVersion.substring(  tomcatVersion.indexOf("/") + 1);
 <tr>
 <td width="50%">
 <ul>
-<li><a href="../Hughes"><b>Hughes</b></a></li>
+<li><a href="../Hughes"><b>Hughes Network Systems</b></a></li>
 <li><a href="../PrivateLabel"><b>Private Label</b></a></li>
-
+<li><a href="../Kaspersky"><b>Kaspersky Lab</b></a></li>
 <%
 String hostname = request.getServerName();
 
