@@ -1,9 +1,5 @@
 package com.sutherland.helios.data;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
 
 import com.sutherland.helios.report.parameters.sanitize.StringSanitizer;
@@ -25,59 +21,6 @@ public class Aggregation
 	public Aggregation()
 	{
 		data = new HashMap<String, Datum>();
-	}
-	
-	/**
-	 * Load a team from a file.
-	 * 
-	 * @param file		File to read users from.
-	 * 
-	 * @return	True if the file was sucessfully read, false otherwise.
-	 */
-	public boolean loadFromFile(String file)
-	{
-		boolean retval = false;
-		
-		BufferedReader dataIn = null;
-		
-		try 
-		{
-			dataIn = new BufferedReader(new FileReader(file));
-			
-			String line;
-			while( (line = dataIn.readLine()) != null )
-			{
-				if(line.matches("^[a-zA-Z -]*$"))
-				{
-					data.put(line, new Datum(line));
-				}
-			}
-			retval = true;
-		} 
-		catch (FileNotFoundException e) 
-		{
-			e.printStackTrace();
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-		} 
-		finally
-		{
-			try 
-			{
-				if(dataIn != null )
-				{
-					dataIn.close();
-				}
-			} 
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-			}
-		}
-		
-		return retval;
 	}
 	
 	public int getSize()
