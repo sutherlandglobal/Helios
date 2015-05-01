@@ -36,7 +36,6 @@
 
     </path>
 	<path id="Helios.junit.classpath">
-		<!--<pathelement location="${HELIOS_LIB}/conf/log4j.properties"/>-->
 		<pathelement location="${HELIOS_HOME}/bin"/>
         <pathelement location="${HELIOS_LIB}/jackcess-1.2.1.jar"/>
         <pathelement location="${HELIOS_LIB}/jxl.jar"/>
@@ -126,45 +125,23 @@
   		<mkdir dir="${HELIOS_HOME}/logs"/>
   		<mkdir dir="${HELIOS_HOME}/test"/>
   		
-		<junit failureProperty="test.failure" fork="yes">
+		<junit printsummary="yes" failureProperty="test.failure" fork="yes">
 		
 			<!-- <jvmarg value="-Dlog4j.debug=true" />-->
-			
-			
       		<classpath refid="Helios.junit.classpath" />
 			
 			<!--two formatters, one for ant output, the other for the test files-->
 			<formatter type="plain" usefile="false" />
 			<formatter type="plain" usefile="true" extension="" />
 		
-			<test name="com.sutherland.helios.data.test.DatumTest" todir="${HELIOS_HOME}/test"/>	
-			<test name="com.sutherland.helios.data.test.AggregationTest" todir="${HELIOS_HOME}/test"/>	
-			<test name="com.sutherland.helios.date.parsing.test.DateParserTest" todir="${HELIOS_HOME}/test"/>	
-			<test name="com.sutherland.helios.date.formatting.test.DateFormatterTest" todir="${HELIOS_HOME}/test"/>	
-			<test name="com.sutherland.helios.date.interval.test.IntervalsTest" todir="${HELIOS_HOME}/test"/>
-			<test name="com.sutherland.helios.data.granularity.user.test.UserGrainsTest" todir="${HELIOS_HOME}/test"/>
-			<test name="com.sutherland.helios.report.parameters.sanitize.test.StringSanitizerTest" todir="${HELIOS_HOME}/test"/>		
-			<test name="com.sutherland.helios.report.parameters.test.ParameterInfoTest" todir="${HELIOS_HOME}/test"/>
-			<test name="com.sutherland.helios.report.parameters.parameter.test.ParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="com.sutherland.helios.report.parameters.parameter.test.AgentNamesParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="com.sutherland.helios.report.parameters.parameter.test.EndDateParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="com.sutherland.helios.report.parameters.parameter.test.NumDriversParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="com.sutherland.helios.report.parameters.parameter.test.ReportClassNameParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="com.sutherland.helios.report.parameters.parameter.test.ReportTypeParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="com.sutherland.helios.report.parameters.parameter.test.SourceParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="com.sutherland.helios.report.parameters.parameter.test.StartDateParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="com.sutherland.helios.report.parameters.parameter.test.TeamNamesParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="com.sutherland.helios.report.parameters.parameter.test.TimeGrainParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="com.sutherland.helios.report.parameters.parameter.test.UserGrainParameterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="com.sutherland.helios.report.parameters.test.ReportParametersTest" todir="${HELIOS_HOME}/test"/>
-			
-			<!--
-			<test name="com.sutherland.helios.roster.test.MockRosterTest" todir="${HELIOS_HOME}/test"/>
-			<test name="com.sutherland.helios.report.test.MockReportTest" todir="${HELIOS_HOME}/test"/>
-			-->
-			
-			<test name="com.sutherland.helios.api.report.test.ReportEntityTest" todir="${HELIOS_HOME}/test"/>
-			<!--<test name="com.sutherland.helios.api.report.test.ReportProcessorTest" todir="${HELIOS_HOME}/test"/>-->
+		      <batchtest fork="yes" todir="${HELIOS_HOME}/test">
+		        <fileset dir="${HELIOS_HOME}/src">
+		          <include name="**/*Test.java"/>
+	        	  <exclude name="**/MockRosterTest*" />
+		          <exclude name="**/MockReportTest*" />
+			      <exclude name="**/ReportProcessorTest*" />
+		        </fileset>
+		      </batchtest>
     	</junit>
 
     	<fail message="test failed" if="test.failure" />
