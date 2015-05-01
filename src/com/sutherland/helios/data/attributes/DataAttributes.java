@@ -15,6 +15,7 @@ public interface DataAttributes
 	public final static String CALL_VOL_ATTR = "callVolume";
 		
 	//surveys
+	public final static String CSAT_RATE_ATTR = "CSATRate";
 	public final static String IVR_CSAT_ATTR = "ivrCSAT";
 	public final static String DSAT_CASE_ATTR = "dsatCases";
 	public final static String LMI_DSAT_CASE_ATTR = "lmiDsatCases";
