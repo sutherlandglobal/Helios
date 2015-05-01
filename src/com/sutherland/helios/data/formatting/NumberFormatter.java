@@ -3,6 +3,7 @@
  */
 package com.sutherland.helios.data.formatting;
 
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 /**
@@ -24,7 +25,7 @@ public final class NumberFormatter
 	 */
 	public static String convertToCurrency(double value)
 	{
-		return new DecimalFormat("#.##").format(value);
+		return convertToPrecision(value, 2);
 	}
 	
 	/**
@@ -37,13 +38,27 @@ public final class NumberFormatter
 	 */
 	public static String convertToPercentage(double value, int places)
 	{
-		String formatDescriptor = "#.";
+		return convertToPrecision(100*value, places);
+	}
+	
+	public static String convertToPercentage(double value)
+	{
+		return convertToPrecision(100*value, 2);
+	}
+	
+	public static String convertToPrecision(double value, int decimalPlaces)
+	{
+		String formatDescriptor = "0.";
 
-		for(int i = 0; i < places; i ++)
+		for(int i = 0; i < decimalPlaces; i++)
 		{
-			formatDescriptor += "#";
+			formatDescriptor += "0";
 		}
-
-		return new DecimalFormat(formatDescriptor).format(100*value);
+		
+		DecimalFormat decimalFormat = new DecimalFormat(formatDescriptor);
+		decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+		
+		//format and remove trailing decimal point
+		return decimalFormat.format(value).replaceFirst("\\.$", "");
 	}
 }
