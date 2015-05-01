@@ -64,7 +64,7 @@ public abstract class Roster extends Report implements BasicRosterAttributes
 	 * @see report.Report#runReport()
 	 */
 	@Override
-	protected abstract ArrayList<String[]> runReport() throws Exception;
+	protected abstract ArrayList<String[]> loadData() throws Exception;
 	
 	public ArrayList<String> getTeamNames(String userID) 
 	{
@@ -135,9 +135,6 @@ public abstract class Roster extends Report implements BasicRosterAttributes
 	}
 	
 	public abstract String getFullName(String userID);
-	
-	//hard to anticipate schema. maybe force the implementor to handle the how and provide the structure here
-	public abstract void load();
 	
 	public void close()
 	{
@@ -278,26 +275,6 @@ public abstract class Roster extends Report implements BasicRosterAttributes
 	{
 		return userList.hasDatum(userID);
 	}
-
-//	public void addTeamFilter(String teamName)
-//	{
-//		teamFilterList.add(teamName);
-//	}
-//	
-//	public void removeTeamFilter(String teamName)
-//	{
-//		teamFilterList.remove(teamName);
-//	}
-//	
-//	public void addUserFilter(String userName)
-//	{
-//		userFilterList.add(userName);
-//	}
-//	
-//	public void removeUserFilter(String teamName)
-//	{
-//		userFilterList.remove(teamName);
-//	}
 	
 	/* (non-Javadoc)
 	 * @see report.Report#validateParameters()

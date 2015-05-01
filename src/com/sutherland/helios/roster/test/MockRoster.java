@@ -73,44 +73,10 @@ public class MockRoster extends Roster implements BasicRosterAttributes
 		
 		return retval;
 	}
-
-	/* (non-Javadoc)
-	 * @see com.sutherland.helios.roster.Roster#runReport()
-	 */
-	@Override
-	protected ArrayList<String[]> runReport() 
+	
+	public String getUnits()
 	{
-		ArrayList<String[]> retval = new ArrayList<String[]>();
-		
-		load();
-		
-		for(String userID : getUserIDs())
-		{
-			String userTeams = "";
-
-			for(String userTeam : getTeamNames(userID))
-			{
-				userTeams += userTeam + ":";
-			}
-
-			retval.add
-			(
-					new String[] 
-							{
-							getUser(userID).getAttributeData(USERID_ATTR).get(0),
-							getUser(userID).getAttributeData(DERPID_ATTR).get(0),
-							getUser(userID).getAttributeData(LNAME_ATTR).get(0),
-							getUser(userID).getAttributeData(FNAME_ATTR).get(0),
-							getUser(userID).getAttributeData(EMPID_ATTR).get(0),
-							getFullName(userID),
-							userTeams,
-							"" + isActiveUser(userID)
-							}
-					);
-			
-		}
-		
-		return retval;
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -132,10 +98,10 @@ public class MockRoster extends Roster implements BasicRosterAttributes
 	}
 
 	/* (non-Javadoc)
-	 * @see com.sutherland.helios.roster.Roster#load()
+	 * @see com.sutherland.helios.roster.Roster#loadData()
 	 */
 	@Override
-	public void load() 
+	public ArrayList<String[]> loadData() 
 	{		
 		Datum user1 = new Datum("001");
 		Datum user2 = new Datum("002");
@@ -355,6 +321,34 @@ public class MockRoster extends Roster implements BasicRosterAttributes
 			userList.addDatum(user9.getDatumID(), user9);
 		}
 
+		ArrayList<String[]> retval = new ArrayList<String[]>();
+		
+		for(String userID : getUserIDs())
+		{
+			String userTeams = "";
+
+			for(String userTeam : getTeamNames(userID))
+			{
+				userTeams += userTeam + ":";
+			}
+
+			retval.add
+			(
+					new String[] 
+							{
+							getUser(userID).getAttributeData(USERID_ATTR).get(0),
+							getUser(userID).getAttributeData(DERPID_ATTR).get(0),
+							getUser(userID).getAttributeData(LNAME_ATTR).get(0),
+							getUser(userID).getAttributeData(FNAME_ATTR).get(0),
+							getUser(userID).getAttributeData(EMPID_ATTR).get(0),
+							getFullName(userID),
+							userTeams,
+							"" + isActiveUser(userID)
+							}
+			);
+		}
+		
+		return retval;
 	}
 
 	/* (non-Javadoc)

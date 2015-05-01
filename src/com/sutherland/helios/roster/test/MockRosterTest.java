@@ -66,7 +66,8 @@ public class MockRosterTest extends TestCase
 		roster.getParameters().addTeamName("Canada");
 		roster.getParameters().addTeamName("Russia");
 		
-		ArrayList<String[]> actualResults = roster.startReport(); 
+		roster.startReport();
+		ArrayList<String[]> actualResults = roster.getData(); 
 
 		assertEquals("Resultset size equality", expectedResults.size(), actualResults.size());
 		
@@ -93,7 +94,8 @@ public class MockRosterTest extends TestCase
 		roster.getParameters().addAgentName("Kane:Patrick");
 		roster.getParameters().addAgentName("Datzyuk:Pavel");
 		
-		ArrayList<String[]> actualResults = roster.startReport(); 
+		roster.startReport();
+		ArrayList<String[]> actualResults = roster.getData(); 
 
 		assertEquals("Resultset size equality", expectedResults.size(), actualResults.size());
 		
@@ -126,7 +128,8 @@ public class MockRosterTest extends TestCase
 		roster.getParameters().addTeamName("USA");
 		roster.getParameters().addTeamName("Canada");
 		
-		ArrayList<String[]> actualResults = roster.startReport(); 
+		roster.startReport();
+		ArrayList<String[]> actualResults = roster.getData(); 
 
 		assertEquals("Resultset size equality", expectedResults.size(), actualResults.size());
 		
