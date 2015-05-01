@@ -309,16 +309,16 @@ public class DateParser
 									(int) Double.parseDouble(timeFields[2])	//truncate tenths of a second in mysql timestamps
 					);
 				}
-				catch(ArrayIndexOutOfBoundsException e)
+				catch(Exception e)
 				{
-					System.err.println("Error converting " + date);
-				}
-				catch(NullPointerException e)
-				{
-					System.err.println("Error converting " + date);
+					System.err.println("Error converting date string to gregorian date" + date);
+					throw e;
 				}
 			}
-	
+		}
+		else
+		{
+			throw new IllegalArgumentException("Date parameter is not in expected format");
 		}
 
 		return retval;
@@ -343,7 +343,6 @@ public class DateParser
 		}
 		else
 		{
-
 			//dates in YYYY-MM-DD HH:MM:SS
 			//Wed Nov 03 21:35:00 EDT 2010
 			//
@@ -362,31 +361,37 @@ public class DateParser
 				//cheers to dishonest javadocs
 				//0-based stupid
 
-
 				retval = new GregorianCalendar
-						(
-								Integer.parseInt(dateFields[0]),
-								Integer.parseInt(dateFields[1]) -1,
-								Integer.parseInt(dateFields[2]),
-								Integer.parseInt(timeFields[0]),
-								Integer.parseInt(timeFields[1]),
-								(int) Double.parseDouble(timeFields[2]) //truncate tenths of a second in mysql timestamps
-								);
+				(
+					Integer.parseInt(dateFields[0]),
+					Integer.parseInt(dateFields[1]) -1,
+					Integer.parseInt(dateFields[2]),
+					Integer.parseInt(timeFields[0]),
+					Integer.parseInt(timeFields[1]),
+					(int) Double.parseDouble(timeFields[2]) //truncate tenths of a second in mysql timestamps
+				);
 			}
-			catch(ArrayIndexOutOfBoundsException e)
+			catch(Exception e)
 			{
 				System.err.println("Error converting " + date);
-			}
-			catch(NullPointerException e)
-			{
-				System.err.println("Error converting " + date);
+				throw e;
 			}
 		}
 
-
 		return retval;
 	}
-
+	
+	public static GregorianCalendar convertDateToGregorian(String date)
+	{
+		if ( StringSanitizer.isValidSQLDate(date))
+		{
+			return convertSQLDateToGregorian(date);
+		}
+		else //if( StringSanitizer.isValidExcelDate(date)
+		{
+			return convertExcelDateToGregorian(date);
+		}
+	}
 
 	public static GregorianCalendar convertExcelDateToGregorian(String date)
 	{
@@ -442,18 +447,95 @@ public class DateParser
 						retval.set(Calendar.AM_PM, Calendar.AM);
 					}
 				}
-				catch(ArrayIndexOutOfBoundsException e)
+				catch(Exception e)
 				{
-					System.err.println("Error converting " + date);
-				}
-				catch(NullPointerException e)
-				{
-					System.err.println("Error converting " + date);
+					System.err.println("Error converting date string to gregorian date" + date);
+					throw e;
 				}
 			}
-	
+		}
+		else
+		{
+			throw new IllegalArgumentException("Date parameter is not in expected format");
 		}
 
+		return retval;
+	}
+
+	public static int compareDateGrains(String dateGrain1, String dateGrain2) 
+	{
+		//normalize the strings and return the compareTo
+		//normalization will look like yyyy-mm-dd hh:mm:ss, with hours converted to 24 scale 
+		
+		//need same granularity in both grains, cannot compare days (2014-03-27) to weeks (2014-03-51) 
+		
+		//if we can't normalize, return zero 
+		int retval = 0;
+		
+		
+		//determine if we have nonsense or not
+		//biggest grain is year; we expect at least 4 digits
+		if(dateGrain1 != null && dateGrain2 != null && dateGrain1.length() >= 4 && dateGrain2.length() >= 4)
+		{
+			//determine format
+			if(dateGrain1.contains("/") && dateGrain2.contains("/"))
+			{
+				//date will have either one / or two
+				String[] dateFields1 = dateGrain1.split("\\/");
+				String[] dateFields2 = dateGrain2.split("\\/");
+
+				String normalizedDate1, normalizedDate2;
+				
+				if(dateFields1.length == 2 && dateFields2.length == 2)
+				{
+					//04/2010
+					
+					normalizedDate1 = (dateFields1[1] + "-" + dateFields1[0]);
+					normalizedDate2 = (dateFields2[1] + "-" + dateFields2[0]);
+					
+					retval = normalizedDate1.compareTo(normalizedDate2);
+				}
+				else if(dateFields1.length == 3 && dateFields2.length == 3)
+				{
+					//03/27/1985
+					//03/27/1985 11:00:00 PM
+
+					if(dateGrain1.contains(" ") && dateGrain2.contains(" "))
+					{
+						//03/27/1985 11:00:00 PM
+						
+						//full timestamp so just convert and compare
+						retval = DateParser.convertExcelDateToGregorian(dateGrain1).compareTo(DateParser.convertExcelDateToGregorian(dateGrain2));
+					}
+					else
+					{
+						normalizedDate1 = dateFields1[2] + "-" + dateFields1[1] + "-" + dateFields1[0];
+						normalizedDate2 = dateFields2[2] + "-" + dateFields2[1] + "-" + dateFields2[0];
+						
+						retval = normalizedDate1.compareTo(normalizedDate2);
+					}
+				}
+				else
+				{
+					throw new IllegalArgumentException("Invalid date grain in date grain comparison");
+				}
+			}
+			else if(dateGrain1.contains("-") && dateGrain2.contains("-"))
+			{
+				retval = dateGrain1.compareTo(dateGrain2);
+			}
+			else
+			{
+				//compare just the year
+				retval = dateGrain1.compareTo(dateGrain2);
+			}
+		}
+		else
+		{
+			//malformed or unusable strings
+			throw new IllegalArgumentException("Invalid date grain in date grain comparison");
+		}
+		
 		return retval;
 	}
 }

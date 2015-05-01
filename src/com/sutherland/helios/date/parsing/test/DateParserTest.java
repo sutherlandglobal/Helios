@@ -2,11 +2,14 @@ package com.sutherland.helios.date.parsing.test;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Map.Entry;
 
 import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import com.sutherland.helios.data.granularity.time.TimeGrains;
+import com.sutherland.helios.date.formatting.DateFormatter;
 import com.sutherland.helios.date.parsing.DateParser;
 
 public class DateParserTest extends TestCase
@@ -313,19 +316,59 @@ public class DateParserTest extends TestCase
 		assertEquals("Impossible date: 2011-03-01 23:59:59", "2011-03-01 23:59:59", DateParser.toSQLDateFormat(DateParser.convertSQLDateToGregorian(testDate)));
 
 		testDate = "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a ";
-		assertNull("Long array of text", DateParser.convertSQLDateToGregorian(testDate));
+		try
+		{
+			DateParser.convertSQLDateToGregorian(testDate);
+			assertTrue("Long array of text", false);
+		}
+		catch(IllegalArgumentException e)
+		{
+			assertTrue("Long array of text", true);
+		}
 
 		testDate = ""; 
-		assertNull("Empty String", DateParser.convertSQLDateToGregorian(testDate));
+		try
+		{
+			DateParser.convertSQLDateToGregorian(testDate);
+			assertTrue("Empty String", false);
+		}
+		catch(IllegalArgumentException e)
+		{
+			assertTrue("Empty String", true);
+		}
 
 		testDate = ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;"; 
-		assertNull("Semicolon String", DateParser.convertSQLDateToGregorian(testDate));
+		try
+		{
+			DateParser.convertSQLDateToGregorian(testDate);
+			assertTrue("Semicolon String", false);
+		}
+		catch(IllegalArgumentException e)
+		{
+			assertTrue("Semicolon String", true);
+		}
 
 		testDate = "3333-20-60 34:99:99";
-		assertNull("Really impossible date", DateParser.convertSQLDateToGregorian(testDate));
+		try
+		{
+			DateParser.convertSQLDateToGregorian(testDate);
+			assertTrue("Really impossible date", false);
+		}
+		catch(IllegalArgumentException e)
+		{
+			assertTrue("Really impossible date", true);
+		}
 
 		testDate = "abcd-10-ef gh:34:ji";
-		assertNull("Proper format - bad values", DateParser.convertSQLDateToGregorian(testDate));
+		try
+		{
+			DateParser.convertSQLDateToGregorian(testDate);
+			assertTrue("Proper format - bad values", false);
+		}
+		catch(IllegalArgumentException e)
+		{
+			assertTrue("Proper format - bad values", true);
+		}	
 	}
 	
 	@Test
@@ -352,19 +395,59 @@ public class DateParserTest extends TestCase
 		assertEquals("Impossible date: 03/01/2011 11:59:59 PM", "03/01/2011 11:59:59 PM", DateParser.toExcelDateFormat(DateParser.convertExcelDateToGregorian(testDate)));
 
 		testDate = "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a ";
-		assertNull("Long array of text", DateParser.convertExcelDateToGregorian(testDate));
+		try
+		{
+			DateParser.convertExcelDateToGregorian(testDate);
+			assertTrue("Long array of text", false);
+		}
+		catch(IllegalArgumentException e)
+		{
+			assertTrue("Long array of text", true);
+		}
 
 		testDate = ""; 
-		assertNull("Empty String", DateParser.convertExcelDateToGregorian(testDate));
+		try
+		{
+			DateParser.convertExcelDateToGregorian(testDate);
+			assertTrue("Empty String", false);
+		}
+		catch(IllegalArgumentException e)
+		{
+			assertTrue("Empty String", true);
+		}
 
 		testDate = ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;"; 
-		assertNull("Semicolon String", DateParser.convertExcelDateToGregorian(testDate));
+		try
+		{
+			DateParser.convertExcelDateToGregorian(testDate);
+			assertTrue("Semicolon String", false);
+		}
+		catch(IllegalArgumentException e)
+		{
+			assertTrue("Semicolon String", true);
+		}
 
-		testDate = "20/60/3333 34:99:99 ZF";
-		assertNull("Really impossible date", DateParser.convertExcelDateToGregorian(testDate));
+		testDate = "3333-20-60 34:99:99";
+		try
+		{
+			DateParser.convertExcelDateToGregorian(testDate);
+			assertTrue("Really impossible date", false);
+		}
+		catch(IllegalArgumentException e)
+		{
+			assertTrue("Really impossible date", true);
+		}
 
-		testDate = "10/ef/abcd gh:34:ji %%";
-		assertNull("Proper format - bad values", DateParser.convertExcelDateToGregorian(testDate));
+		testDate = "abcd-10-ef gh:34:ji";
+		try
+		{
+			DateParser.convertExcelDateToGregorian(testDate);
+			assertTrue("Proper format - bad values", false);
+		}
+		catch(IllegalArgumentException e)
+		{
+			assertTrue("Proper format - bad values", true);
+		}	
 	}
 	
 	@Test
@@ -386,4 +469,117 @@ public class DateParserTest extends TestCase
             testDate = "Tue Feb 02 04:06:00 EDT 2010";
             assertEquals("2010-02-02 04:06:00", DateParser.toSQLDateFormat(dp.convertMSAccessDateToGregorian(testDate)) );
     }
+	
+	@Test
+	public void testDateGrainComparison()
+	{
+		//test all formats, granularities
+		String date1 = "2010-03-27 14:30:59";
+		String date2 = "2011-04-28 14:30:59";
+		String sqlDateGrain1, sqlDateGrain2, excelDateGrain1, excelDateGrain2;
+		
+		for( Entry<String, String> grain : TimeGrains.avaliableTimeGrains.entrySet())
+		{
+			sqlDateGrain1 = DateFormatter.getFormattedDate(DateParser.convertDateToGregorian(date1), Integer.parseInt(grain.getValue()), DateFormatter.SQL_FORMAT);
+			sqlDateGrain2 = DateFormatter.getFormattedDate(DateParser.convertDateToGregorian(date2), Integer.parseInt(grain.getValue()), DateFormatter.SQL_FORMAT);
+			
+			excelDateGrain1 = DateFormatter.getFormattedDate(DateParser.convertDateToGregorian(date1), Integer.parseInt(grain.getValue()), DateFormatter.EXCEL_FORMAT);
+			excelDateGrain2 = DateFormatter.getFormattedDate(DateParser.convertDateToGregorian(date2), Integer.parseInt(grain.getValue()), DateFormatter.EXCEL_FORMAT);
+			
+			assertEquals
+			(
+					"Same granularity at level: " + grain.getKey() +" for the same SQL date " + sqlDateGrain1,
+					0,
+					DateParser.compareDateGrains(sqlDateGrain1, sqlDateGrain1)
+			);
+			
+			assertEquals
+			(
+					"Same granularity at level: " + grain.getKey() +" for the SQL dates " + sqlDateGrain1 + ", " + sqlDateGrain2,
+					-1,
+					DateParser.compareDateGrains(sqlDateGrain1, sqlDateGrain2)
+			);
+			
+			assertEquals
+			(
+					"Same granularity at level: " + grain.getKey() +" for the same Excel date " + excelDateGrain1, 
+					0,
+					DateParser.compareDateGrains(excelDateGrain1, excelDateGrain1)
+			);
+			
+			assertEquals
+			(
+					"Same granularity at level: " + grain.getKey() +" for the Excel dates " + excelDateGrain1 + ", " + excelDateGrain2,
+					-1,
+					DateParser.compareDateGrains(excelDateGrain1, excelDateGrain2)
+			);
+		}
+		
+		//just the year
+		assertEquals("Year grain comparisons ascending", DateParser.compareDateGrains("2014", "2013"), 1);
+		assertEquals("Year grain comparisons descending", DateParser.compareDateGrains("2012", "2013"), -1);
+		
+		try
+		{
+			DateParser.compareDateGrains("", "");
+			assertTrue("Empty inputs", false);
+		}
+		catch(IllegalArgumentException e)
+		{
+			assertTrue("Empty inputs", true);
+		}	
+		
+		try
+		{
+			DateParser.compareDateGrains("20", "14");
+			assertTrue("Malformed inputs", false);
+		}
+		catch(IllegalArgumentException e)
+		{
+			assertTrue("Malformed inputs", true);
+		}	
+		
+		//month/quarter/fiscal quarter
+		assertEquals("Month/quarter/fiscal quarter grain comparisons1", 1, DateParser.compareDateGrains("2014-01", "2013-01"));
+		assertEquals("Month/quarter/fiscal quarter grain comparisons2", 0, DateParser.compareDateGrains("2014-01", "2014-01"));
+		assertEquals("Month/quarter/fiscal quarter grain comparisons3", -1, DateParser.compareDateGrains("2013-01", "2014-01"));
+		assertEquals("Month/quarter/fiscal quarter grain comparisons4", 1, DateParser.compareDateGrains("2014-01", "2013-05"));
+		assertEquals("Month/quarter/fiscal quarter grain comparisons5", -1, DateParser.compareDateGrains("2013-01", "2014-05"));
+		
+		assertEquals("Month/quarter/fiscal quarter grain comparisons6", 1, DateParser.compareDateGrains("01/2014", "01/2013"));
+		assertEquals("Month/quarter/fiscal quarter grain comparisons7", 0, DateParser.compareDateGrains("01/2014", "01/2014"));
+		assertEquals("Month/quarter/fiscal quarter grain comparisons8", -1, DateParser.compareDateGrains("01/2013", "01/2014"));
+		assertEquals("Month/quarter/fiscal quarter grain comparisons9", 1, DateParser.compareDateGrains("01/2014", "05/2013"));
+		assertEquals("Month/quarter/fiscal quarter grain comparisons10", -1, DateParser.compareDateGrains("01/2013", "05/2014"));
+		
+		//day/week
+		assertEquals("Day/week grain comparisons1", 1, DateParser.compareDateGrains("2014-01-04", "2013-01-04"));
+		assertEquals("Day/week grain comparisons2", 0, DateParser.compareDateGrains("2014-01-10", "2014-01-10"));
+		assertEquals("Day/week grain comparisons3", -1, DateParser.compareDateGrains("2013-01-20", "2014-01-01"));
+		assertEquals("Day/week grain comparisons4", 1, DateParser.compareDateGrains("2014-01-01", "2013-05-05"));
+		assertEquals("Day/week grain comparisons5", -1, DateParser.compareDateGrains("2013-01-01", "2014-05-05"));
+
+		assertEquals("Day/week grain comparisons6", 1, DateParser.compareDateGrains("01/04/2014", "01/04/2013"));
+		assertEquals("Day/week grain comparisons7", 0, DateParser.compareDateGrains("01/10/2014", "01/10/2014"));
+		assertEquals("Day/week grain comparisons8", -1, DateParser.compareDateGrains("01/20/2013", "01/01/2014"));
+		assertEquals("Day/week grain comparisons9", 1, DateParser.compareDateGrains("01/01/2014", "05/05/2013"));
+		assertEquals("Day/week grain comparisons10", -1, DateParser.compareDateGrains("01/01/2013", "05/05/2014"));
+		
+		//hour
+		assertEquals("Hour grain comparisons1", 1, DateParser.compareDateGrains("2014-01-04 01:00:00", "2013-01-04 02:00:00"));
+		assertEquals("Hour grain comparisons2", 0, DateParser.compareDateGrains("2014-01-10 02:00:00", "2014-01-10 02:00:00"));
+		assertEquals("Hour grain comparisons3", -1, DateParser.compareDateGrains("2013-01-20 02:00:00", "2014-01-01 02:00:00"));
+		assertEquals("Hour grain comparisons4", 1, DateParser.compareDateGrains("2014-01-01 02:00:00", "2013-05-05 02:00:00"));
+		assertEquals("Hour grain comparisons5", -1, DateParser.compareDateGrains("2013-01-01 02:00:00", "2014-05-05 02:00:00"));
+
+		assertEquals("Hour grain comparisons6", 1, DateParser.compareDateGrains("01/04/2014 01:00:00 AM", "01/04/2013 02:00:00 AM"));
+		assertEquals("Hour grain comparisons7", 0, DateParser.compareDateGrains("01/10/2014 01:00:00 AM", "01/10/2014 01:00:00 AM"));
+		assertEquals("Hour grain comparisons8", -1, DateParser.compareDateGrains("01/20/2013 02:00:00 AM", "01/01/2014 02:00:00 AM"));
+		assertEquals("Hour grain comparisons9", 1, DateParser.compareDateGrains("01/01/2014 02:00:00 AM", "05/05/2013 02:00:00 AM"));
+		assertEquals("Hour grain comparisons10", -1, DateParser.compareDateGrains("01/01/2013 02:00:00 AM", "05/05/2014 02:00:00 AM"));
+		assertEquals("Hour grain comparisons11", -1, DateParser.compareDateGrains("01/20/2013 02:00:00 PM", "01/01/2014 02:00:00 PM"));
+		assertEquals("Hour grain comparisons12", 1, DateParser.compareDateGrains("01/01/2014 02:00:00 PM", "05/05/2013 02:00:00 PM"));
+		assertEquals("Hour grain comparisons13", -1, DateParser.compareDateGrains("01/01/2013 02:00:00 PM", "05/05/2014 02:00:00 PM"));
+		assertEquals("Hour grain comparisons14", -1, DateParser.compareDateGrains("01/01/2013 02:00:00 AM", "01/01/2013 02:00:00 PM"));
+	}
 }
