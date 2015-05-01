@@ -130,7 +130,8 @@ public class ReportRunner
 								{
 									workers.set(i, report.getValue());
 									
-									results.put(report.getKey(), report.getValue().startReport());
+									report.getValue().startReport();
+									results.put(report.getKey(), report.getValue().getData());
 								}
 								catch(Throwable t)
 								{

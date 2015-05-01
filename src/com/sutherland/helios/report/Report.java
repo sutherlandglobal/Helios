@@ -4,7 +4,10 @@
 package com.sutherland.helios.report;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
+import com.sutherland.helios.date.parsing.DateParser;
 import com.sutherland.helios.exceptions.ExceptionFormatter;
 import com.sutherland.helios.exceptions.ReportSetupException;
 import com.sutherland.helios.report.parameters.ParameterInfo;
@@ -32,6 +35,7 @@ public abstract class Report implements ReportTypes, ReportParameterGroups
 	protected boolean isChildReport;
 
 	protected String logID;
+	protected ArrayList<String[]> data;
 	
 	protected final static String LOG_ID_PREFIX = "id=";
 
@@ -47,6 +51,8 @@ public abstract class Report implements ReportTypes, ReportParameterGroups
 	 */
 	protected Report() throws ReportSetupException
 	{
+		data = new ArrayList<String[]>();
+		
 		isChildReport = false;
 
 		setErrorMessage("");
@@ -96,19 +102,24 @@ public abstract class Report implements ReportTypes, ReportParameterGroups
 	 * 
 	 * @return The result set, null if the report fails.
 	 */
-	public ArrayList<String[]> startReport() 
+	public void startReport() 
 	{
-		ArrayList<String[]> retval = new ArrayList<String[]>();
-
 		try 
 		{
+
 			if (validateParameters()) 
 			{
 				long startTime = System.currentTimeMillis();
-				retval = runReport();
+				data.clear();
+				data.addAll(loadData());
+				
+				//sort the data
+				//standardize how information leaves the data layer. report types imply the structures assumed
+				sortData();
+				
 				long endTime = System.currentTimeMillis();
 				
-				logInfoMessage("Execution completed in: " + (endTime - startTime) + " ms, returning rows: " + retval.size());
+				logInfoMessage("Execution completed in: " + (endTime - startTime) + " ms, returning rows: " + data.size());
 			} 
 			else 
 			{
@@ -121,8 +132,54 @@ public abstract class Report implements ReportTypes, ReportParameterGroups
 			setErrorMessage(ExceptionFormatter.asString(e));
 			logErrorMessage(getErrorMessage());
 		}
-
-		return retval;
+	}
+	
+	public ArrayList<String[]> getData()
+	{
+		return data;
+	}
+	
+	protected void sortData()
+	{
+		if(isTimeTrendReport())
+		{
+			//sort data by time grain, which will never be a full date
+			Collections.sort(data, new Comparator<String[]>()
+			{
+					public int compare(String[] arg0, String[] arg1) 
+					{
+						//time trend schema is always date first
+						return DateParser.compareDateGrains(arg0[0], arg1[0]);
+					}
+			}
+			);
+		}
+		else if(isStackReport())
+		{
+			Collections.sort(data, new Comparator<String[]>()
+			{
+					public int compare(String[] arg0, String[] arg1) 
+					{
+						int retval;
+						if(arg0[1] == null)
+						{
+							retval = -1;
+						}
+						else if(arg1[1] == null)
+						{
+							retval = 1;
+						}
+						else
+						{
+							//for n elements, compare row[1]
+							//compare value, descending
+							retval =-1 *( new Double(arg0[1]).compareTo(new Double(arg1[1])));
+						}
+						return retval;
+					}
+			}
+			);
+		}
 	}
 
 	/**
@@ -170,6 +227,11 @@ public abstract class Report implements ReportTypes, ReportParameterGroups
 		return parameters.isDriversReport();
 	}
 	
+	public int getDataSize()
+	{
+		return data.size();
+	}
+	
 	/**
 	 * Process the child report. Only report.startReport should call this.
 	 * 
@@ -181,9 +243,12 @@ public abstract class Report implements ReportTypes, ReportParameterGroups
 	 *             startReport() or another proper handling mechanism
 	 * 
 	 */
-	protected abstract ArrayList<String[]> runReport() throws Exception;
+	protected abstract ArrayList<String[]> loadData() throws Exception;
 
 	public abstract ArrayList<String> getReportSchema();
+	
+	public abstract String getUnits();
+	
 	/**
 	 * Validate the report's parameters. 
 	 * 

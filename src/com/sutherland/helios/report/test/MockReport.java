@@ -114,12 +114,12 @@ public class MockReport extends Report
 	 * @see com.sutherland.helios.report.Report#runReport()
 	 */
 	@Override
-	protected ArrayList<String[]> runReport() throws Exception 
+	protected ArrayList<String[]> loadData() throws Exception 
 	{
 		roster.setParameters(getParameters());
 		roster.setChildReport(true);
 		
-		roster.load();
+		roster.startReport();
 		
 		ArrayList<String[]> retval = new ArrayList<String[]>();
 		ArrayList<String[]> rawData = new ArrayList<String[]>();
@@ -212,7 +212,6 @@ public class MockReport extends Report
 		for(String[] row : rawData)
 		{
 			userID = row[1];
-
 			
 			if(roster.getUser(userID) != null)
 			{
@@ -250,6 +249,11 @@ public class MockReport extends Report
 		}
 		
 		return retval;
+	}
+	
+	public String getUnits()
+	{
+		return "Dollars";
 	}
 	
 	public void close()

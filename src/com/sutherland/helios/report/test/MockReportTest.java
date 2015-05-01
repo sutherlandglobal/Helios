@@ -122,7 +122,9 @@ public class MockReportTest extends TestCase
 		testReport.getParameters().setReportType(ReportTypes.TIME_TREND_REPORT);
 		testReport.getParameters().setTimeGrain(TimeGrains.DAILY_GRANULARITY);
 		
-		ArrayList<String[]> actualResults = testReport.startReport();
+		testReport.startReport();
+		
+		ArrayList<String[]> actualResults = testReport.getData(); 
 		assertTrue("Result set is non-zero size", actualResults.size() > 0);
 		
 		ArrayList<String[]> expectedResults = new ArrayList<String[]>();
@@ -163,7 +165,9 @@ public class MockReportTest extends TestCase
 		testReport.getParameters().setReportType(ReportTypes.STACK_REPORT);
 		testReport.getParameters().setUserGrain(UserGrains.AGENT_GRANULARITY);
 		
-		ArrayList<String[]> actualResults = testReport.startReport();
+		testReport.startReport();
+		
+		ArrayList<String[]> actualResults = testReport.getData(); 
 		assertTrue("Result set is non-zero size", actualResults.size() > 0);
 		
 		ArrayList<String[]> expectedResults = new ArrayList<String[]>();
