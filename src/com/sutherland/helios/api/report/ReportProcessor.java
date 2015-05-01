@@ -4,8 +4,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 
 import com.sutherland.helios.report.Report;
@@ -29,8 +27,6 @@ public class ReportProcessor
 
 	private ArrayList<ReportEntity> loadedReportEntities;
 	
-	private ArrayList<String> reportSchema;
-
 	private String errorMessage;
 	
 	public ReportProcessor()
@@ -40,8 +36,6 @@ public class ReportProcessor
 		loadedReportEntities = new ArrayList<ReportEntity>();
 
 		loadedJars = new ArrayList<String>();
-		
-		reportSchema = null;
 	}
 	
 	public String getErrorMessage()
@@ -52,11 +46,6 @@ public class ReportProcessor
 	public void addJar(String jarPath)
 	{
 		loadedJars.add(jarPath);
-	}
-		
-	public ArrayList<String> getReportSchema()
-	{
-		return reportSchema;
 	}
 	
 	/**
@@ -335,7 +324,7 @@ public class ReportProcessor
 		return retval;
 	}
 	
-	public ArrayList<String[]> startReport(String reportClassName, ReportParameters parameters) throws ClassNotFoundException
+	public Report startReport(String reportClassName, ReportParameters parameters) throws ClassNotFoundException
 	{
 		if(loadedReportEntities.isEmpty())
 		{
@@ -345,7 +334,6 @@ public class ReportProcessor
 		//reportname will be a raw name typically from the jsp layer, will have to look up the 
 		
 		Class<?>reportClass = buildReportClass(reportClassName);
-		ArrayList<String[]> retval = null;
 		//check for reportClass not being null
 		
 		Report report =  null; 
@@ -371,52 +359,7 @@ public class ReportProcessor
 				}
 			}
 			
-			retval	= new ArrayList<String[]>();
-			
-			for(String[] row : report.startReport())
-			{
-				retval.add(row);
-			}
-			
-			reportSchema = report.getReportSchema();
-			
-			if(report.isTimeTrendReport())
-			{
-				Collections.sort(retval, new Comparator<String[]>()
-				{
-						public int compare(String[] arg0, String[] arg1) 
-						{
-							//for n elements, compare row[0]
-							return arg0[0].compareTo(arg1[0]);
-						}
-				}
-				);
-			}
-			else if(report.isStackReport())
-			{
-				Collections.sort(retval, new Comparator<String[]>()
-				{
-						public int compare(String[] arg0, String[] arg1) 
-						{
-							int retval;
-							if(arg0[1] == null)
-							{
-								retval = -1;
-							}
-							else if(arg1[1] == null)
-							{
-								retval = 1;
-							}
-							else
-							{
-								//for n elements, compare row[1]
-								retval = arg0[1].compareTo(arg1[1]);
-							}
-							return retval;
-						}
-				}
-				);
-			}
+			report.startReport();
 		}
 		catch(IllegalAccessException e)
 		{
@@ -442,6 +385,6 @@ public class ReportProcessor
 			}
 		}
 			
-		return retval;
+		return report;
 	}
 }
