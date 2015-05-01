@@ -9,12 +9,6 @@
 <%@ page import="com.sutherland.helios.date.parsing.DateParser"%>
 <%@ page import="com.sutherland.helios.date.interval.Intervals"%>
 <%@ page import="com.sutherland.helios.report.parameters.ParameterInfo"%>
-<%@ page import="java.util.GregorianCalendar"%>
-<%@ page import="java.util.ArrayList"%>
-<%@ page import="java.util.HashMap"%>
-<%@ page import="java.util.LinkedHashMap"%>
-<%@ page import="java.util.Map.Entry"%>
-<%@ page import="java.util.Arrays"%>
 <%@ page import="$siteConfigClass"%>
 
 <link rel="stylesheet" href="<%= request.getContextPath() %>/css/jquery-ui.min.css" type="text/css"  />
@@ -379,9 +373,9 @@ function loadRoster()
 
 function loadNumDrivers()
 {
-	$("#numDriversSelectList").empty();
+	$("#numDriversSelectList").puidropdown("option", "data", []);
 	
-	for(var i = 5; i <= 30; i+=5) 
+	for(var i = 2; i <= 16; i+=2) 
 	{
 	    $("#numDriversSelectList").puidropdown("addOption", i, i);
 	}
@@ -726,7 +720,7 @@ function launchReport()
 
 <table width="100%">
 <tr>
-<td align ="left" width="50%"><img id="siteBannerImg" src="<%= request.getContextPath() %>/images/site_banner.jpg" width="400" height="72"/></td>
+<td align ="left" width="50%"><img id="siteBannerImg" src="<%= request.getContextPath() %>/$SITE_LOGO_URL" width="400" height="72"/></td>
 <td align="right" valign="center" width="50%"><b><font size="24"><%= SiteConfig.HELIOS_READABLE_SITE_NAME.replace(" ", "&nbsp;") %></font></b></td>
 </tr>
 </table>
@@ -752,11 +746,11 @@ function launchReport()
 	</thead>
 	<tbody>
 		<tr>
-			<td id="metricsCol" align="left" valign="top" style="width: 175px;">
+			<td id="metricsCol" align="left" valign="top" style="width: 250px;">
 				<!--  report names -->
 				<p><b>Select Metrics</b></p> 
 				<!--<select style="background-color: #ededed; border: 1px solid #0000FF; width: 175px;" id="metricSelectList" multiple></select>-->
-				<select style="width: 175px; border: 1px solid #0000FF;" id="metricSelectList" multiple size="40"></select>
+				<select style="width: 250px; border: 1px solid #0000FF;" id="metricSelectList" multiple size="40"></select>
 			</td>
 			<td id="rosterCol" align="left" valign="top" style="width: 400px" >
 				<!-- user and team lists --> 
@@ -834,7 +828,7 @@ function launchReport()
 						</tr>
 
 						<tr id="numDriversRow">
-							<td><label id="numDriversLabel" for="numDriversSelectList">Choose	number of drivers:</label><br><select id="numDriversSelectList" style="width: 20px;" ></select></td>
+							<td><label id="numDriversLabel" for="numDriversSelectList">Choose number of drivers:</label><br><select id="numDriversSelectList" style="width: 250px;" ></select></td>
 						</tr>
 
 						<tr id="reportFrontEndsRow">
