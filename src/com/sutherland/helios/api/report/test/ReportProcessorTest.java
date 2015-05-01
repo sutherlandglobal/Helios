@@ -15,6 +15,7 @@ import org.junit.Test;
 import com.sutherland.helios.api.report.ReportProcessor;
 import com.sutherland.helios.api.report.frontend.ReportFrontEnds;
 import com.sutherland.helios.data.granularity.user.UserGrains;
+import com.sutherland.helios.report.Report;
 import com.sutherland.helios.report.ReportTypes;
 import com.sutherland.helios.report.parameters.ParameterInfo;
 import com.sutherland.helios.report.parameters.ReportParameters;
@@ -236,7 +237,8 @@ public class ReportProcessorTest extends  TestCase
 			assertTrue("Set report source", rp.setSource("JUnit"));
 			
 			//report needs roster members
-			ArrayList<String[]> actualResults = proc.startReport(testReportClassName, rp);
+			Report report = proc.startReport(testReportClassName, rp);
+			ArrayList<String[]> actualResults = report.getData();
 			
 			assertNotNull("Non-null result set", actualResults);
 			assertTrue("Check that result set is non zero size", actualResults.size() > 0);
