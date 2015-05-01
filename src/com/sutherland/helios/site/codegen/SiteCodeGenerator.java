@@ -143,7 +143,6 @@ public class SiteCodeGenerator
 
 		generateSource("site/ui/header.vm", siteProperties.getProperty("SITE_BUILD_DIR") +"/webapp/WebContent/header.jsp");
 		generateSource("site/ui/index.vm", siteProperties.getProperty("SITE_BUILD_DIR") +"/webapp/WebContent/index.jsp");
-		generateSource("site/ui/testResults.vm", siteProperties.getProperty("SITE_BUILD_DIR") +"/webapp/WebContent/testResults.jsp");
 	}
 	
 	public static void main(String[] args)
