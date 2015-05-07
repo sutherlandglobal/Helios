@@ -2,6 +2,8 @@ package com.sutherland.helios.api.format.output;
 
 import java.util.ArrayList;
 
+import com.sutherland.helios.report.Report;
+
 public class JFreeChartFormatter extends ResultsFormatter 
 {
 	public JFreeChartFormatter() 
@@ -10,23 +12,14 @@ public class JFreeChartFormatter extends ResultsFormatter
 	}
 
 	@Override
-	public String formatLine(String[] rowFields) 
-	{
-		//invalid
+	public String formatResults(Report report) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ArrayList<String> formatResults(ArrayList<String[]> results) 
-	{
-		return null;
-	}
-
-	@Override
-	public ArrayList<String> formatResults(ArrayList<String> schema, ArrayList<String[]> results) 
-	{
-
-		
+	public String formatResults(ArrayList<Report> reports) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

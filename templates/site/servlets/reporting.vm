@@ -2,17 +2,17 @@
 
 package $fullPackageName;
 
+import com.sutherland.helios.api.format.output.ChartFormatter;
 import com.sutherland.helios.api.format.output.CSVFormatter;
 import com.sutherland.helios.api.format.output.HTMLFormatter;
 import com.sutherland.helios.api.format.output.JSONFormatter;
+import com.sutherland.helios.api.format.output.ResultsFormatter;
 import com.sutherland.helios.api.format.output.XMLFormatter;
 import com.sutherland.helios.api.report.ReportProcessor;
 import com.sutherland.helios.api.report.frontend.ReportFrontEnds;
-import com.sutherland.helios.charting.BarChartFactory;
-import com.sutherland.helios.charting.StackedBarChartFactory;
-import com.sutherland.helios.charting.TimeLineChartFactory;
 import com.sutherland.helios.exceptions.ExceptionFormatter;
 import com.sutherland.helios.logging.LogIDFactory;
+import com.sutherland.helios.report.Report;
 import com.sutherland.helios.report.ReportTypes;
 import com.sutherland.helios.report.parameters.ParameterInfo;
 import com.sutherland.helios.report.parameters.ReportParameters;
@@ -46,26 +46,20 @@ public class Reporting extends HttpServlet
 {	
 	private static final long serialVersionUID = $math.random(1,99999999)L;
 	private final static Logger logger = Logger.getLogger(Reporting.class);
-	private final static String LOG_ID_PREFIX = "api_id=";
+	private final static String LOG_ID_PREFIX = "$API_LOGGER_HANDLE=";
 
 	private Reporting(){}
 	
-	private void buildLogger()
+	@SuppressWarnings("unchecked")
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
 	{
+		//build an api logger to log stuff pulled from reportprocessor
 		String logID = LogIDFactory.getLogID().toString();
 
 		if (MDC.get(LOG_ID_PREFIX ) == null) 
 		{
 			MDC.put(LOG_ID_PREFIX, LOG_ID_PREFIX + logID);
 		}
-
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-	{
-		//build an api logger to log stuff pulled from reportprocessor
-		buildLogger();
 		
 		String fullRequestURL = request.getRequestURL().toString();
 		String queryString = request.getQueryString();
@@ -85,18 +79,18 @@ public class Reporting extends HttpServlet
 
 		String reportName = null;
 
-		ReportParameters rp = new ReportParameters();
+		ReportParameters reportParameters = new ReportParameters();
 
-		rp.addSupportedParameter(ParameterInfo.START_DATE_PARAM);
-		rp.addSupportedParameter(ParameterInfo.END_DATE_PARAM);
-		rp.addSupportedParameter(ParameterInfo.AGENT_NAMES_PARAM);
-		rp.addSupportedParameter(ParameterInfo.TEAM_NAMES_PARAM);
-		rp.addSupportedParameter(ParameterInfo.USER_GRAIN_PARAM);
-		rp.addSupportedParameter(ParameterInfo.TIME_GRAIN_PARAM);
-		rp.addSupportedParameter(ParameterInfo.NUM_DRIVERS_PARAM);
-		rp.addSupportedParameter(ParameterInfo.REPORT_TYPE_PARAM);
-		rp.addSupportedParameter(ParameterInfo.SOURCE_PARAM);
-		rp.addSupportedParameter(ParameterInfo.DATE_FORMAT_PARAM);
+		reportParameters.addSupportedParameter(ParameterInfo.START_DATE_PARAM);
+		reportParameters.addSupportedParameter(ParameterInfo.END_DATE_PARAM);
+		reportParameters.addSupportedParameter(ParameterInfo.AGENT_NAMES_PARAM);
+		reportParameters.addSupportedParameter(ParameterInfo.TEAM_NAMES_PARAM);
+		reportParameters.addSupportedParameter(ParameterInfo.USER_GRAIN_PARAM);
+		reportParameters.addSupportedParameter(ParameterInfo.TIME_GRAIN_PARAM);
+		reportParameters.addSupportedParameter(ParameterInfo.NUM_DRIVERS_PARAM);
+		reportParameters.addSupportedParameter(ParameterInfo.REPORT_TYPE_PARAM);
+		reportParameters.addSupportedParameter(ParameterInfo.SOURCE_PARAM);
+		reportParameters.addSupportedParameter(ParameterInfo.DATE_FORMAT_PARAM);
 
 		ArrayList<String> apiParamNames = new ArrayList<String>();
 		apiParamNames.add("reportName");
@@ -109,6 +103,8 @@ public class Reporting extends HttpServlet
 		ServletOutputStream out = null;
 		PrintWriter writer = null;
 		HashMap<String,String> requestParameters = new HashMap<String, String>();
+		
+		Report report = null;
 		try
 		{	
 			long loadSiteStartTime = System.currentTimeMillis();
@@ -135,7 +131,7 @@ public class Reporting extends HttpServlet
 					}
 					else
 					{
-						rp.addParameter(paramName, value);
+						reportParameters.addParameter(paramName, value);
 					}
 				}
 			}
@@ -147,165 +143,87 @@ public class Reporting extends HttpServlet
 			logger.log(Level.INFO, "Building report: " + reportName);
 
 			//tell site logs where we're coming from
-			rp.addParameter(ParameterInfo.SOURCE_PARAM, "API");
+			reportParameters.addParameter(ParameterInfo.SOURCE_PARAM, "API");
 
 			long reportStartTime = System.currentTimeMillis();
-			ArrayList<String[]> results = reportProcessor.startReport("$REPORT_CLASS_PREFIX" + "." + reportName, rp);
+
+
+			report = reportProcessor.startReport("$REPORT_CLASS_PREFIX" + "." + reportName, reportParameters);
+
 			long reportEndTime = System.currentTimeMillis();
 			logger.log(Level.INFO, "Executed report in: " +  (reportEndTime - reportStartTime) + " ms");
-			logger.log(Level.INFO, "Report returned rows: " + results.size());
+			logger.log(Level.INFO, "Report returned rows: " + report.getDataSize());
 			
 			int reportFormat = Integer.parseInt(requestParameters.get("format"));
 
+			ResultsFormatter formatter;
+			writer = response.getWriter();
+			
 			switch(reportFormat)
 			{
 			case ReportFrontEnds.XML:
-				writer = response.getWriter();
-				
-				XMLFormatter xmlFormatter = new XMLFormatter();
+				formatter = new XMLFormatter();
 				response.setContentType("text/xml");
 				response.setHeader("Content-type","application/xhtml+xml");
 				
-				for(String row : xmlFormatter.formatResults(results))
-				{
-					writer.println(row);
-				}
+				writer.println(formatter.formatResults(report));
 				
 				break;
 			case ReportFrontEnds.HTML:
-				
-				
-				writer = response.getWriter();
-				
-				
-				//add html header
-
-				HTMLFormatter htmlFormatter = new HTMLFormatter();
+				formatter = new HTMLFormatter();
 
 				String autoRefreshParam = requestParameters.get("autoRefresh");
 				
 				if(autoRefreshParam != null  )
 				{
-					htmlFormatter.setAutoRefresh("1".equals(StringSanitizer.sanitize(autoRefreshParam, Parameter.MAX_NAME_LEN)));
+					formatter.setAutoRefresh("1".equals(StringSanitizer.sanitize(autoRefreshParam, Parameter.MAX_NAME_LEN)));
 				}
 				
 				response.setContentType("text/html");
 
-				for(String row : htmlFormatter.formatResults(reportProcessor.getReportSchema(), results))
-				{
-					writer.println(row);
-				}
+				writer.println(formatter.formatResults(report));
 
 				//add html footer
 				break;
 			case ReportFrontEnds.JSON:
-				JSONFormatter jsonFormatter = new JSONFormatter();
-				writer = response.getWriter();
+				formatter = new JSONFormatter();
 
 				response.setContentType("application/json");
-				for(String row : jsonFormatter.formatResults(results))
-				{
-					writer.println(row);
-				}
+
+				writer.println(formatter.formatResults(report));
 				break;
-			case ReportFrontEnds.JFREECHART:
-				//add html header
+			case ReportFrontEnds.CHART:
+				formatter = new ChartFormatter();
 
-				int width = 1000, height = 600;
-				//get report type so that the right chart can be built
+				response.setContentType("text/html");
+				
+				writer.println(formatter.formatResults(report));
 
-				int reportType = Integer.parseInt(rp.getReportType());
-
-
-				JFreeChart chart;
-				ArrayList<String> schema = reportProcessor.getReportSchema();
-				if(reportType == ReportTypes.TIME_TREND_REPORT)
-				{
-					if(!reportName.endsWith("Drivers"))
-					{
-						TimeLineChartFactory chartFactory = new TimeLineChartFactory(reportName, schema.get(0), schema.get(1), reportName);
-
-						chart = chartFactory.buildChart(results, rp);
-					}
-					else
-					{
-
-						StackedBarChartFactory chartFactory = new StackedBarChartFactory(reportName, schema.get(0), schema.get(2));
-
-						chart = chartFactory.buildChart(results);
-					}
-				}
-				else //if(reportType == GetReportTypes.STACK_REPORT)
-				{
-					BarChartFactory chartFactory = new BarChartFactory(reportName, schema.get(0), schema.get(1), reportName);
-
-					chart = chartFactory.buildChart(results);
-				}
-
-				BufferedImage buffImg = chart.createBufferedImage(width, height);
-				ByteArrayOutputStream baos = null;
-
-				try
-				{
-					baos = new ByteArrayOutputStream();
-					ImageIO.write( buffImg, "png", baos );
-
-					baos.flush();
-					byte[] imageInByte = baos.toByteArray();
-					baos.close();
-
-					response.setContentType("image/png");
-
-					out = response.getOutputStream();
-					
-					
-					
-					out.write(imageInByte);
-
-				}
-				catch (Exception e)
-				{
-					out.println("Error: " + e.getMessage());
-					logger.log(Level.ERROR, ExceptionFormatter.asString(e));
-				}
-				finally
-				{
-					if(baos != null)
-					{
-						baos.close();
-					}
-				}
-
-				//add html footer
 				break;
 			case ReportFrontEnds.EXCEL:
 				writer = response.getWriter();
-				CSVFormatter excelFormatter = new CSVFormatter();
+				formatter = new CSVFormatter();
 
-				excelFormatter.setEnquote(true);
+				formatter.setEnquote(true);
 				
 				String excelEnableHeadersParam = requestParameters.get("enableHeaders");
 			
 				if(excelEnableHeadersParam != null  )
 				{
-					excelFormatter.enableHeaders("1".equals(StringSanitizer.sanitize(excelEnableHeadersParam, Parameter.MAX_NAME_LEN)));
+					formatter.enableHeaders("1".equals(StringSanitizer.sanitize(excelEnableHeadersParam, Parameter.MAX_NAME_LEN)));
 				}
 
-				String disposition = "attachment; filename=\"" + reportName +".csv\"";
-    			response.setHeader("Content-disposition", disposition);
+    			response.setHeader("Content-disposition", "attachment; filename=\"" + reportName +".csv\"");
 				
 				response.setContentType("text/csv");
 
-				for(String row : excelFormatter.formatResults(reportProcessor.getReportSchema(), results))
-				{
-					writer.println(row);
-				}
-				break;
+				writer.println(formatter.formatResults(report));
 				
+				break;
 			case ReportFrontEnds.CSV:
 			default:
 				writer = response.getWriter();
-				CSVFormatter formatter = new CSVFormatter();
+				formatter = new CSVFormatter();
 
 				String csvEnquoteParam = requestParameters.get("enquote");
 				String csvDelimParam = requestParameters.get("delimiter");
@@ -318,7 +236,7 @@ public class Reporting extends HttpServlet
 
 				if(csvDelimParam != null  )
 				{
-					formatter.setDelim(StringSanitizer.sanitize(csvDelimParam, Parameter.MAX_NAME_LEN));
+					formatter.setDelimiter(StringSanitizer.sanitize(csvDelimParam, Parameter.MAX_NAME_LEN));
 				}
 				
 				if(CSVEnableHeadersParam != null  )
@@ -328,10 +246,7 @@ public class Reporting extends HttpServlet
 																
 				response.setContentType("text/plain");
 
-				for(String row : formatter.formatResults(reportProcessor.getReportSchema(), results))
-				{
-					writer.println(row);
-				}
+				writer.println(formatter.formatResults(report));
 				break;
 			}
 		}
@@ -383,7 +298,10 @@ public class Reporting extends HttpServlet
 				}
 			}
 			
-			MDC.remove(LOG_ID_PREFIX);
+			if(logID != null)
+			{
+				MDC.remove(LOG_ID_PREFIX);
+			}
 		}
 	}
 }

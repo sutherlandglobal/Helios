@@ -25,7 +25,7 @@ public interface ReportFrontEndGroups
 			put(ReportFrontEnds.EXCEL_NAME,"" +ReportFrontEnds.EXCEL);
 			put(ReportFrontEnds.XML_NAME,"" +ReportFrontEnds.XML);
 			put(ReportFrontEnds.JSON_NAME,"" +ReportFrontEnds.JSON);
-			put(ReportFrontEnds.JFCHART_NAME,"" +ReportFrontEnds.JFREECHART);
+			put(ReportFrontEnds.CHART_NAME,"" +ReportFrontEnds.CHART);
 		}
 	};
 }

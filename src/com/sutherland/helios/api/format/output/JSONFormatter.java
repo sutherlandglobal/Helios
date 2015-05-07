@@ -4,8 +4,10 @@
 package com.sutherland.helios.api.format.output;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 import com.google.gson.Gson;
+import com.sutherland.helios.report.Report;
 
 
 /**
@@ -14,43 +16,31 @@ import com.google.gson.Gson;
  * 
  * @author Jason Diamond
  *
- *
- *
  */
-public class JSONFormatter extends ResultsFormatter {
-
-	/**
-	 * 
-	 */
-	public JSONFormatter() 
-	{
-		super();
-	}
-	
-	public ArrayList<String> formatResults(ArrayList<String[]> results)
-	{
-		ArrayList<String> retval = new ArrayList<String>();
+public class JSONFormatter extends ResultsFormatter 
+{
+	public String formatResults(Report report)
+	{		
+		//grain -> [array of values]
 		
-		Gson gson = new Gson();
+		LinkedHashMap<String, ArrayList<String>> results = new LinkedHashMap<String, ArrayList<String>>();
 		
-		for(String[] row : results)
+		for(String[] row : report.getData())
 		{
-			retval.add(gson.toJson(row));
+			results.put(row[0], new ArrayList<String>());
+			
+			for(int i = 1; i<row.length; i++)
+			{
+				results.get(row[0]).add(row[i]);
+			}
 		}
-
-		return retval;
+				
+		return new Gson().toJson(results);
 	}
-	
-	public String formatLine(String[] rowFields)
-	{
+
+	@Override
+	public String formatResults(ArrayList<Report> reports) {
+		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	@Override
-	public ArrayList<String> formatResults(ArrayList<String> schema, ArrayList<String[]> results) 
-	{
-		//no schema for JSON, yet
-		return formatResults(new ArrayList<String>(), results);
-	}
-
 }

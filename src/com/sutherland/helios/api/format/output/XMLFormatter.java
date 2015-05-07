@@ -4,13 +4,14 @@
 package com.sutherland.helios.api.format.output;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+
+import com.sutherland.helios.report.Report;
 
 
 /**
@@ -32,10 +33,8 @@ public class XMLFormatter extends ResultsFormatter {
 		super();
 	}
 	
-	public ArrayList<String> formatResults(ArrayList<String[]> results)
+	public String formatResults(Report report)
 	{
-		ArrayList<String> retval = new ArrayList<String>();
-		
 		//typcially the convention is one row per line, but xml isn't newline-conscious
 		
 		Element rootElement = new Element("report");
@@ -44,7 +43,7 @@ public class XMLFormatter extends ResultsFormatter {
 		
 		int rowNum = 0;
 		int colNum;
-		for(String[] row : results)
+		for(String[] row : report.getData())
 		{
 			Element rowElement = new Element("row");
 
@@ -67,11 +66,8 @@ public class XMLFormatter extends ResultsFormatter {
 		
 		XMLOutputter xmlOutput = new XMLOutputter();
 		xmlOutput.setFormat(Format.getPrettyFormat());
-		
-		String rawXML = xmlOutput.outputString(doc);
-		retval.addAll(Arrays.asList(rawXML.split("\\n")));
-		
-		return retval;
+				
+		return xmlOutput.outputString(doc);
 	}
 	
 	public String formatLine(String[] rowFields)
@@ -79,12 +75,10 @@ public class XMLFormatter extends ResultsFormatter {
 		//invalid to just print an xml row. context is needed.
 		return null;
 	}
-	
-	@Override
-	public ArrayList<String> formatResults(ArrayList<String> schema, ArrayList<String[]> results) 
-	{
-		//no schema for XML, yet
-		return formatResults(new ArrayList<String>(), results);
-	}
 
+	@Override
+	public String formatResults(ArrayList<Report> reports) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

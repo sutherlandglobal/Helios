@@ -5,6 +5,8 @@ package com.sutherland.helios.api.format.output;
 
 import java.util.ArrayList;
 
+import com.sutherland.helios.report.Report;
+
 
 /**
  *	Format a Helios report's results into CSV format. No header or footer required.
@@ -15,43 +17,25 @@ import java.util.ArrayList;
  *
  *
  */
-public class CSVFormatter extends ResultsFormatter 
-{
-	protected boolean enquote = false;
-
-	protected String delim;
-	protected final static String DEFAULT_DELIM = ",";
-	protected boolean enableHeaders;
-	
+public class CSVFormatter extends ResultsFormatter
+{	
 	public CSVFormatter() 
 	{
 		super();
 		enableHeaders(true);
 		setEnquote(false);
-		setDelim(DEFAULT_DELIM);
-	}
-	
-	public ArrayList<String> formatResults(ArrayList<String[]> results)
-	{
-		ArrayList<String> retval = new ArrayList<String>();
-		
-		for(String[] row : results)
-		{
-			retval.add(formatLine(row));
-		}
-		
-		return retval;
+		setDelimiter(DEFAULT_DELIM);
 	}
 	
 	@Override
-	public ArrayList<String> formatResults(ArrayList<String> schema, ArrayList<String[]> results) 
+	public String formatResults(Report report) 
 	{
-		ArrayList<String> retval = new ArrayList<String>();
+		StringBuilder retval = new StringBuilder();
 		
 		if(enableHeaders)
 		{
 			StringBuilder headerString = new StringBuilder();
-			for(String attribute : schema)
+			for(String attribute : report.getReportSchema())
 			{
 				if(enquote)
 				{
@@ -64,15 +48,18 @@ public class CSVFormatter extends ResultsFormatter
 					headerString.append(attribute);
 				}
 				
-				headerString.append(delim);
+				headerString.append(delimiter);
 			}
 			
-			retval.add(headerString.toString());
+			retval.append(headerString.toString());
 		}
 		
-		retval.addAll(formatResults(results));
+		for(String[] row : report.getData())
+		{
+			retval.append(formatLine(row));
+		}
 		
-		return retval;
+		return retval.toString();
 	}
 	
 	public String formatLine(String[] rowFields)
@@ -88,31 +75,17 @@ public class CSVFormatter extends ResultsFormatter
 			
 			formattedLine.append(col);
 			
-			formattedLine.append(delim);
+			formattedLine.append(delimiter);
 		}
 		
 		return formattedLine.toString();
 	}
-	
-	public void setEnquote(boolean enquote) 
-	{
-		this.enquote = enquote;
-	}
-	
-	public void enableHeaders(boolean enableHeaders)
-	{
-		this.enableHeaders = enableHeaders;
-	}
-	
-	public void setDelim(String delim)
-	{
-		this.delim = delim;
-	}
-	
-	public String getDelim()
-	{
-		return delim;
-	}
 
+	@Override
+	public String formatResults(ArrayList<Report> reports) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 
 }
